@@ -1,0 +1,26 @@
+version: "0.1"
+services:
+  db:
+    container_name: tc_database
+    build: ./banco/
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ROOTPASS
+      MYSQL_DATABASE: TechChallenge
+    networks:
+      - tc_network
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+
+  app:
+    container_name: tc_api
+    build: ./api/
+    ports:
+      - "80:80"
+    networks:
+      - tc_network
+
+networks:
+  tc_network:
+    name: tc_network
+    driver: host
