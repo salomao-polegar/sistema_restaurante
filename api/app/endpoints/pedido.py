@@ -1,12 +1,15 @@
 from app.Entidades.Pedido import Pedido
 from app.mysql_connection import get_connection
 from app.SingletonFastAPI import SingletonFastAPI
+import pandas as pd
+from typing import List
+from json import loads
 
 app = SingletonFastAPI.app().app
 
 ### PEDIDOS ###
     
-@app.get("/pedidos/")
+@app.get("/pedidos/", tags=['Pedidos'], response_model=List[Pedido])
 async def get_pedidos():
     try:
         connection, cursor = get_connection()
@@ -19,7 +22,7 @@ async def get_pedidos():
         
         return {'Erro' : str(e)}
 
-@app.get("/pedidos/{pedido_id}")
+@app.get("/pedidos/{pedido_id}", tags=['Pedidos'], response_model=List[Pedido])
 def get_pedidos(pedido_id: int):
     try:
         connection, cursor = get_connection()
@@ -32,7 +35,7 @@ def get_pedidos(pedido_id: int):
         
         return {'Erro' : str(e)}
 
-@app.post("/pedidos/")
+@app.post("/pedidos/", tags=['Pedidos'])
 async def salva_pedido(pedido: Pedido):
     try:
         connection, cursor = get_connection()
@@ -51,7 +54,7 @@ async def salva_pedido(pedido: Pedido):
         
         return {'Erro' : str(e)}
 
-@app.delete("/pedidos/{pedido_id}")
+@app.delete("/pedidos/{pedido_id}", tags=['Pedidos'])
 def delete_pedido(pedido_id: int):
     try:
         connection, cursor = get_connection()
@@ -65,7 +68,7 @@ def delete_pedido(pedido_id: int):
         
         return {'Erro' : str(e)}
     
-@app.post('/checkout/{pedido_id}')
+@app.post('/checkout/{pedido_id}', tags=['Pedidos'])
 def checkout_pedido(pedido_id: int):
     try:
         connection, cursor = get_connection()
@@ -76,6 +79,23 @@ def checkout_pedido(pedido_id: int):
         connection.close()
         
         return { 'status' : 2 }    
+    except Exception as e:
+        
+        return {'Erro' : str(e)}
+
+@app.get('/fila/', tags=['Pedidos'], response_model=List[Pedido])
+def mostra_fila():
+    try:
+        connection, cursor = get_connection()
+        cursor.execute('select * from pedidos where status_pedido=1 ORDER BY id;')
+        fila_pedidos = cursor.fetchall()
+        connection.commit()
+        connection.close()
+        fila_df = pd.DataFrame(fila_pedidos)[['id', 'cliente', 'datahora_pedido']]
+        fila_df['posicao'] = fila_df.index
+        fila_df['posicao'] = fila_df['posicao'].apply(lambda x: x+1)
+        #print(fila_df)
+        return (loads(fila_df.to_json(orient='records')))
     except Exception as e:
         
         return {'Erro' : str(e)}

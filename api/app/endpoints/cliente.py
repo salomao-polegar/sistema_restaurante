@@ -5,7 +5,7 @@ app = SingletonFastAPI.app().app
 
 ### CLIENTES ###
 
-@app.get('/clientes/')
+@app.get('/clientes/', tags=['Clientes'])
 def get_clientes():
     try:
         connection, cursor = get_connection()
@@ -18,7 +18,7 @@ def get_clientes():
         
         return {'Erro' : str(e)}
 
-@app.get("/clientes/{cliente_cpf}")
+@app.get("/clientes/{cliente_cpf}", tags=['Clientes'])
 def get_cliente(cliente_cpf: str):
     
     try:
@@ -32,7 +32,7 @@ def get_cliente(cliente_cpf: str):
         
         return {'Erro' : str(e)}
 
-@app.post("/clientes/")
+@app.post("/clientes/", tags=['Clientes'])
 async def salva_cliente(cliente: Cliente):
     try:
         connection, cursor = get_connection()
@@ -56,7 +56,7 @@ async def salva_cliente(cliente: Cliente):
         
         return {'Erro' : str(e)}
 
-@app.put('/clientes/{cliente_cpf}')
+@app.put('/clientes/{cliente_cpf}', tags=['Clientes'])
 async def edita_cliente(cliente_cpf: str, cliente: Cliente):
     try:
         connection, cursor = get_connection()
@@ -81,7 +81,7 @@ async def edita_cliente(cliente_cpf: str, cliente: Cliente):
         
         return {'Erro' : str(e)}
 
-@app.delete("/clientes/{cliente_cpf}")
+@app.delete("/clientes/{cliente_cpf}", tags=['Clientes'])
 def delete_cliente(cliente_cpf: str):
     try:
         connection, cursor = get_connection()

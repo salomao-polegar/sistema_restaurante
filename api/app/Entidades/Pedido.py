@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-
+from datetime import datetime
 from .Produto import Produto
 
 class Status():
@@ -11,6 +11,7 @@ class Pedido(BaseModel):
     id: int | None = None
     status_pedido: int
     cliente: str
+    datahora_pedido: datetime
 
 class ProdutoNoPedido(BaseModel):
     id_produto: int

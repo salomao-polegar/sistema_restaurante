@@ -1,12 +1,13 @@
 from app.Entidades.Produto import Produto
 from app.mysql_connection import get_connection
 from app.SingletonFastAPI import SingletonFastAPI
+from typing import List
 
 app = SingletonFastAPI.app().app
 
 ### PRODUTOS ###
 
-@app.get("/produtos/")
+@app.get("/produtos/", tags=['Produtos'], response_model=List[Produto])
 async def get_produtos():
     try:
         connection, cursor = get_connection()
@@ -18,7 +19,7 @@ async def get_produtos():
         
         return {'Erro' : str(e)}
 
-@app.get("/produtos/{produto_id}")
+@app.get("/produtos/{produto_id}", tags=['Produtos'], response_model=List[Produto])
 def get_produto(produto_id: int):
     try:
         connection, cursor = get_connection()
@@ -30,7 +31,7 @@ def get_produto(produto_id: int):
         
         return {'Erro' : str(e)}
 
-@app.post("/produtos/")
+@app.post("/produtos/", tags=['Produtos'])
 async def salva_produto(produto: Produto):
     try:
         connection, cursor = get_connection()
@@ -50,7 +51,7 @@ async def salva_produto(produto: Produto):
         
         return {'Erro' : str(e)}
     
-@app.put("/produtos/{produto_id}")
+@app.put("/produtos/{produto_id}", tags=['Produtos'])
 async def edita_produto(produto_id: int, produto: Produto):
     try:
         connection, cursor = get_connection()
@@ -95,7 +96,7 @@ async def edita_produto(produto_id: int, produto: Produto):
         
         return {'Erro' : str(e)}
 
-@app.delete("/produtos/{produto_id}")
+@app.delete("/produtos/{produto_id}", tags=['Produtos'])
 def delete_produto(produto_id: int):
     try:
         connection, cursor = get_connection()
@@ -107,7 +108,7 @@ def delete_produto(produto_id: int):
         
         return {'Erro' : str(e)}
     
-@app.get("/lanches/")
+@app.get("/lanches/", tags=['Produtos'], response_model=List[Produto])
 async def get_lanche():
     try:
         connection, cursor = get_connection()
@@ -119,7 +120,7 @@ async def get_lanche():
         
         return {'Erro' : str(e)}    
 
-@app.get("/acompanhamentos/")
+@app.get("/acompanhamentos/", tags=['Produtos'], response_model=List[Produto])
 async def get_acompanhamentos():
     try:
         connection, cursor = get_connection()
@@ -131,7 +132,7 @@ async def get_acompanhamentos():
         
         return {'Erro' : str(e)}
 
-@app.get("/bebidas/")
+@app.get("/bebidas/", tags=['Produtos'], response_model=List[Produto])
 async def get_bebidas():
     try:
         connection, cursor = get_connection()
@@ -143,7 +144,7 @@ async def get_bebidas():
         
         return {'Erro' : str(e)}
     
-@app.get("/sobremesas/")
+@app.get("/sobremesas/", tags=['Produtos'], response_model=List[Produto])
 async def get_sobremesas():
     try:
         connection, cursor = get_connection()
