@@ -32,7 +32,7 @@ CREATE TABLE clientes (id int NOT NULL AUTO_INCREMENT,
                         cpf varchar(11),
                         nome varchar(50),
                         email varchar(150),
-                        telefone varchar(11)
+                        telefone varchar(11),
                         PRIMARY KEY (id),
                         UNIQUE (cpf));
 -- PENSAR NA CHAVE PRIMÁRIA DO CLIENTE, VISTO QUE ELE PODE NÃO SE IDENTIFICAR. UTILIZAR O E-MAIL COMO OBJETO DE VALOR?

@@ -204,9 +204,9 @@ Na pasta `root` do repositório:
 docker-compose up --build
 ```
 
-Ou, para resetar os dados do container:
+Ou, para apagar os containers:
 ```bash
-docker rm tc_api -f; docker rm tc_database -f; docker compose up --build
+docker rm tc_api -f; docker rm tc_database -f; 
 ```
 
 Abrindo o navegador, daria para acessar a página inicial do app na URL [http://127.0.0.1/](http://127.0.0.1/) retornando `Hello World`.

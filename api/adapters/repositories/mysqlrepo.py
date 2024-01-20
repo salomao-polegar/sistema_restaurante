@@ -72,7 +72,7 @@ class MysqlRepo(ProdutoRepositoryPort):
         self._connection.close()
         return produtos
     
-    def get_todos_lanches(self) -> List[domain.Produto]:
+    def get_lanches(self) -> List[domain.Produto]:
         if not self._connection.is_connected():
             self.__init__()
         cursor = self._connection.cursor(dictionary=True)
@@ -81,7 +81,7 @@ class MysqlRepo(ProdutoRepositoryPort):
         self._connection.close()
         return produtos
     
-    def get_todos_acompanhamentos(self) -> List[domain.Produto]:
+    def get_acompanhamentos(self) -> List[domain.Produto]:
         if not self._connection.is_connected():
             self.__init__()
         cursor = self._connection.cursor(dictionary=True)
@@ -90,7 +90,7 @@ class MysqlRepo(ProdutoRepositoryPort):
         self._connection.close()
         return produtos
     
-    def get_todos_bebidas(self) -> List[domain.Produto]:
+    def get_bebidas(self) -> List[domain.Produto]:
         if not self._connection.is_connected():
             self.__init__()
         cursor = self._connection.cursor(dictionary=True)
@@ -99,7 +99,7 @@ class MysqlRepo(ProdutoRepositoryPort):
         self._connection.close()
         return produtos
     
-    def get_todos_sobremesas(self) -> List[domain.Produto]:
+    def get_sobremesas(self) -> List[domain.Produto]:
         if not self._connection.is_connected():
             self.__init__()
         cursor = self._connection.cursor(dictionary=True)

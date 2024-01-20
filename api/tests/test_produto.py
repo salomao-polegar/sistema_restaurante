@@ -16,7 +16,6 @@ app_test = TestClient(app)
 @fixture
 def mysql_repo():
     repo = repositories.MysqlRepo()
-    # repo._db.get_collection('course').delete_many({})
     return repo
 
 def test_produto_database(mysql_repo):
