@@ -1,11 +1,9 @@
 import mysql.connector
 from typing import List
-import domain, sys, json
+import domain, sys
 from ports.repositories.produto import ProdutoRepositoryPort
 
-
 class MysqlRepo(ProdutoRepositoryPort):
-
 
     def __init__(self):
 
@@ -24,6 +22,24 @@ class MysqlRepo(ProdutoRepositoryPort):
 
         self._cursor = self._connection.cursor(dictionary=True)
     
+### OPERAÇÕES COM PRODUTOS ###
+            
+    def insert_produto(self, produto: domain.Produto) -> domain.produto:
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+        cursor.execute("""INSERT INTO produtos (id, nome, categoria, valor, descricao, ativo) 
+                        VALUES (%(id)s, %(nome)s, %(categoria)s, %(valor)s, %(descricao)s, 1)""", 
+                        ({'id' : produto.id,
+                          'nome': produto.nome,
+                          'categoria': produto.categoria,
+                          'valor': produto.valor,
+                          'descricao': produto.descricao,
+                          }))
+        self._connection.commit()
+        self._connection.close()
+        return produto
+    
     def get_produto(self, produto_id: int) -> domain.Produto | None: 
         if not self._connection.is_connected():
             self.__init__()
@@ -41,27 +57,11 @@ class MysqlRepo(ProdutoRepositoryPort):
                 descricao=i["descricao"],
                 ativo=i["ativo"],
             )
-            print('produto:', produto)
+            
             self._connection.close()
             return produto
         self._connection.close()
         return None
-    
-    def insert_produto(self, produto: domain.Produto) -> domain.produto:
-        if not self._connection.is_connected():
-            self.__init__()
-        cursor = self._connection.cursor(dictionary=True)
-        cursor.execute("""INSERT INTO produtos (id, nome, categoria, valor, descricao, ativo) 
-                        VALUES (%(id)s, %(nome)s, %(categoria)s, %(valor)s, %(descricao)s, 1)""", 
-                        ({'id' : produto.id,
-                          'nome': produto.nome,
-                          'categoria': produto.categoria,
-                          'valor': produto.valor,
-                          'descricao': produto.descricao,
-                          }))
-        self._connection.commit()
-        self._connection.close()
-        return produto
 
     def get_todos_produtos(self) -> List[domain.Produto]:
         if not self._connection.is_connected():
@@ -107,7 +107,7 @@ class MysqlRepo(ProdutoRepositoryPort):
         produtos = cursor.fetchall()
         self._connection.close()
         return produtos
-    
+
     def edita_produto(self, produto: domain.Produto) -> domain.Produto:
         if not self._connection.is_connected():
             self.__init__()
@@ -153,3 +153,95 @@ class MysqlRepo(ProdutoRepositoryPort):
         self._connection.commit()
         self._connection.close()
         return True
+    
+### OPERAÇÕES COM CLIENTES ###
+    
+    def insert_cliente(self, cliente: domain.Cliente) -> domain.cliente:
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+        cursor.execute("""INSERT INTO clientes (id, cpf, nome, email, telefone, ativo) 
+                        VALUES (%(id)s, %(cpf)s, %(nome)s, %(email)s, %(telefone)s, 1)""", 
+                        ({'id' : cliente.id,
+                          'cpf': cliente.cpf,
+                          'nome': cliente.nome,
+                          'email': cliente.email,
+                          'telefone': cliente.telefone,
+                          }))
+        self._connection.commit()
+        self._connection.close()
+        return cliente
+    
+    def get_cliente(self, cliente_id: int) -> domain.Cliente | None: 
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+
+        cursor.execute('Select * FROM clientes where id=%(cliente_id)s', 
+                       ({'cliente_id':cliente_id}))
+        
+        for i in cursor:
+            cliente = domain.Cliente(
+                id=i["id"],
+                cpf=i['cpf'],
+                nome=i["nome"],
+                email=i["email"],
+                telefone=i["telefone"],
+                ativo = i['ativo']
+            )
+            
+            self._connection.close()
+            return cliente
+        self._connection.close()
+        return None
+
+    def get_todos_clientes(self) -> List[domain.Cliente]:
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+        cursor.execute('Select * FROM clientes WHERE ativo = 1')
+        clientes = cursor.fetchall()
+        self._connection.close()
+        return clientes
+    
+    def edita_cliente(self, cliente: domain.Cliente) -> domain.Cliente:
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+               
+        if cliente.nome:
+            cursor.execute("""UPDATE clientes SET nome = %(nome)s 
+                           WHERE id = %(id)s;""", 
+                           ({'nome' : cliente.nome,
+                             'id' : cliente.id}))
+
+        if cliente.email:
+            cursor.execute("""UPDATE clientes SET email = %(email)s 
+                           WHERE id = %(id)s;""", 
+                           ({'email' : cliente.email,
+                             'id' : cliente.id}))
+
+        if cliente.telefone:
+            cursor.execute("""UPDATE clientes SET telefone = %(telefone)s 
+                           WHERE id = %(id)s;""", 
+                           ({'telefone' : cliente.telefone,
+                             'id' : cliente.id}))
+        if cliente.ativo:
+            cursor.execute("""UPDATE clientes SET ativo = %(ativo)s 
+                           WHERE id = %(id)s;""", 
+                           ({'ativo' : cliente.ativo,
+                             'id' : cliente.id}))
+
+        self._connection.commit()
+        self._connection.close()
+        
+        return cliente
+    
+    def delete_cliente(self, cliente: domain.Cliente) -> bool:
+        if not self._connection.is_connected():
+            self.__init__()
+        self._cursor.execute('delete from clientes where id=%(id)s', ({'id':cliente.id}))
+        self._connection.commit()
+        self._connection.close()
+        return True
+    

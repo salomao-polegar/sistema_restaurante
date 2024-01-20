@@ -9,6 +9,9 @@ class ProdutoServicePort(Protocol):
     def __init__(self, repo: ProdutoRepositoryPort):
         pass
 
+    def insert_produto(self, produto: Produto) -> Produto:
+        pass
+    
     def get_produto(self, produto_id: str) -> Produto:
         pass
 
@@ -25,9 +28,6 @@ class ProdutoServicePort(Protocol):
         pass
 
     def get_sobremesas(self) -> Produto:
-        pass
-    
-    def insert_produto(self, produto: Produto) -> Produto:
         pass
     
     def edita_produto(self, produto: Produto) -> Produto:

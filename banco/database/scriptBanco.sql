@@ -8,7 +8,7 @@ CREATE TABLE produtos (id int NOT NULL AUTO_INCREMENT,
                         ativo int,  
                         PRIMARY KEY (id))
         ENGINE = InnoDB
-        DEFAULT CHARSET = utf8mb4;;
+        DEFAULT CHARSET = utf8mb4;
 
 
 INSERT INTO produtos (nome, categoria, valor, descricao, ativo) 
@@ -33,20 +33,21 @@ CREATE TABLE clientes (id int NOT NULL AUTO_INCREMENT,
                         nome varchar(50),
                         email varchar(150),
                         telefone varchar(11),
+                        ativo int,
                         PRIMARY KEY (id),
                         UNIQUE (cpf));
 -- PENSAR NA CHAVE PRIMÁRIA DO CLIENTE, VISTO QUE ELE PODE NÃO SE IDENTIFICAR. UTILIZAR O E-MAIL COMO OBJETO DE VALOR?
 
-INSERT INTO clientes (ID, nome) VALUES 
-(0, 'SEM IDENTIFICAÇÃO');
+INSERT INTO clientes (id, nome, ativo) VALUES 
+(0, 'SEM IDENTIFICAÇÃO', 1);
 
-INSERT INTO clientes (cpf, nome, email, telefone) VALUES 
-('11111111111', 'nome 1', 'nome1@teste', '1112345678'),
-('22222222222', 'nome 2', 'nome2@teste', '1112345678'),
-('33333333333', 'nome 3', 'nome3@teste', '1112345678'),
-('44444444444', 'nome 4', 'nome4@teste', '1112345678'),
-('55555555555', 'nome 5', 'nome5@teste', '1112345678'),
-('66666666666', 'nome 6', 'nome6@teste', '1112345678');
+INSERT INTO clientes (cpf, nome, email, telefone, ativo) VALUES 
+('11111111111', 'nome 1', 'nome1@teste', '1112345678', 1),
+('22222222222', 'nome 2', 'nome2@teste', '1112345678', 1),
+('33333333333', 'nome 3', 'nome3@teste', '1112345678', 1),
+('44444444444', 'nome 4', 'nome4@teste', '1112345678', 1),
+('55555555555', 'nome 5', 'nome5@teste', '1112345678', 1),
+('66666666666', 'nome 6', 'nome6@teste', '1112345678', 1);
 
 CREATE TABLE pedidos (id int NOT NULL AUTO_INCREMENT, 
                     PRIMARY KEY (id),

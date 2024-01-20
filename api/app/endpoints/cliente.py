@@ -1,98 +1,37 @@
-# from app.Entidades.Cliente import Cliente
-# from app.mysql_connection import get_connection
-# from app.SingletonFastAPI import SingletonFastAPI
-# app = SingletonFastAPI.app().app
+from domain.cliente import Cliente
+from app.SingletonFastAPI import SingletonFastAPI
+from typing import List
+import adapters.repositories as repositories
+import services
+app = SingletonFastAPI.app().app
 
-# ## SQLAlchemy
+def mysql_repo():
+    repo = repositories.MysqlRepo()
+    return repo
 
-# ### CLIENTES ###
+### CLIENTES ###
 
-# @app.get('/clientes/', tags=['Clientes'])
-# def get_clientes():
-#     try:
-#         connection, cursor = get_connection()
-#         cursor.execute('Select * FROM clientes')
-#         clientes = cursor.fetchall()
-#         connection.close()
-#         # print('DB closed')
-#         return { 'clientes' : clientes }
-#     except Exception as e:
-        
-#         return {'Erro' : str(e)}
+@app.post("/clientes/", tags=['Clientes'], response_model=Cliente)
+async def salva_cliente(cliente: Cliente) -> Cliente | None:
+    cliente_svc = services.ClienteService(mysql_repo())
+    return cliente_svc.insert_cliente(cliente)
 
-# @app.get("/clientes/{cliente_cpf}", tags=['Clientes'])
-# def get_cliente(cliente_cpf: str):
-    
-#     try:
-#         connection, cursor = get_connection()
-#         cursor.execute('Select * FROM clientes where cpf=%(cliente_cpf)s', ({'cliente_cpf':cliente_cpf}))
-#         cliente = cursor.fetchall()        
-#         connection.close()
-#         # print('DB closed')
-#         return {"cliente": cliente}
-#     except Exception as e:
-        
-#         return {'Erro' : str(e)}
+@app.get("/clientes/{cliente_id}", tags=['Clientes'], response_model=Cliente)
+def get_cliente(cliente_id: int) -> Cliente | None:
+    cliente_svc = services.ClienteService(mysql_repo())
+    return cliente_svc.get_cliente(cliente_id)
 
-# @app.post("/clientes/", tags=['Clientes'])
-# async def salva_cliente(cliente: Cliente):
-#     try:
-#         connection, cursor = get_connection()
-#         cursor.execute("""INSERT INTO clientes (cpf, nome, email) 
-#                         VALUES (%(cpf)s, %(nome)s, %(email)s);""", 
-#                         ({'cpf': cliente.cpf,
-#                           'nome': cliente.nome,
-#                           'email': cliente.email
-#                           }))
-#         cursor.execute("""SELECT LAST_INSERT_ID();""")
-#         id_cliente_inserido = cursor.fetchall()[0]['LAST_INSERT_ID()']
-#         connection.commit()
-#         connection.close()
-#         # print('DB closed')
-#         return { 'cliente_inserido' : {'id':id_cliente_inserido,
-#                                        'cpf': cliente.cpf,
-#                                        'nome': cliente.nome,
-#                                        'email': cliente.email
-#                           } }
-#     except Exception as e:
-        
-#         return {'Erro' : str(e)}
+@app.get("/clientes/", tags=['Clientes'], response_model=List[Cliente])
+async def get_clientes() -> List[Cliente] | None:
+    cliente_svc = services.ClienteService(mysql_repo())
+    return cliente_svc.get_todos_clientes()
 
-# @app.put('/clientes/{cliente_cpf}', tags=['Clientes'])
-# async def edita_cliente(cliente_cpf: str, cliente: Cliente):
-#     try:
-#         connection, cursor = get_connection()
-#         if cliente.nome:
-#             cursor.execute("""UPDATE  clientes SET nome = %(nome)s
-#                            WHERE cpf = %(cliente_cpf)s;""", 
-#                         ({'nome': cliente.nome,
-#                           'cliente_cpf' : cliente_cpf}))
-#         if cliente.email:
-#             cursor.execute("""UPDATE  clientes SET email = %(email)s
-#                            WHERE id = %(cliente_cpf)s;""", 
-#                         ({'email': cliente.email,
-#                           'cliente_cpf' : cliente_cpf}))
-#         connection.commit()
-#         connection.close()
-#         # print('DB closed')
-#         return { 'cliente_alterado' : {'cpf': cliente.cpf,
-#                           'nome': cliente.nome,
-#                           'email': cliente.email
-#                           } }
-#     except Exception as e:
-        
-#         return {'Erro' : str(e)}
+@app.put("/clientes/", tags=['Clientes'], response_model=Cliente)
+async def edita_cliente(cliente: Cliente) -> Cliente | None:
+    cliente_svc = services.ClienteService(mysql_repo())
+    return cliente_svc.edita_cliente(cliente)
 
-# @app.delete("/clientes/{cliente_cpf}", tags=['Clientes'])
-# def delete_cliente(cliente_cpf: str):
-#     try:
-#         connection, cursor = get_connection()
-#         cursor.execute('delete from clientes where cpf=%(cliente_cpf)s', ({'cliente_cpf':cliente_cpf}))
-#         connection.commit()
-#         connection.close()
-#         # print('DB closed')
-#         return {"resultado": "Cliente deletado com sucesso"}
-#     except Exception as e:
-        
-#         return {'Erro' : str(e)}
-
+@app.delete("/clientes/", tags=['Clientes'], response_model=Cliente)
+def delete_cliente(cliente: Cliente):
+    cliente_svc = services.ClienteService(mysql_repo())
+    return cliente_svc.delete_cliente(cliente)

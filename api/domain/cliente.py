@@ -1,9 +1,11 @@
 from pydantic import BaseModel
 
 class Cliente(BaseModel):
-    id: int | None = None
-    cpf: str | None = None
-    nome: str | None = None
-    email: str
+    id: int
+    cpf: str | None
+    nome: str | None
+    email: str | None
+    telefone: str | None
+    ativo: bool
 
     

@@ -8,10 +8,10 @@ class ProdutoRepositoryPort(Protocol):
     def __init__(self, db: AppDatabasePort):
         pass
 
-    def get_produto(self, produto_id: int) -> Produto:
+    def insert_produto(self, produto: Produto) -> Produto:
         pass
 
-    def insert_produto(self, produto: Produto) -> Produto:
+    def get_produto(self, produto_id: int) -> Produto:
         pass
 
     def get_todos_produtos(self) -> List[Produto]:
@@ -29,7 +29,7 @@ class ProdutoRepositoryPort(Protocol):
     def get_sobremesas(self) -> List[Produto]:
         pass
     
-    def edita_produto(self, produto: Produto) -> List[Produto]:
+    def edita_produto(self, produto: Produto) -> Produto:
         pass
 
     def delete_produto(self, produto: Produto) -> bool:
