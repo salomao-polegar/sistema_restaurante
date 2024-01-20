@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from .Produto import Produto
+
 
 class Status():
     id: int

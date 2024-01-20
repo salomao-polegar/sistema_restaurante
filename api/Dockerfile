@@ -1,4 +1,4 @@
-# Derivando da imagem oficial do Python 3.9
+# Derivando da imagem oficial do Python 3.12.1
 FROM python:3.12.1
 
 # Definir o workdir

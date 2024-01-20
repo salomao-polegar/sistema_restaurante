@@ -23,4 +23,4 @@ services:
 networks:
   tc_network:
     name: tc_network
-    driver: host
+    
