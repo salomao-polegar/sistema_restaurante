@@ -17,7 +17,7 @@ class ProdutoService(ProdutoServicePort):
     def __init__(self, repo: ProdutoRepositoryPort):
         self._repo = repo
 
-    def get_produto(self, produto_id) -> domain.Produto:
+    def get_produto(self, produto_id: int) -> domain.Produto:
         produto = self._repo.get_produto(produto_id)
         if not produto:
             raise ProdutoNotFoundException()
@@ -38,7 +38,7 @@ class ProdutoService(ProdutoServicePort):
     def get_sobremesas(self) -> List[domain.Produto]:
         return self._repo.get_sobremesas()
 
-    def insert_produto(self, produto: domain.Produto):
+    def insert_produto(self, produto: domain.Produto) -> domain.Produto:
         _p = self._repo.get_produto(produto.id)
         
         if _p:
@@ -47,7 +47,7 @@ class ProdutoService(ProdutoServicePort):
         self._repo.insert_produto(produto)
         return produto
     
-    def edita_produto(self, produto: domain.Produto):
+    def edita_produto(self, produto: domain.Produto) -> domain.Produto:
         _p = self._repo.get_produto(produto.id)
 
         if not _p:

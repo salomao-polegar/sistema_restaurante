@@ -29,7 +29,8 @@ def test_produto_database(mysql_repo):
         valor = 98.23, 
         descricao='Descrição do produto 1', 
         ativo=True
-        )    
+        )
+    
     produto_criado = produto_svc.insert_produto(insert_produto)
 
     assert  (produto_criado.id == insert_produto.id) and \
@@ -101,20 +102,20 @@ def test_produto_database(mysql_repo):
 #     assert delete_response == True
 
 
-# # def test_list_produtos(mysql_repo):
-# #     produto_01 = Produto(produto_id=str(uuid.uuid4()), nome="Produto 01", categoria = 1, valor = 98.23, descricao='Descrição do produto 1', ativo=True)
-# #     produto_02 = Produto(produto_id=str(uuid.uuid4()), nome="Produto 02", categoria = 2, valor = 22.23, descricao='Descrição do produto 2', ativo=True)
-
-# #     produto_svc = services.ProdutoService(mysql_repo)
-# #     produto_svc.insert_produto(produto_01)
-# #     produto_svc.insert_produto(produto_02)
-
+def test_list_produtos(mysql_repo):
+    produto_01 = Produto(id=99999998, nome="Produto 01", categoria = 1, valor = 98.23, descricao='Descrição do produto 1', ativo=True)
+    produto_02 = Produto(id=99999999, nome="Produto 02", categoria = 2, valor = 22.23, descricao='Descrição do produto 2', ativo=True)
     
-# #     todos_produtos = produto_svc.get_todos_produtos()
-# #     assert len(todos_produtos) > 0
+    produto_svc = services.ProdutoService(mysql_repo)
+    
+    produto_svc.insert_produto(produto_01)
+    produto_svc.insert_produto(produto_02)
 
+    todos_produtos = produto_svc.get_todos_produtos()
+    assert len(todos_produtos) > 0
 
-
+    produto_svc.delete_produto(produto_01)
+    produto_svc.delete_produto(produto_02)
 
 # # # def test_cadastro_produto():
 # # #     """ Testa o CRUD de produtos """

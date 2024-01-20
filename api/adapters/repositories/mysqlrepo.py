@@ -24,28 +24,33 @@ class MysqlRepo(ProdutoRepositoryPort):
 
         self._cursor = self._connection.cursor(dictionary=True)
     
-    def get_produto(self, produto_id) -> domain.Produto:
+    def get_produto(self, produto_id: int) -> domain.Produto | None: 
         if not self._connection.is_connected():
             self.__init__()
         cursor = self._connection.cursor(dictionary=True)
 
-        cursor.execute('Select * FROM produtos where id=%(produto_id)s', ({'produto_id':produto_id}))
-        produto = cursor.fetchall()
-        for i in produto:
-            print(i)
+        cursor.execute('Select * FROM produtos where id=%(produto_id)s', 
+                       ({'produto_id':produto_id}))
+        
+        for i in cursor:
+            produto = domain.Produto(
+                id=i["id"],
+                nome=i["nome"],
+                categoria=i["categoria"],
+                valor=i["valor"],
+                descricao=i["descricao"],
+                ativo=i["ativo"],
+            )
+            print('produto:', produto)
+            self._connection.close()
+            return produto
         self._connection.close()
-        produto = str(produto[0]).replace("'", '"')
-        print(produto_id, ' - ', str(produto))
-        if produto:
-            produto_json = json.loads(produto)
-            return domain.Produto(**produto_json)
         return None
     
-    def insert_produto(self, produto: domain.Produto):
+    def insert_produto(self, produto: domain.Produto) -> domain.produto:
         if not self._connection.is_connected():
             self.__init__()
         cursor = self._connection.cursor(dictionary=True)
-        print('inserir:', produto)
         cursor.execute("""INSERT INTO produtos (id, nome, categoria, valor, descricao, ativo) 
                         VALUES (%(id)s, %(nome)s, %(categoria)s, %(valor)s, %(descricao)s, 1)""", 
                         ({'id' : produto.id,
@@ -56,7 +61,6 @@ class MysqlRepo(ProdutoRepositoryPort):
                           }))
         self._connection.commit()
         self._connection.close()
-        
         return produto
 
     def get_todos_produtos(self) -> List[domain.Produto]:
@@ -104,7 +108,7 @@ class MysqlRepo(ProdutoRepositoryPort):
         self._connection.close()
         return produtos
     
-    def edita_produto(self, produto: domain.Produto):
+    def edita_produto(self, produto: domain.Produto) -> domain.Produto:
         if not self._connection.is_connected():
             self.__init__()
         cursor = self._connection.cursor(dictionary=True)
@@ -142,53 +146,10 @@ class MysqlRepo(ProdutoRepositoryPort):
         
         return produto
     
-    def delete_produto(self, produto: domain.Produto):
+    def delete_produto(self, produto: domain.Produto) -> bool:
         if not self._connection.is_connected():
             self.__init__()
         self._cursor.execute('delete from produtos where id=%(id)s', ({'id':produto.id}))
         self._connection.commit()
         self._connection.close()
         return True
-
-# class MongoRepo(CourseRepositoryPort, StudentRepositoryPort):
-   
-
-#     def get_course(self, course_id) -> domain.Course:
-#         r = self._db.get_collection("course").find_one({
-#             "course_id": course_id
-#         })
-#         if r:
-#             return domain.Course(**r)
-#         return None
-
-#     def insert_course(self, course: domain.Course):
-#         self._db.get_collection("course").insert_one({
-#             "course_id": course.course_id,
-#             "name": course.name,
-#             "is_active": course.is_active
-#         })
-#         return course
-
-#     def get_all_courses(self) -> List[domain.Course]:
-#         r = self._db.get_collection("course").find()
-#         rx = [domain.Course(**data) for data in r]
-#         return rx
-
-#     def delete_course(self, course: domain.Course):
-#         self._db.get_collection("course").delete_one({'course_id': course.course_id})
-#         return True
-
-#     def insert_student(self, student: domain.Student):
-#         self._db.get_collection("students").insert_one({
-#             "student_id": student.student_id,
-#             "name": student.name,
-#             "age": student.age
-#         })
-
-#     def get_student(self, student_id: str) -> domain.Student | None:
-#         r = self._db.get_collection("students").find_one({
-#             "student_id": student_id,
-#         })
-#         if not r:
-#             return None
-#         return domain.Student(**r)
