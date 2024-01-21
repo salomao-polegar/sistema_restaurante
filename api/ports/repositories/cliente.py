@@ -3,7 +3,6 @@ from typing import Protocol, List
 from domain.cliente import Cliente
 from ports.external.database import AppDatabasePort
 
-
 class ClienteRepositoryPort(Protocol):
     def __init__(self, db: AppDatabasePort):
         pass

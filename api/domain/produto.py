@@ -7,8 +7,5 @@ class Produto(BaseModel):
     nome: str
     categoria: int
     valor: Decimal
-    descricao: str
-    ativo: bool | None
-
-    # def __init__(self, json_data):
-    #     self.__dict__ = json.loads(json_data)
+    descricao: str | None
+    ativo: bool

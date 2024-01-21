@@ -1,7 +1,13 @@
 import mysql.connector
 from typing import List
 import domain, sys
+import pandas as pd
+from json import loads
 from ports.repositories.produto import ProdutoRepositoryPort
+
+# TODO
+# Pensar em mensagens personalizadas para exceções, inclusive para erro de conexão com o banco de dados
+
 
 class MysqlRepo(ProdutoRepositoryPort):
 
@@ -19,6 +25,8 @@ class MysqlRepo(ProdutoRepositoryPort):
                     port=3306,
                     database='TechChallenge'
                 )
+        
+        
 
         self._cursor = self._connection.cursor(dictionary=True)
     
@@ -245,3 +253,142 @@ class MysqlRepo(ProdutoRepositoryPort):
         self._connection.close()
         return True
     
+### OPERAÇÕES COM PEDIDOS ###
+    
+    def insert_pedido(self, pedido: domain.Pedido) -> domain.Pedido:
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+        cursor.execute("""INSERT INTO pedidos (cliente) 
+                        VALUES (%(cliente)s)""", 
+                        ({'cliente': pedido.cliente,
+                          }))
+        self._connection.commit()
+        self._connection.close()
+        todos_pedidos = self.get_todos_pedidos()[-1]
+        # print('correto?',todos_pedidos, type(todos_pedidos))
+        # TODO
+        # Por algum motivo, não está retornando o objeto criado.
+        # O retorno deve ser com ID, então devemos fazer outra consulta no banco de dados para verificar qual o ID inserido
+        return todos_pedidos
+    
+    def get_pedido(self, pedido_id: int) -> domain.Pedido | None: 
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+
+        cursor.execute('Select * FROM pedidos where id=%(pedido_id)s', 
+                       ({'pedido_id':pedido_id}))
+        
+        for i in cursor:
+            
+            pedido = domain.Pedido(
+                id=i["id"],
+                status_pedido=i['status_pedido'],
+                cliente=i["cliente"],
+                datahora=i["datahora"]
+            )
+            
+            self._connection.close()
+            return pedido
+        self._connection.close()
+        return None
+
+    def get_todos_pedidos(self) -> List[domain.Pedido]:
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+        cursor.execute('Select * FROM pedidos;')
+        pedidos = []
+        for i in cursor:
+            pedidos.append(domain.Pedido(
+                id=i["id"],
+                status_pedido=i['status_pedido'],
+                cliente=i["cliente"],
+                datahora=i["datahora"])
+            )
+        
+        self._connection.close()
+        return pedidos
+    
+    def get_pedidos_recebidos(self) -> List[domain.Pedido]:
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+        cursor.execute('Select * FROM pedidos WHERE status_pedido = 1')
+        pedidos = cursor.fetchall()
+        self._connection.close()
+        return pedidos
+
+    def get_pedidos_em_preparacao(self) -> List[domain.Pedido]:
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+        cursor.execute('Select * FROM pedidos WHERE status_pedido = 2')
+        pedidos = cursor.fetchall()
+        self._connection.close()
+        return pedidos    
+
+    def get_pedidos_finalizados(self) -> List[domain.Pedido]:
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+        cursor.execute('Select * FROM pedidos WHERE status_pedido = 3')
+        pedidos = cursor.fetchall()
+        self._connection.close()
+        return pedidos
+
+    def get_pedidos_nao_finalizados(self) -> List[domain.Pedido]:
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+        cursor.execute('Select * FROM pedidos WHERE status_pedido = 1 OR WHERE status_pedido = 2 OR WHERE status_pedido = 3')
+        pedidos = cursor.fetchall()
+        self._connection.close()
+        return pedidos
+    
+    def edita_pedido(self, pedido: domain.Pedido) -> domain.Pedido:
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+               
+        if pedido.status_pedido:
+            cursor.execute("""UPDATE pedidos SET status_pedido = %(status_pedido)s 
+                           WHERE id = %(id)s;""", 
+                           ({'status_pedido' : pedido.status_pedido,
+                             'id' : pedido.id}))
+        self._connection.commit()
+        self._connection.close()
+        
+        return pedido
+    
+    def delete_pedido(self, pedido: domain.Pedido) -> bool:
+        if not self._connection.is_connected():
+            self.__init__()
+        self._cursor.execute('delete from pedidos where id=%(id)s', ({'id':pedido.id}))
+        self._connection.commit()
+        self._connection.close()
+        return True
+    
+    def get_fila(self) -> list:
+        # pedidos recebidos e em preparação
+
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+        cursor.execute('Select * FROM pedidos WHERE status_pedido = 1 OR status_pedido = 2 ORDER BY datahora ASC')
+        pedidos = cursor.fetchall()
+        self._connection.close()
+        
+        fila = pd.DataFrame(pedidos)[['id', 'status_pedido', 'cliente', 'datahora']]
+        fila['posicao'] = fila.index
+        fila['posicao'] = fila['posicao'].apply(lambda x: x+1)
+        return (loads(fila.to_json(orient='records')))
+        
+    # def checkout(self, pedido_id: int) -> domain.Pedido:
+    #     # Altera o status do pedido para finalizado
+    #     pedido = self.get_pedido(pedido_id)
+    #     pedido.status_pedido = 3
+    #     return pedido
+    #     return self.edita_pedido(pedido)
+        
