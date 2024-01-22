@@ -33,7 +33,7 @@ def test_checkout(mysql_repo):
     
     pedido_svc.checkout(pedido_criado.id)
     pedido_checkout = pedido_svc.get_pedido(pedido_criado.id)
-    print(pedido_checkout)
+    
     pedido_na_fila = False
     fila = pedido_svc.get_fila()
     

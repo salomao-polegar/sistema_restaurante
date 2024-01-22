@@ -2,6 +2,7 @@
 
 from typing import Protocol, List
 from domain.pedido import Pedido
+import domain
 from ports.repositories.pedido import PedidoRepositoryPort
 
 
@@ -41,3 +42,13 @@ class PedidoServicePort(Protocol):
 
     def checkout(self, pedido_id: int) -> Pedido:
         pass
+
+class ProdutoNoPedidoServicePort(Protocol):
+    def produtos_no_pedido(self, pedido: int) -> List[domain.ProdutoNoPedido]:
+        pass
+    
+    def adicionar_produto(self, produto: domain.ProdutoNoPedido) -> domain.ProdutoNoPedido:
+        pass
+
+    def editar_produto(self, produto: domain.ProdutoNoPedido) -> domain.ProdutoNoPedido:
+        pass        

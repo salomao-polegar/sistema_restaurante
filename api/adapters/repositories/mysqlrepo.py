@@ -46,6 +46,7 @@ class MysqlRepo(ProdutoRepositoryPort):
                           }))
         self._connection.commit()
         self._connection.close()
+        produto = self.get_todos_produtos()[-1]
         return produto
     
     def get_produto(self, produto_id: int) -> domain.Produto | None: 
@@ -76,7 +77,17 @@ class MysqlRepo(ProdutoRepositoryPort):
             self.__init__()
         cursor = self._connection.cursor(dictionary=True)
         cursor.execute('Select * FROM produtos WHERE ativo = 1')
-        produtos = cursor.fetchall()
+        produtos = []
+        for i in cursor:
+            produtos.append(domain.Produto(
+                id=i["id"],
+                nome=i["nome"],
+                categoria=i["categoria"],
+                valor=i["valor"],
+                descricao=i["descricao"],
+                ativo=i["ativo"],
+            ))
+
         self._connection.close()
         return produtos
     
@@ -143,7 +154,8 @@ class MysqlRepo(ProdutoRepositoryPort):
                            WHERE id = %(id)s;""", 
                            ({'descricao' : produto.descricao,
                              'id' : produto.id}))
-        if produto.ativo:
+        if produto.ativo != None:
+            print('update ativo to', produto.ativo)
             cursor.execute("""UPDATE produtos SET ativo = %(ativo)s 
                            WHERE id = %(id)s;""", 
                            ({'ativo' : produto.ativo,
@@ -152,12 +164,12 @@ class MysqlRepo(ProdutoRepositoryPort):
         self._connection.commit()
         self._connection.close()
         
-        return produto
+        return self.get_produto(produto.id)
     
-    def delete_produto(self, produto: domain.Produto) -> bool:
+    def delete_produto(self, produto_id: int) -> bool:
         if not self._connection.is_connected():
             self.__init__()
-        self._cursor.execute('delete from produtos where id=%(id)s', ({'id':produto.id}))
+        self._cursor.execute('delete from produtos where id=%(id)s', ({'id':produto_id}))
         self._connection.commit()
         self._connection.close()
         return True
@@ -266,7 +278,7 @@ class MysqlRepo(ProdutoRepositoryPort):
         self._connection.commit()
         self._connection.close()
         todos_pedidos = self.get_todos_pedidos()[-1]
-        # print('correto?',todos_pedidos, type(todos_pedidos))
+        
         # TODO
         # Por algum motivo, não está retornando o objeto criado.
         # O retorno deve ser com ID, então devemos fazer outra consulta no banco de dados para verificar qual o ID inserido
@@ -385,10 +397,53 @@ class MysqlRepo(ProdutoRepositoryPort):
         fila['posicao'] = fila['posicao'].apply(lambda x: x+1)
         return (loads(fila.to_json(orient='records')))
         
-    # def checkout(self, pedido_id: int) -> domain.Pedido:
-    #     # Altera o status do pedido para finalizado
-    #     pedido = self.get_pedido(pedido_id)
-    #     pedido.status_pedido = 3
-    #     return pedido
-    #     return self.edita_pedido(pedido)
+    def editar_produtos_no_pedido(self, produto: domain.ProdutoNoPedido) -> domain.ProdutoNoPedido:
+
+        if not self._connection.is_connected():
+            self.__init__()
+        cursor = self._connection.cursor(dictionary=True)
+        if produto.quantidade:
+            cursor.execute("""UPDATE produtos_do_pedido SET quantidade = %(quantidade)s 
+                           WHERE id_pedido = %(id)s AND id_produto = %(id)s;""", 
+                           ({'quantidade' : produto.quantidade,
+                             'id_pedido' : produto.pedido,
+                             'id_produto' : produto.produto
+                             }))
+
+        self._connection.commit()
+        self._connection.close()
         
+        return self.produtos_no_pedido(produto.pedido)
+
+    def produtos_no_pedido(self, pedido_id: int) -> List[domain.ProdutoNoPedido]:
+        if not self._connection.is_connected():
+            self.__init__()
+
+        cursor = self._connection.cursor(dictionary=True)
+        cursor.execute("""SELECT pro.nome, quantidade from produtos pro
+                        inner join produtos_do_pedido pp on (pro.id = pp.id_produto)
+                        inner join pedidos ped on (ped.id = pp.id_pedido)
+                        where ped.id = %(id_pedido)s;""", 
+                        ({"id_pedido" : pedido_id}))
+        produtos_no_pedido = cursor.fetchall()
+        self._connection.commit()
+        self._connection.close()
+        return produtos_no_pedido
+
+    def adiciona_produto(self, produto: domain.ProdutoNoPedido) -> domain.ProdutoNoPedido:
+        if not self._connection.is_connected():
+            self.__init__()
+
+        cursor = self._connection.cursor(dictionary=True)
+        cursor.execute("""INSERT INTO produtos_do_pedido (id_produto, id_pedido, quantidade) 
+                    VALUES (%(id_produto)s, %(id_pedido)s, %(quantidade)s);""", 
+                    ({
+                        "id_pedido" : produto.pedido, 
+                        "id_produto" : produto.produto,
+                        "quantidade": produto.quantidade}))
+        self._connection.commit()
+        self._connection.close()
+        return produto
+
+
+        # buscar se já existir mesmo id, somente alterar a quantidade

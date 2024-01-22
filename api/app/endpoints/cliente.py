@@ -14,6 +14,7 @@ def mysql_repo():
 @app.post("/clientes/", tags=['Clientes'], response_model=Cliente)
 async def salva_cliente(cliente: Cliente) -> Cliente | None:
     cliente_svc = services.ClienteService(mysql_repo())
+    print('clientes')
     return cliente_svc.insert_cliente(cliente)
 
 @app.get("/clientes/{cliente_id}", tags=['Clientes'], response_model=Cliente)

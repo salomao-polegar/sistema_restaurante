@@ -32,5 +32,5 @@ class ProdutoRepositoryPort(Protocol):
     def edita_produto(self, produto: Produto) -> Produto:
         pass
 
-    def delete_produto(self, produto: Produto) -> bool:
+    def delete_produto(self, produto_id: int) -> bool:
         pass

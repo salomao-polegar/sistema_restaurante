@@ -8,6 +8,7 @@ class Pedido(BaseModel):
     datahora: datetime | None = None
 
 class ProdutoNoPedido(BaseModel):
-    id_produto: int
-    id_pedido: int
+    produto: int
+    pedido: int
+    quantidade: int
     

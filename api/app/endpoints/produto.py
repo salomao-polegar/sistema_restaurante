@@ -51,8 +51,8 @@ async def edita_produto(produto: Produto) -> Produto | None:
     produto_svc = services.ProdutoService(mysql_repo())
     return produto_svc.edita_produto(produto)
 
-@app.delete("/produtos/", tags=['Produtos'], response_model=Produto)
-def delete_produto(produto: Produto):
+@app.delete("/produtos/{produto_id}", tags=['Produtos'])
+def delete_produto(produto_id: int):
     produto_svc = services.ProdutoService(mysql_repo())
-    return produto_svc.delete_produto(produto)
+    return produto_svc.delete_produto(produto_id)
     

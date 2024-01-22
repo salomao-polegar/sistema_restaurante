@@ -51,8 +51,8 @@ INSERT INTO clientes (cpf, nome, email, telefone, ativo) VALUES
 
 CREATE TABLE pedidos (id int NOT NULL AUTO_INCREMENT, 
                     PRIMARY KEY (id),
-                    datahora_pedido datetime DEFAULT CURRENT_TIMESTAMP,
-                    status_pedido int,
+                    datahora datetime DEFAULT CURRENT_TIMESTAMP,
+                    status_pedido int DEFAULT 1,
                     cliente int,
                     FOREIGN KEY (cliente) REFERENCES clientes(id));
 

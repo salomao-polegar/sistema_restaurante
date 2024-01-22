@@ -12,7 +12,12 @@ class ProdutoNotFoundException(BaseException):
 class ProdutoAlreadyExistsException(BaseException):
     pass
 
+    # TODO
+    # Fazer regra de negócio impedindo inserção de mesmo nome e descrição do produto
 
+    # TODO
+    # Retornar uma mensagem personalizada quando uma exceção for lançada
+    # No momento, se uma exceção é lançada, o resultado é um 500 - INTERNAL SERVER ERROR
 class ProdutoService(ProdutoServicePort):
     def __init__(self, repo: ProdutoRepositoryPort):
         self._repo = repo
@@ -44,7 +49,7 @@ class ProdutoService(ProdutoServicePort):
         if _p:
             raise ProdutoAlreadyExistsException()
 
-        self._repo.insert_produto(produto)
+        produto = self._repo.insert_produto(produto)
         return produto
     
     def edita_produto(self, produto: Produto) -> Produto:
@@ -56,9 +61,9 @@ class ProdutoService(ProdutoServicePort):
         self._repo.edita_produto(produto)
         return produto
 
-    def delete_produto(self, produto: Produto) -> bool:
-        get_produto = self._repo.get_produto(produto.id)
+    def delete_produto(self, produto_id: int) -> bool:
+        get_produto = self._repo.get_produto(produto_id)
         if not get_produto:
             raise ProdutoNotFoundException()
-        self._repo.delete_produto(produto)
+        self._repo.delete_produto(produto_id)
         return True

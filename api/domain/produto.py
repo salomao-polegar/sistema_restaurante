@@ -1,11 +1,11 @@
 from pydantic import BaseModel
-from decimal import Decimal
+
 # import json
 
 class Produto(BaseModel):
-    id: int | None
+    id: int | None = None
     nome: str
     categoria: int
-    valor: Decimal
+    valor: float
     descricao: str | None
-    ativo: bool
+    ativo: bool = None

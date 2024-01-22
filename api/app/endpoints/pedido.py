@@ -1,4 +1,4 @@
-from domain.pedido import Pedido
+import domain
 from app.SingletonFastAPI import SingletonFastAPI
 from typing import List
 import adapters.repositories as repositories
@@ -11,59 +11,70 @@ def mysql_repo():
 
 ### PEDIDOS ###
 
-@app.post("/pedidos/", tags=['Pedidos'], response_model=Pedido)
-async def salva_pedido(pedido: Pedido) -> Pedido | None:
+@app.post("/pedidos/", tags=['Pedidos'], response_model=domain.Pedido)
+async def salva_pedido(pedido: domain.Pedido) -> domain.Pedido | None:
     pedido_svc = services.PedidoService(mysql_repo())
     return pedido_svc.insert_pedido(pedido)
 
-@app.get("/pedidos/{pedido_id}", tags=['Pedidos'], response_model=Pedido)
-def get_pedido(pedido_id: int) -> Pedido | None:
+@app.get("/pedidos/{pedido_id}", tags=['Pedidos'], response_model=domain.Pedido)
+def get_pedido(pedido_id: int) -> domain.Pedido | None:
     pedido_svc = services.PedidoService(mysql_repo())
     return pedido_svc.get_pedido(pedido_id)
 
-@app.get("/pedidos/", tags=['Pedidos'], response_model=List[Pedido])
-async def get_pedidos() -> List[Pedido] | None:
+@app.get("/pedidos/", tags=['Pedidos'], response_model=List[domain.Pedido])
+async def get_pedidos() -> List[domain.Pedido] | None:
     pedido_svc = services.PedidoService(mysql_repo())
     return pedido_svc.get_todos_pedidos()
 
-@app.get("/pedidosrecebidos/", tags=['Pedidos'], response_model=List[Pedido])
+@app.get("/pedidos/recebidos/", tags=['Pedidos'], response_model=List[domain.Pedido])
 async def get_pedidos_recebidos():
     pedido_svc = services.PedidoService(mysql_repo())
     return pedido_svc.get_pedidos_recebidos()  
 
-@app.get("/pedidosempreparacao/", tags=['Pedidos'], response_model=List[Pedido])
+@app.get("/pedidos/empreparacao/", tags=['Pedidos'], response_model=List[domain.Pedido])
 async def get_pedidos_em_preparacao():
     pedido_svc = services.PedidoService(mysql_repo())
     return pedido_svc.get_pedidos_em_preparacao()
 
-@app.get("/pedidosfinalizados/", tags=['Pedidos'], response_model=List[Pedido])
+@app.get("/pedidos/finalizados/", tags=['Pedidos'], response_model=List[domain.Pedido])
 async def get_pedidos_finalizados():
     pedido_svc = services.PedidoService(mysql_repo())
     return pedido_svc.get_pedidos_finalizados()
     
-@app.get("/pedidosnaofinalizados/", tags=['Pedidos'], response_model=List[Pedido])
+@app.get("/pedidos/naofinalizados/", tags=['Pedidos'], response_model=List[domain.Pedido])
 async def get_pedidos_nao_finalizados():
     pedido_svc = services.PedidoService(mysql_repo())
     return pedido_svc.get_pedidos_nao_finalizados()
 
-@app.put("/pedidos/", tags=['Pedidos'], response_model=Pedido)
-async def edita_pedido(pedido: Pedido) -> Pedido | None:
+@app.put("/pedidos/", tags=['Pedidos'], response_model=domain.Pedido)
+async def edita_pedido(pedido: domain.Pedido) -> domain.Pedido | None:
     pedido_svc = services.PedidoService(mysql_repo())
     return pedido_svc.edita_pedido(pedido)
 
-@app.delete("/pedidos/", tags=['Pedidos'], response_model=Pedido)
-def delete_pedido(pedido: Pedido):
+@app.delete("/pedidos/", tags=['Pedidos'], response_model=domain.Pedido)
+def delete_pedido(pedido: domain.Pedido):
     pedido_svc = services.PedidoService(mysql_repo())
     return pedido_svc.delete_pedido(pedido)
     
 # TODO
 # Criar um response model com a ordem da fila
-@app.get("/fila/", tags=['Pedidos']) 
+@app.get("/pedidos/fila/", tags=['Pedidos']) 
 async def get_fila() -> list | None:
     pedido_svc = services.PedidoService(mysql_repo())
     return pedido_svc.get_fila()
 
-@app.post('/checkout/{pedido_id}', tags=['Pedidos'], response_model = Pedido)
+@app.post('/pedidos/checkout/{pedido_id}', tags=['Pedidos'], response_model = domain.Pedido)
 def checkout(pedido_id: int):
     pedido_svc = services.PedidoService(mysql_repo())
     return pedido_svc.checkout(pedido_id)
+
+@app.get('/pedidos/{pedido_id}/verprodutos', tags=['Pedidos'], response_model = domain.ProdutoNoPedido)
+def produtos_do_pedido(pedido_id: int):
+    pedido_svc = services.ProdutoNoPedidoService(mysql_repo())
+    return pedido_svc.produtos_no_pedido(pedido_id)
+
+@app.post('/inserirproduto/', tags=['Pedidos'], response_model = domain.ProdutoNoPedido)
+def inserir_produto_no_pedido(produto: domain.ProdutoNoPedido) -> domain.ProdutoNoPedido:
+    pedido_svc = services.ProdutoNoPedidoService(mysql_repo(), mysql_repo(), mysql_repo())
+    return pedido_svc.adicionar_produto(produto)
+
