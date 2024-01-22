@@ -46,8 +46,7 @@ class MysqlRepo(ProdutoRepositoryPort):
                           }))
         self._connection.commit()
         self._connection.close()
-        produto = self.get_todos_produtos()[-1]
-        return produto
+        return self.get_todos_produtos()[-1]
     
     def get_produto(self, produto_id: int) -> domain.Produto | None: 
         if not self._connection.is_connected():
@@ -190,7 +189,7 @@ class MysqlRepo(ProdutoRepositoryPort):
                           }))
         self._connection.commit()
         self._connection.close()
-        return cliente
+        return self.get_todos_clientes()[-1]
     
     def get_cliente(self, cliente_id: int) -> domain.Cliente | None: 
         if not self._connection.is_connected():
@@ -220,7 +219,17 @@ class MysqlRepo(ProdutoRepositoryPort):
             self.__init__()
         cursor = self._connection.cursor(dictionary=True)
         cursor.execute('Select * FROM clientes WHERE ativo = 1')
-        clientes = cursor.fetchall()
+        
+        clientes = []
+        for i in cursor:
+            clientes.append(domain.Cliente(
+                id=i["id"],
+                cpf=i['cpf'],
+                nome=i["nome"],
+                email=i["email"],
+                telefone=i["telefone"],
+                ativo = i['ativo']
+            ))
         self._connection.close()
         return clientes
     
@@ -246,7 +255,7 @@ class MysqlRepo(ProdutoRepositoryPort):
                            WHERE id = %(id)s;""", 
                            ({'telefone' : cliente.telefone,
                              'id' : cliente.id}))
-        if cliente.ativo:
+        if cliente.ativo != None:
             cursor.execute("""UPDATE clientes SET ativo = %(ativo)s 
                            WHERE id = %(id)s;""", 
                            ({'ativo' : cliente.ativo,
@@ -255,12 +264,12 @@ class MysqlRepo(ProdutoRepositoryPort):
         self._connection.commit()
         self._connection.close()
         
-        return cliente
+        return self.get_cliente(cliente.id)
     
-    def delete_cliente(self, cliente: domain.Cliente) -> bool:
+    def delete_cliente(self, cliente_id: int) -> bool:
         if not self._connection.is_connected():
             self.__init__()
-        self._cursor.execute('delete from clientes where id=%(id)s', ({'id':cliente.id}))
+        self._cursor.execute('delete from clientes where id=%(id)s', ({'id':cliente_id}))
         self._connection.commit()
         self._connection.close()
         return True

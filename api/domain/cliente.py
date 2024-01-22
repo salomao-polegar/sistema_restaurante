@@ -6,6 +6,6 @@ class Cliente(BaseModel):
     nome: str | None = None
     email: str | None = None
     telefone: str | None = None
-    ativo: bool = 1
+    ativo: bool = True
 
     

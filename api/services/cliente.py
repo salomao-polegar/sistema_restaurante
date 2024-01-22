@@ -23,8 +23,7 @@ class ClienteService(ClienteServicePort):
         if _p:
             raise ClienteAlreadyExistsException()
 
-        self._repo.insert_cliente(cliente)
-        return cliente
+        return self._repo.insert_cliente(cliente)
 
     def get_cliente(self, cliente_id: int) -> Cliente:
         cliente = self._repo.get_cliente(cliente_id)
@@ -41,12 +40,11 @@ class ClienteService(ClienteServicePort):
         if not _p:
             raise ClienteNotFoundException()
         
-        self._repo.edita_cliente(cliente)
-        return cliente
+        return self._repo.edita_cliente(cliente)
 
-    def delete_cliente(self, cliente: Cliente) -> bool:
-        get_cliente = self._repo.get_cliente(cliente.id)
+    def delete_cliente(self, cliente_id: int) -> bool:
+        get_cliente = self._repo.get_cliente(cliente_id)
         if not get_cliente:
             raise ClienteNotFoundException()
-        self._repo.delete_cliente(cliente)
+        self._repo.delete_cliente(cliente_id)
         return True

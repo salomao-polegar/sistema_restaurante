@@ -19,5 +19,5 @@ class ClienteRepositoryPort(Protocol):
     def edita_cliente(self, cliente: Cliente) -> Cliente:
         pass
 
-    def delete_cliente(self, cliente: Cliente) -> bool:
+    def delete_cliente(self, cliente_id: int) -> bool:
         pass

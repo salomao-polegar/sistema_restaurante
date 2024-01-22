@@ -1,6 +1,6 @@
 from pytest import fixture
 from fastapi.testclient import TestClient
-import services, uuid
+import services
 import adapters.repositories as repositories
 from domain.produto import Produto
 from app.SingletonFastAPI import SingletonFastAPI
@@ -116,7 +116,7 @@ def test_endpoints_produto():
     produto_criado['valor']=99.10
     produto_criado['descricao']='descrição alterada'
     produto_criado['ativo']=0
-    
+    print(produto_criado)
     put_response = app_test.put(f'produtos/',
             json=produto_criado)
     

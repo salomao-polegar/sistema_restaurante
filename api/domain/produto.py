@@ -8,4 +8,4 @@ class Produto(BaseModel):
     categoria: int
     valor: float
     descricao: str | None
-    ativo: bool = None
+    ativo: bool | None = None
