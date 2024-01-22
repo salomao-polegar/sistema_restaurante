@@ -31,7 +31,7 @@ class PedidoRepositoryPort(Protocol):
     def edita_pedido(self, pedido: domain.Pedido) -> domain.Pedido:
         pass
 
-    def delete_pedido(self, pedido: domain.Pedido) -> bool:
+    def delete_pedido(self, pedido_id: int) -> bool:
         pass
     
     def get_fila(self) -> list:

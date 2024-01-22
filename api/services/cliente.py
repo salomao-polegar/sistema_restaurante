@@ -46,5 +46,5 @@ class ClienteService(ClienteServicePort):
         get_cliente = self._repo.get_cliente(cliente_id)
         if not get_cliente:
             raise ClienteNotFoundException()
-        self._repo.delete_cliente(cliente_id)
-        return True
+        
+        return self._repo.delete_cliente(cliente_id)

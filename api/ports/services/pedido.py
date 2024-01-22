@@ -34,7 +34,7 @@ class PedidoServicePort(Protocol):
     def edita_pedido(self, pedido: Pedido) -> Pedido:
         pass
 
-    def delete_pedido(self, pedido: Pedido) -> bool:
+    def delete_pedido(self, pedido_id: int) -> bool:
         pass
     
     def get_fila(self) -> list:

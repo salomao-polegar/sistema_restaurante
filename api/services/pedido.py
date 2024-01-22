@@ -47,16 +47,14 @@ class PedidoService(PedidoServicePort):
 
         if not _p:
             raise PedidoNotFoundException()
-        
-        self._repo.edita_pedido(pedido)
-        return pedido
+        return self._repo.edita_pedido(pedido)
 
-    def delete_pedido(self, pedido: domain.Pedido) -> bool:
-        get_pedido = self._repo.get_pedido(pedido.id)
+    def delete_pedido(self, pedido_id: int) -> bool:
+        get_pedido = self._repo.get_pedido(pedido_id)
         if not get_pedido:
             raise PedidoNotFoundException()
-        self._repo.delete_pedido(pedido)
-        return True
+        
+        return self._repo.delete_pedido(pedido_id)
 
     def get_fila(self) -> list:
         return self._repo.get_fila()
@@ -65,11 +63,10 @@ class PedidoService(PedidoServicePort):
         pedido = self._repo.get_pedido(pedido_id)
         if not pedido:
             raise PedidoNotFoundException()
-        # print(pedido)
+
         pedido.status_pedido = 3
-        pedido = self._repo.edita_pedido(pedido)
-        # print(pedido)
-        return pedido
+
+        return self._repo.edita_pedido(pedido)
     
     ## Adicionando e removendo itens do pedido
 

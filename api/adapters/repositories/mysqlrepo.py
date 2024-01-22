@@ -286,12 +286,12 @@ class MysqlRepo(ProdutoRepositoryPort):
                           }))
         self._connection.commit()
         self._connection.close()
-        todos_pedidos = self.get_todos_pedidos()[-1]
+        pedido = self.get_todos_pedidos()[-1]
         
         # TODO
         # Por algum motivo, não está retornando o objeto criado.
         # O retorno deve ser com ID, então devemos fazer outra consulta no banco de dados para verificar qual o ID inserido
-        return todos_pedidos
+        return pedido
     
     def get_pedido(self, pedido_id: int) -> domain.Pedido | None: 
         if not self._connection.is_connected():
@@ -381,12 +381,12 @@ class MysqlRepo(ProdutoRepositoryPort):
         self._connection.commit()
         self._connection.close()
         
-        return pedido
+        return self.get_pedido(pedido.id)
     
-    def delete_pedido(self, pedido: domain.Pedido) -> bool:
+    def delete_pedido(self, pedido_id: int) -> bool:
         if not self._connection.is_connected():
             self.__init__()
-        self._cursor.execute('delete from pedidos where id=%(id)s', ({'id':pedido.id}))
+        self._cursor.execute('delete from pedidos where id=%(id)s', ({'id':pedido_id}))
         self._connection.commit()
         self._connection.close()
         return True

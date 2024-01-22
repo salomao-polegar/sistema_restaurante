@@ -104,7 +104,7 @@ def test_endpoints_produto():
 
     # GET
     assert app_test.get('/produtos').status_code == 200
-    assert app_test.get(f'/produtos/{produto_criado['id']}')
+    assert app_test.get(f'/produtos/{produto_criado['id']}').status_code == 200
     assert app_test.get('/lanches').status_code == 200
     assert app_test.get('/acompanhamentos').status_code == 200
     assert app_test.get('/bebidas').status_code == 200

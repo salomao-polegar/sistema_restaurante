@@ -2,9 +2,9 @@ from pydantic import BaseModel
 from datetime import datetime
 
 class Pedido(BaseModel):
-    id: int | None
+    id: int | None = None
     status_pedido: int | None = None
-    cliente: int | None = None
+    cliente: int
     datahora: datetime | None = None
 
 class ProdutoNoPedido(BaseModel):

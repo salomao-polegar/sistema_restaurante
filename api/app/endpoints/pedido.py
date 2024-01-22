@@ -51,10 +51,10 @@ async def edita_pedido(pedido: domain.Pedido) -> domain.Pedido | None:
     pedido_svc = services.PedidoService(mysql_repo())
     return pedido_svc.edita_pedido(pedido)
 
-@app.delete("/pedidos/", tags=['Pedidos'], response_model=domain.Pedido)
-def delete_pedido(pedido: domain.Pedido):
+@app.delete("/pedidos/{pedido_id}", tags=['Pedidos'])
+def delete_pedido(pedido_id: int):
     pedido_svc = services.PedidoService(mysql_repo())
-    return pedido_svc.delete_pedido(pedido)
+    return pedido_svc.delete_pedido(pedido_id)
     
 # TODO
 # Criar um response model com a ordem da fila

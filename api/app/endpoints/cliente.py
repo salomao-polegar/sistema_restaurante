@@ -32,7 +32,7 @@ async def edita_cliente(cliente: Cliente) -> Cliente | None:
     cliente_svc = services.ClienteService(mysql_repo())
     return cliente_svc.edita_cliente(cliente)
 
-@app.delete("/clientes/", tags=['Clientes'])
-def delete_cliente(cliente_id: int):
+@app.delete("/clientes/{cliente_id}", tags=['Clientes'])
+def delete_cliente(cliente_id: int) -> bool:
     cliente_svc = services.ClienteService(mysql_repo())
     return cliente_svc.delete_cliente(cliente_id)
