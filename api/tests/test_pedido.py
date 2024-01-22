@@ -101,51 +101,31 @@ def test_endpoints_pedido():
     delete_response = app_test.delete(f'/pedidos/{pedido_alterado['id']}')
     assert delete_response.status_code == 200
     
-    # from pytest import fixture
-# from fastapi.testclient import TestClient
-# import services, uuid
-# import adapters.repositories as repositories
-# from domain.pedido import Pedido
-# from app.SingletonFastAPI import SingletonFastAPI
+   
+def test_checkout(mysql_repo):
+    pedido_svc = services.PedidoService(mysql_repo)
+    insert_pedido = Pedido(id=None, cliente=1)
+    pedido_criado = pedido_svc.insert_pedido(insert_pedido)
+    fila = pedido_svc.get_fila()
+    pedido_na_fila = False
 
-# # Entregável 02
-# # b. APIs
-# # III. Criar, editar e remover produto
-# # IV. Buscar produto por categoria
-
-# app = SingletonFastAPI.app().app
-# app_test = TestClient(app)
-
-# @fixture
-# def mysql_repo():
-#     repo = repositories.MysqlRepo()
-#     return repo
-
-# def test_checkout(mysql_repo):
-#     pedido_svc = services.PedidoService(mysql_repo)
-#     insert_pedido = Pedido(id=None, pedido=1)
-#     pedido_criado = pedido_svc.insert_pedido(insert_pedido)
-#     fila = pedido_svc.get_fila()
-#     pedido_na_fila = False
-
-#     for i in fila:
-#         if i['id'] == pedido_criado.id:
-#             pedido_na_fila = True
+    for i in fila:
+        if i['id'] == pedido_criado.id:
+            pedido_na_fila = True
     
-#     assert pedido_na_fila
+    assert pedido_na_fila
     
-#     pedido_svc.checkout(pedido_criado.id)
-#     pedido_checkout = pedido_svc.get_pedido(pedido_criado.id)
+    pedido_svc.checkout(pedido_criado.id)
     
-#     pedido_na_fila = False
-#     fila = pedido_svc.get_fila()
+    pedido_na_fila = False
+    fila = pedido_svc.get_fila()
     
-#     for i in fila:
-#         print(i)
-#         if i['id'] == pedido_checkout.id:
-#            assert False
+    for i in fila:
+        print(i)
+        if i['id'] == pedido_criado.id:
+           assert False
     
-#     pedido_svc.delete_pedido(pedido_criado)
+    pedido_svc.delete_pedido(pedido_criado.id)
 
 # def test_produto_database(mysql_repo):
 #     produto_svc = services.ProdutoService(mysql_repo)
