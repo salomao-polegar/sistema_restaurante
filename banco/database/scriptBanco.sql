@@ -34,8 +34,7 @@ CREATE TABLE clientes (id int NOT NULL AUTO_INCREMENT,
                         email varchar(150),
                         telefone varchar(11),
                         ativo int,
-                        PRIMARY KEY (id),
-                        UNIQUE (cpf));
+                        PRIMARY KEY (id));
 -- PENSAR NA CHAVE PRIMÁRIA DO CLIENTE, VISTO QUE ELE PODE NÃO SE IDENTIFICAR. UTILIZAR O E-MAIL COMO OBJETO DE VALOR?
 
 INSERT INTO clientes (id, nome, ativo) VALUES 
@@ -66,11 +65,8 @@ CREATE TABLE produtos_do_pedido (id_pedido int, id_produto int, quantidade int,
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id) ON DELETE CASCADE);
 
 INSERT INTO produtos_do_pedido(id_pedido, id_produto, quantidade) VALUES
-(1, 1, 1),
-(2, 1, 2),
-(3, 1, 2),
-(2, 1, 3),
-(1, 1, 4);
+(2, 2, 2),
+(3, 4, 4)
 
 -- CATEGORIAS 
 
