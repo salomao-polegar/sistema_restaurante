@@ -1,5 +1,5 @@
 from typing import List
-
+import helpers
 import domain
 from ports.repositories.pedido import PedidoRepositoryPort, ProdutoNoPedidoRepositoryPort
 from ports.services.pedido import PedidoServicePort, ProdutoNoPedidoServicePort
@@ -11,6 +11,9 @@ class PedidoAlreadyExistsException(BaseException):
     pass
 
 class ProdutoNotFoundException(BaseException):
+    pass
+
+class ProdutoNoPedidoNotFoundException(BaseException):
     pass
 class PedidoService(PedidoServicePort):
     def __init__(self, repo: PedidoRepositoryPort):
@@ -87,12 +90,17 @@ class ProdutoNoPedidoService(ProdutoNoPedidoServicePort):
         if not self._produto_repo.get_produto(produto.produto):
             raise ProdutoNotFoundException
  
-        produtos_no_pedido = self._prod_ped_repo.produtos_no_pedido(produto.pedido)
-        for produto_do_pedido in produtos_no_pedido:
-            if produto.produto == produto_do_pedido.produto:
-                produto_do_pedido.quantidade += produto.quantidade
-                return self.editar_produto(produto_do_pedido)
+        # Verifica: se já existir pedido com o mesmo produto incluído, somente aumentar a quantidade
+        produtos_no_pedido = self.produtos_no_pedido(produto.pedido)
+        
+        verificacao =  helpers.produto_no_pedido(produto.produto, produtos_no_pedido)
+        
+        if verificacao != False:
+            verificacao.quantidade += produto.quantidade
             
+            
+            return self.editar_produto(verificacao)
+        
         return self._prod_ped_repo.adicionar_produto(produto)
 
     def editar_produto(self, produto: domain.ProdutoNoPedido) -> domain.ProdutoNoPedido:
@@ -102,4 +110,10 @@ class ProdutoNoPedidoService(ProdutoNoPedidoServicePort):
             raise ProdutoNotFoundException
         
         return self._prod_ped_repo.editar_produto(produto)
+    
+    def remover_produto(self, produto: domain.ProdutoNoPedido) -> bool:
+        if produto not in self._prod_ped_repo.produtos_no_pedido(produto.produto):
+            raise ProdutoNoPedidoNotFoundException
+        
+        return self._prod_ped_repo.remover_produto(produto)
         

@@ -405,15 +405,16 @@ class MysqlRepo(ProdutoRepositoryPort):
         fila['posicao'] = fila.index
         fila['posicao'] = fila['posicao'].apply(lambda x: x+1)
         return (loads(fila.to_json(orient='records')))
-        
-    def editar_produtos_no_pedido(self, produto: domain.ProdutoNoPedido) -> domain.ProdutoNoPedido:
+    ## TODO
+    # ALTERAR O NOME DO MÉTODO PARA NÃO CONFLITAR
+    def editar_produto(self, produto: domain.ProdutoNoPedido) -> domain.ProdutoNoPedido:
 
         if not self._connection.is_connected():
             self.__init__()
         cursor = self._connection.cursor(dictionary=True)
         if produto.quantidade:
             cursor.execute("""UPDATE produtos_do_pedido SET quantidade = %(quantidade)s 
-                           WHERE id_pedido = %(id)s AND id_produto = %(id)s;""", 
+                           WHERE id_pedido = %(id_pedido)s AND id_produto = %(id_produto)s;""", 
                            ({'quantidade' : produto.quantidade,
                              'id_pedido' : produto.pedido,
                              'id_produto' : produto.produto
@@ -422,24 +423,32 @@ class MysqlRepo(ProdutoRepositoryPort):
         self._connection.commit()
         self._connection.close()
         
-        return self.produtos_no_pedido(produto.pedido)
+        return produto
 
     def produtos_no_pedido(self, pedido_id: int) -> List[domain.ProdutoNoPedido]:
         if not self._connection.is_connected():
             self.__init__()
 
         cursor = self._connection.cursor(dictionary=True)
-        cursor.execute("""SELECT pro.nome, quantidade from produtos pro
+        cursor.execute("""SELECT pro.id AS "produto", ped.id AS "pedido", pp.quantidade from produtos pro
                         inner join produtos_do_pedido pp on (pro.id = pp.id_produto)
                         inner join pedidos ped on (ped.id = pp.id_pedido)
                         where ped.id = %(id_pedido)s;""", 
                         ({"id_pedido" : pedido_id}))
-        produtos_no_pedido = cursor.fetchall()
+        produtos_no_pedido = []
+        for i in cursor:
+            produtos_no_pedido.append(domain.ProdutoNoPedido(
+                produto = i['produto'],
+                pedido = i['pedido'],
+                quantidade=i['quantidade']
+            ))
+        
+
         self._connection.commit()
         self._connection.close()
         return produtos_no_pedido
 
-    def adiciona_produto(self, produto: domain.ProdutoNoPedido) -> domain.ProdutoNoPedido:
+    def adicionar_produto(self, produto: domain.ProdutoNoPedido) -> domain.ProdutoNoPedido:
         if not self._connection.is_connected():
             self.__init__()
 
@@ -453,6 +462,20 @@ class MysqlRepo(ProdutoRepositoryPort):
         self._connection.commit()
         self._connection.close()
         return produto
+    
+    def remover_produto(self, produto: domain.ProdutoNoPedido) -> bool:
+        if not self._connection.is_connected():
+            self.__init__()
+
+        cursor = self._connection.cursor(dictionary=True)
+        cursor.execute("""DELETE FROM produtos_do_pedido WHERE id_produto = %(id_produto)s AND id_pedido = %(id_pedido)s;""", 
+                    ({
+                        "id_pedido" : produto.pedido, 
+                        "id_produto" : produto.produto
+                        }))
+        self._connection.commit()
+        self._connection.close()
+        return True
 
 
         # buscar se já existir mesmo id, somente alterar a quantidade

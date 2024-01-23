@@ -78,3 +78,8 @@ def inserir_produto_no_pedido(produto: domain.ProdutoNoPedido) -> domain.Produto
     pedido_svc = services.ProdutoNoPedidoService(mysql_repo(), mysql_repo(), mysql_repo())
     return pedido_svc.adicionar_produto(produto)
 
+@app.post('/removerproduto/', tags=['Pedidos'])
+def remover_produto_no_pedido(produto: domain.ProdutoNoPedido) -> bool:
+    pedido_svc = services.ProdutoNoPedidoService(mysql_repo(), mysql_repo(), mysql_repo())
+    return pedido_svc.remover_produto(produto)
+

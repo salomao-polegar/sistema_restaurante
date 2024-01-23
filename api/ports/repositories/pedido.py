@@ -49,4 +49,7 @@ class ProdutoNoPedidoRepositoryPort(Protocol):
 
     def editar_produto(self, produto: domain.ProdutoNoPedido) -> domain.ProdutoNoPedido:
         pass
+
+    def remover_produto(self, produto: domain.ProdutoNoPedido) -> bool:
+        pass
     
