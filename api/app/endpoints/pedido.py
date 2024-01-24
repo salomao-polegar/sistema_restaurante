@@ -68,18 +68,30 @@ def checkout(pedido_id: int):
     pedido_svc = services.PedidoService(mysql_repo())
     return pedido_svc.checkout(pedido_id)
 
-@app.get('/pedidos/{pedido_id}/verprodutos', tags=['Pedidos'], response_model = domain.ProdutoNoPedido)
-def produtos_do_pedido(pedido_id: int):
-    pedido_svc = services.ProdutoNoPedidoService(mysql_repo())
+
+
+
+@app.get('/produtosnopedido/{pedido_id}', tags=['Pedidos'], response_model = List[domain.ProdutoNoPedido])
+def produtos_do_pedido(pedido_id: int) -> List[domain.ProdutoNoPedido]:
+    pedido_svc = services.ProdutoNoPedidoService(mysql_repo(), mysql_repo(), mysql_repo())
     return pedido_svc.produtos_no_pedido(pedido_id)
 
-@app.post('/inserirproduto/', tags=['Pedidos'], response_model = domain.ProdutoNoPedido)
+@app.post('/produtosnopedido/', tags=['Pedidos'], response_model = domain.ProdutoNoPedido)
 def inserir_produto_no_pedido(produto: domain.ProdutoNoPedido) -> domain.ProdutoNoPedido:
     pedido_svc = services.ProdutoNoPedidoService(mysql_repo(), mysql_repo(), mysql_repo())
     return pedido_svc.adicionar_produto(produto)
 
-@app.post('/removerproduto/', tags=['Pedidos'])
-def remover_produto_no_pedido(produto: domain.ProdutoNoPedido) -> bool:
+@app.delete('/produtosnopedido/{produto_id}/{pedido_id}', tags=['Pedidos'])
+def remover_produto_no_pedido(produto_id: int, pedido_id: int) -> bool:
+    # o ideal seria receber a entidade como parâmetro da requisição.
+    # Porém, na lib httpx, usada pelo fastapi, o método delete não aceita dados. Então passamos na URL
     pedido_svc = services.ProdutoNoPedidoService(mysql_repo(), mysql_repo(), mysql_repo())
-    return pedido_svc.remover_produto(produto)
+    print('remover')
+    return pedido_svc.remover_produto(domain.ProdutoNoPedido(produto=produto_id, pedido=pedido_id, quantidade=0))
+
+@app.put('/produtosnopedido/', tags=['Pedidos'])
+def remover_produto_no_pedido(produto: domain.ProdutoNoPedido) -> domain.ProdutoNoPedido:
+    pedido_svc = services.ProdutoNoPedidoService(mysql_repo(), mysql_repo(), mysql_repo())
+    return pedido_svc.editar_produto(produto)
+
 

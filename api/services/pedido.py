@@ -97,8 +97,6 @@ class ProdutoNoPedidoService(ProdutoNoPedidoServicePort):
         
         if verificacao != False:
             verificacao.quantidade += produto.quantidade
-            
-            
             return self.editar_produto(verificacao)
         
         return self._prod_ped_repo.adicionar_produto(produto)
@@ -112,7 +110,9 @@ class ProdutoNoPedidoService(ProdutoNoPedidoServicePort):
         return self._prod_ped_repo.editar_produto(produto)
     
     def remover_produto(self, produto: domain.ProdutoNoPedido) -> bool:
-        if produto not in self._prod_ped_repo.produtos_no_pedido(produto.produto):
+        print(produto)
+        retorno = helpers.produto_no_pedido(produto.produto, self.produtos_no_pedido(produto.pedido))
+        if retorno == False:
             raise ProdutoNoPedidoNotFoundException
         
         return self._prod_ped_repo.remover_produto(produto)
