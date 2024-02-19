@@ -162,3 +162,4 @@ cython_debug/
 desktop.ini
 Instruções
 dockercompose.yml
+frontend/
