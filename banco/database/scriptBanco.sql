@@ -22,11 +22,8 @@ CREATE TABLE produtos (
     ativo int DEFAULT 1,
     PRIMARY KEY (id),
     FOREIGN KEY (categoria) REFERENCES categoria_produto(id));
--- ENGINE = InnoDB
--- DEFAULT CHARSET = utf8mb4;
 
-
-INSERT INTO produtos (nome, categoria, valor, descricao, ativo)  VALUES 
+INSERT INTO produtos (nome, categoria, valor, descricao)  VALUES 
 ('Big Mac', 1, 25.5, 'Dois hambúrgueres (100% carne bovina), alface americana, queijo sabor cheddar, molho especial, cebola, picles e pão com gergelim.'),
 ('Quarterão com Queijo', 1, 30.5, 'Um hambúrguer (100% carne bovina), queijo sabor cheddar, picles, cebola, ketchup, mostarda e pão com gergelim.'),
 ('Hamburger', 1, 20.5, 'Um Hamburguer (100% carne bovina), cebola, picles, ketchup, mostarda e pão sem gergelim.'),
@@ -42,14 +39,14 @@ INSERT INTO produtos (nome, categoria, valor, descricao, ativo)  VALUES
 
 
 
-CREATE TABLE clientes (id int NOT NULL AUTO_INCREMENT,
-                        cpf varchar(11),
-                        nome varchar(50),
-                        email varchar(150),
-                        telefone varchar(11),
-                        ativo int DEFAULT 1,
-                        PRIMARY KEY (id));
--- PENSAR NA CHAVE PRIMÁRIA DO CLIENTE, VISTO QUE ELE PODE NÃO SE IDENTIFICAR. UTILIZAR O E-MAIL COMO OBJETO DE VALOR?
+CREATE TABLE clientes (
+    id int NOT NULL AUTO_INCREMENT,
+    cpf varchar(11),
+    nome varchar(50),
+    email varchar(150),
+    telefone varchar(11),
+    ativo int DEFAULT 1,
+    PRIMARY KEY (id));
 
 INSERT INTO clientes (id, nome) VALUES 
 (0, 'SEM IDENTIFICAÇÃO');
@@ -62,19 +59,40 @@ INSERT INTO clientes (cpf, nome, email, telefone) VALUES
 ('55555555555', 'nome 5', 'nome5@teste', '1112345678'),
 ('66666666666', 'nome 6', 'nome6@teste', '1112345678');
 
-CREATE TABLE pedidos (id int NOT NULL AUTO_INCREMENT, 
-                    PRIMARY KEY (id),
-                    datahora datetime DEFAULT CURRENT_TIMESTAMP,
-                    status_pedido int DEFAULT 1,
-                    cliente int,
-                    FOREIGN KEY (cliente) REFERENCES clientes(id));
+CREATE TABLE pedidos (
+    id int NOT NULL AUTO_INCREMENT, 
+    datahora_recebido datetime DEFAULT CURRENT_TIMESTAMP,
+    datahora_preparacao datetime DEFAULT CURRENT_TIMESTAMP,
+    datahora_pronto datetime DEFAULT CURRENT_TIMESTAMP,
+    datahora_finalizado datetime DEFAULT CURRENT_TIMESTAMP,
+    status_pedido int DEFAULT 1,
+    status_pagamento int DEFAULT 1,
+    cliente int,
+    PRIMARY KEY (id),
+    FOREIGN KEY (cliente) REFERENCES clientes(id));
+-- STATUS_PEDIDO
+-- RECEBIDO = 1
+-- EM PREPARAÇÃO = 2
+-- PRONTO = 3
+-- FINALIZADO = 4
+
+-- STATUS_PAGAMENTO
+-- INICIAL = 1
+-- AGUARDANDO = 2
+-- APROVADO = 3
+-- RECUSADO = 4
 
 INSERT INTO pedidos(status_pedido, cliente) VALUES
 (1, 1),
 (1, 2),
 (1, 3);
 
-CREATE TABLE itens (id_pedido int, id_produto int, quantidade int,
+CREATE TABLE itens (
+    id_pedido int, 
+    id_produto int, 
+    quantidade int, 
+    descricao VARCHAR (100),
+    PRIMARY KEY (id_pedido, id_produto),
     FOREIGN KEY (id_produto) REFERENCES produtos(id) ON DELETE CASCADE,
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id) ON DELETE CASCADE);
 -- Tabela que contém os produtos adicionados em um pedido
@@ -82,10 +100,3 @@ CREATE TABLE itens (id_pedido int, id_produto int, quantidade int,
 INSERT INTO itens (id_pedido, id_produto, quantidade) VALUES
 (2, 2, 2),
 (3, 4, 4)
-
--- STATUS_PEDIDO
-
--- RECEBIDO = 1
--- EM PREPARAÇÃO = 2
--- PRONTO = 3
--- FINALIZADO = 4
