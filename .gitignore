@@ -163,3 +163,5 @@ desktop.ini
 Instruções
 dockercompose.yml
 frontend/
+clean_architecture.jpg
+backend/tests

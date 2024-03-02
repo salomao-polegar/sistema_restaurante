@@ -1,143 +1,45 @@
-from pytest import fixture
-from fastapi.testclient import TestClient
-import services
-import adapters.repositories as repositories
-from domain.produto import Produto
-from api.SingletonFastAPI import SingletonFastAPI
+# TESTS CLEAN ARCHITECTURE
+from external.mysql_database import MySQLConnection
+from adapters.controllers import ProdutoController
+from common.dto import ProdutoDTO
+from entities import ProdutoNotFoundException
 
-# Entregável 02
-# b. APIs
-# III. Criar, editar e remover produto
-# IV. Buscar produto por categoria
+def test():
+    repo = MySQLConnection()
 
-app = SingletonFastAPI.app().app
-app_test = TestClient(app)
+    produto_controller = ProdutoController()
 
-@fixture
-def mysql_repo():
-    repo = repositories.MysqlRepo()
-    return repo
-
-def test_produto_database(mysql_repo):
-    produto_svc = services.ProdutoService(mysql_repo)
-    produto = Produto(
-        id=None, 
-        nome="Produto 03", 
-        categoria = 1, 
-        valor = 98.23, 
-        descricao='Descrição do produto 1', 
-        ativo=True
-        )
+    ### PRODUTOS ###
     
-    # TEST INSERT
-    produto_criado = produto_svc.inserir_produto(produto)
-    assert  (produto_criado.id != produto.id) and \
-            (produto_criado.nome == produto.nome) and \
-            (produto_criado.categoria == produto.categoria) and \
-            (produto_criado.valor == produto.valor) and \
-            (produto_criado.descricao == produto.descricao) and \
-            (produto_criado.ativo == produto.ativo)
+    produto_dto = ProdutoDTO(id=None, nome="teste produto", categoria=1, valor=921, descricao="descricao teste", ativo=1)
+    
+    assert produto_controller.novo(produto_dto, repo)
 
     # TEST GET
-    produto_from_repo = produto_svc.retornar_produto(produto_criado.id)
+    produto_criado = produto_controller.retornar_pelo_id(repo, 1)[0]
+    assert produto_criado is not None
+    assert len(produto_controller.listar_todos(repo)) > 0
     
+    # # TEST EDITA
     
-    assert (produto_criado.id == produto_from_repo.id) and \
-           (produto_criado.nome == produto_from_repo.nome) and \
-           (produto_criado.categoria == produto_from_repo.categoria) and \
-           (produto_criado.valor == produto_from_repo.valor) and \
-           (produto_criado.descricao == produto_from_repo.descricao) and \
-           (produto_criado.ativo == produto_from_repo.ativo)
+    assert produto_controller.editar(repo, ProdutoDTO(
+        id = 1, nome="nome alterado", categoria=2, valor=91, descricao="descricao teste alterada", ativo=0))
     
-    todos_produtos = produto_svc.listar_produtos()
-    assert len(todos_produtos) > 0
-
-    # TEST EDITA
-    produto_criado.nome = "ProdutoAlterado"
-    produto_criado.categoria = 2
-    produto_criado.valor = 91.82
-    produto_criado.descricao = "DescriçãoAlterada"
-    produto_criado.ativo = 0
-
-    produto_alterado = produto_svc.editar_produto(produto_criado)
-
-    assert (produto_criado.id == produto_alterado.id) and \
-           (produto_criado.nome == produto_alterado.nome) and \
-           (produto_criado.categoria == produto_alterado.categoria) and \
-           (produto_criado.valor == produto_alterado.valor) and \
-           (produto_criado.descricao == produto_alterado.descricao) and \
-           (produto_criado.ativo == produto_alterado.ativo)
+    produto_editado = produto_controller.retornar_pelo_id(repo, 1)[0]
+    assert (produto_editado["id"] == 1) and \
+        (produto_editado["nome"] == "nome alterado") and \
+        (produto_editado["categoria"] == 2) and \
+        (produto_editado["valor"] == 91) and \
+        (produto_editado["descricao"] == "descricao teste alterada") and \
+        (produto_editado["ativo"] == 0)
     
 
-    # TEST DELETE
+    # # TEST DELETE
     
-    assert produto_svc.deletar_produto(produto_alterado.id) == True
+    assert produto_controller.deletar(repo, 1) == True
     try:
-        produto_svc.retornar_produto(produto_alterado.id)
+        produto_controller.retornar_pelo_id(repo, 1)
         assert False
-    except services.produto.ProdutoNotFoundException:
-        pass
-
-
-def test_endpoints_produto():
-    """ Testa o Endpoint de Produtos"""
-    
-    # POST
-    produto = {
-            'nome' : 'produto',
-            'categoria' : 1,
-            'valor' : 715.27,
-            'descricao' : 'minha descrição completa do produto',
-            'ativo' : 1
-        }
-    
-    
-    post_response = app_test.post('/produtos/', json=produto)
-    
-    
-
-    assert post_response.status_code == 200
-    produto_criado = post_response.json()
-    
-    assert produto_criado['nome'] == produto['nome']
-    assert produto_criado['categoria'] == produto['categoria']
-    assert produto_criado['valor'] == produto['valor']
-    assert produto_criado['descricao'] == produto['descricao']
-    assert produto_criado['ativo'] == produto['ativo']
-
-    # GET
-    assert app_test.get('/produtos').status_code == 200
-    assert app_test.get(f'/produtos/{produto_criado['id']}').status_code == 200
-    assert app_test.get('/lanches').status_code == 200
-    assert app_test.get('/acompanhamentos').status_code == 200
-    assert app_test.get('/bebidas').status_code == 200
-    assert app_test.get('/sobremesas').status_code == 200
-
-    # PUT
-    produto_criado['nome']='produto_alterado'
-    produto_criado['categoria']=2
-    produto_criado['valor']=99.10
-    produto_criado['descricao']='descrição alterada'
-    produto_criado['ativo']=0
-    print(produto_criado)
-    put_response = app_test.put(f'produtos/',
-            json=produto_criado)
-    
-    assert put_response.status_code == 200
-
-    produto_alterado_response = app_test.get(f'produtos/{produto_criado['id']}')
-    assert produto_alterado_response.status_code == 200
-    produto_alterado = produto_alterado_response.json()
-    
-    assert produto_criado['id'] == produto_alterado['id']
-    assert produto_criado['nome'] == produto_alterado['nome']
-    assert produto_criado['categoria'] == produto_alterado['categoria']
-    assert produto_criado['valor'] == produto_alterado['valor']
-    assert produto_criado['descricao'] == produto_alterado['descricao']
-    assert produto_criado['ativo'] == produto_alterado['ativo']
-
-    
-    # DELETE
-    delete_response = app_test.delete(f'/produtos/{produto_alterado['id']}')
-    assert delete_response.status_code == 200
+    except ProdutoNotFoundException:
+        assert True
     

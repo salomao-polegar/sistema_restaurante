@@ -1,17 +1,17 @@
 SET CHARSET UTF8;
 
 CREATE TABLE categoria_produto (
-    id int NOT NULL AUTO_INCREMENT, 
+    id int NOT NULL AUTO_INCREMENT,
     nome varchar(100), 
     descricao VARCHAR (400),
-    ativo int DEFAULT 1
-    );
+    ativo int DEFAULT 1,
+    PRIMARY KEY (id));
 
 INSERT INTO categoria_produto (nome, descricao) VALUES
 ('LANCHE', 'Lanches da casa'),
 ('ACOMPANHAMENTO', 'Acompanhamentos para seu lanche'),
 ('BEBIDA', 'Experimente nossas deliciosas bebidas!'),
-('SOBREMESA', 'Você merece um docinho. Experimente nossas sobremesas')
+('SOBREMESA', 'Você merece um docinho. Experimente nossas sobremesas');
 
 CREATE TABLE produtos (
     id int NOT NULL AUTO_INCREMENT, 
@@ -62,9 +62,9 @@ INSERT INTO clientes (cpf, nome, email, telefone) VALUES
 CREATE TABLE pedidos (
     id int NOT NULL AUTO_INCREMENT, 
     datahora_recebido datetime DEFAULT CURRENT_TIMESTAMP,
-    datahora_preparacao datetime DEFAULT CURRENT_TIMESTAMP,
-    datahora_pronto datetime DEFAULT CURRENT_TIMESTAMP,
-    datahora_finalizado datetime DEFAULT CURRENT_TIMESTAMP,
+    datahora_preparacao datetime DEFAULT NULL,
+    datahora_pronto datetime DEFAULT NULL,
+    datahora_finalizado datetime DEFAULT NULL,
     status_pedido int DEFAULT 1,
     status_pagamento int DEFAULT 1,
     cliente int,
@@ -88,15 +88,17 @@ INSERT INTO pedidos(status_pedido, cliente) VALUES
 (1, 3);
 
 CREATE TABLE itens (
-    id_pedido int, 
-    id_produto int, 
+    pedido int, 
+    produto int, 
     quantidade int, 
     descricao VARCHAR (100),
-    PRIMARY KEY (id_pedido, id_produto),
-    FOREIGN KEY (id_produto) REFERENCES produtos(id) ON DELETE CASCADE,
-    FOREIGN KEY (id_pedido) REFERENCES pedidos(id) ON DELETE CASCADE);
+    PRIMARY KEY (pedido, produto),
+    FOREIGN KEY (produto) REFERENCES produtos(id) ON DELETE CASCADE,
+    FOREIGN KEY (pedido) REFERENCES pedidos(id) ON DELETE CASCADE);
 -- Tabela que contém os produtos adicionados em um pedido
 
-INSERT INTO itens (id_pedido, id_produto, quantidade) VALUES
+INSERT INTO itens (pedido, produto, quantidade) VALUES
+(1, 1, 42),
+(1, 2, 21),
 (2, 2, 2),
-(3, 4, 4)
+(3, 4, 4);

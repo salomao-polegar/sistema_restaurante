@@ -1,0 +1,1 @@
+from backend.adapters.presenters.cliente import ClienteAdapter

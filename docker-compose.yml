@@ -14,11 +14,13 @@ services:
 
   app:
     container_name: tc_api
-    build: ./api/
+    build: ./backend/
     ports:
       - "80:80"
     networks:
       - tc_network
+    depends_on:
+      - db
 
 networks:
   tc_network:
