@@ -1,6 +1,7 @@
-from entities import Pedido
-from common.exceptions import PedidoNotFoundException
-from common.interfaces.gateways import PedidoGatewayInterface
+from entities import Pedido, Produto, Cliente, Item
+from common.exceptions import PedidoNotFoundException, ProdutoNotFoundException, ClienteNotFoundException
+from common.interfaces.gateways import PedidoGatewayInterface, ProdutoGatewayInterface, ItemGatewayInterface, ClienteGatewayInterface
+from common.dto import PedidoCheckoutDTO
 from typing import List
 
 
@@ -59,14 +60,31 @@ class PedidoUseCases ():
     def listar_fila(self, pedido_gateway: PedidoGatewayInterface) -> list:
         return pedido_gateway.listar_fila()
 
-    def checkout(self, pedido_id: int, pedido_gateway: PedidoGatewayInterface) -> bool:
-        pedido = pedido_gateway.retornar_pelo_id(pedido_id)
-        if not pedido:
-            raise PedidoNotFoundException()
+    def checkout(
+            self, 
+            produtos_checkout: PedidoCheckoutDTO,
+            pedido_gateway: PedidoGatewayInterface, 
+            produto_gateway: ProdutoGatewayInterface,
+            item_gateway: ItemGatewayInterface,
+            cliente_gateway: ClienteGatewayInterface) -> Pedido:
+        # TODO
+        # Recebe uma lista com produtos e retorna o pedido criado
+        for produto in produtos_checkout.itens:
+            prod = produto_gateway.retornar_pelo_id(produto.item)
+            if not prod:
+                raise ProdutoNotFoundException()
+        
+        if not cliente_gateway.retornar_pelo_id(produtos_checkout.id_cliente):
+            raise ClienteNotFoundException()
+        
+        pedido_gateway.novo(Pedido(cliente=produtos_checkout.id_cliente))
 
-        pedido.status_pedido = 3
+        pedido = pedido_gateway.retornar_pelo_id(pedido_gateway.retorna_ultimo_id())
 
-        return pedido_gateway.editar(pedido)
+        for produto in produtos_checkout.itens:
+            item_gateway.novo(Item(produto=Produto(id=produto.item), pedido=pedido, quantidade = produto.quantidade, descricao=produto.descricao))
+        
+        return pedido
     
         
     def retorna_status_pagamento(self, pedido_id: int, pedido_gateway: PedidoGatewayInterface) -> str:

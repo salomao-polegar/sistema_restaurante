@@ -1,6 +1,6 @@
-from adapters.gateways import PedidoGateway
+from adapters.gateways import PedidoGateway, ProdutoGateway, ItemGateway, ClienteGateway
 from common.interfaces import DbConnection
-from common.dto import PedidoDTO
+from common.dto import PedidoDTO, PedidoCheckoutDTO
 from useCases import PedidoUseCases
 from adapters.presenters import PedidoAdapter
 from typing import Dict, List
@@ -54,10 +54,14 @@ class PedidoController:
         todosOsPedidos = PedidoUseCases().listar_fila(pedidosGateway)
         return PedidoAdapter.pedidos_to_json(todosOsPedidos)
 
-    def checkout(self, pedido_id: int, db_connection: DbConnection) -> bool:
-        pedidosGateway = PedidoGateway(db_connection)
-        todosOsPedidos = PedidoUseCases().checkout(pedido_id, pedidosGateway)
-        return PedidoAdapter.pedidos_to_json(todosOsPedidos)
+    def checkout(self, pedido_dto: PedidoCheckoutDTO, db_connection: DbConnection) -> bool:
+        pedido = PedidoUseCases().checkout(pedido_dto,
+            PedidoGateway(db_connection), 
+            ProdutoGateway(db_connection), 
+            ItemGateway(db_connection),
+            ClienteGateway(db_connection))
+        
+        return PedidoAdapter.pedidos_to_json([pedido])
         
     def retorna_status_pagamento(self, pedido_id: int, db_connection: DbConnection) -> str:
         

@@ -28,10 +28,11 @@ class MySQLConnection (DbConnection):
                 )
         self._cursor = self._conexao.cursor(dictionary=True)
     
-    def buscar_todas(self, nomeTabela: str, campos: List[str] | None = None) -> List:
+    def buscar_todas(self, nomeTabela: str, campos: List[str] | None = None,  ordem: List[List[str]] = None) -> List:
     	
         camposBusca = self.ajustar_campos_string(campos)
-        sql = f"SELECT {camposBusca} FROM {nomeTabela};"
+        ordem_busca = self.preparar_order_by(ordem)
+        sql = f"SELECT {camposBusca} FROM {nomeTabela} {ordem_busca};"
         self.open_database()
         self._cursor.execute(sql)
         rows = self._cursor.fetchall()
@@ -41,11 +42,18 @@ class MySQLConnection (DbConnection):
     def buscar_por_parametros(self,
         nomeTabela: str,
         campos: List[str] | None,
-        parametros: List[ParametroBd]):
+        parametros: List[ParametroBd],
+        tipo_where: str = "AND",
+        ordem: List[List[str]] = None):
+        # ordem: recebe uma lista com o campo e se é ASC | DESC
         
         camposBusca = self.ajustar_campos(campos)
         parametrosBusca = self.preparar_parametros_busca(parametros)
-        sql = f"SELECT {camposBusca} FROM {nomeTabela} WHERE {" AND ".join(parametrosBusca)}"
+        ordem_ajustada = self.preparar_order_by(ordem)
+        print(ordem)
+        print(ordem_ajustada)
+
+        sql = f"SELECT {camposBusca} FROM {nomeTabela} WHERE {f" {tipo_where} ".join(parametrosBusca)} {ordem_ajustada}"
         print(sql)
         self.open_database()
         self._cursor.execute(sql)
@@ -59,6 +67,7 @@ class MySQLConnection (DbConnection):
         nomesValores: List[str | int | float | bool] = []
 
         for item in parametros:
+            if not item.campo or not item.valor: continue
             nomesCampos.append(item.campo)
             if type(item.valor) == bool: valor = int(item.valor)
             else: valor = item.valor
@@ -101,6 +110,14 @@ class MySQLConnection (DbConnection):
         self._conexao.commit()
         self._conexao.close()
         
+    def retorna_ultimo_id(self, nomeTabela) -> int:
+        sql = f"SELECT id FROM {nomeTabela} ORDER BY id DESC LIMIT 1 "
+        self.open_database()
+        self._cursor.execute(sql)
+        rows = self._cursor.fetchall()
+        self._conexao.close
+        return rows
+
     def preparar_parametros_busca(self, 
         params: List[ParametroBd] | None):
         
@@ -158,3 +175,14 @@ class MySQLConnection (DbConnection):
 
         return ", ".join(valores)
             
+    def preparar_order_by(self, ordem):
+        if not ordem:
+            return ''
+        retorno = " ORDER BY "    
+        for campo in ordem:
+            retorno += " " + str(campo[0]) + " "
+            if campo[1]:
+                retorno += " " + str(campo[1]) + " "
+            retorno += ","
+        return retorno [0:-1]
+    

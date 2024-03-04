@@ -1,3 +1,4 @@
+from typing import List
 from datetime import datetime
 
 class PedidoDTO():
@@ -28,3 +29,11 @@ class PedidoDTO():
         self.datahora_pronto = datahora_pronto
         self.datahora_finalizado = datahora_finalizado
         self.status_pagamento = status_pagamento
+
+class ItemCheckoutDTO():
+    item: int
+    quantidade: int
+    descricao: str
+class PedidoCheckoutDTO():
+    id_cliente: int
+    itens: List[ItemCheckoutDTO]

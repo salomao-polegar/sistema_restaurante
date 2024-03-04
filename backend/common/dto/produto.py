@@ -1,3 +1,4 @@
+from typing import Dict
 class ProdutoDTO():
     id: int | None = None
     nome: str
@@ -19,3 +20,5 @@ class ProdutoDTO():
         self.valor = valor
         self.descricao = descricao
         self.ativo = ativo
+
+

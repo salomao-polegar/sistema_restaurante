@@ -1,29 +1,31 @@
 from external.api.SingletonFastAPI import SingletonFastAPI
-from typing import List
 from adapters.controllers import ClienteController
 from external import MySQLConnection
-from common.interfaces import DbConnection
 from common.dto import ClienteDTO
 from common.exceptions import ClienteNotFoundException, ClienteAlreadyExistsException
 from fastapi import HTTPException
-from pydantic import BaseModel
+from external.api.models import ClienteModel
 
 app = SingletonFastAPI.app().app
 cliente_controller = ClienteController()
 
 ### CLIENTES ###
-class ClienteModel(BaseModel):
-    id: int | None = None
-    cpf: str | None = None
-    nome: str | None = None
-    email: str | None = None
-    telefone: str | None = None
-    ativo: bool = True
+
+## GET ##
 
 @app.get("/clientes/", tags=['Clientes'])
 async def listar_clientes():
     return cliente_controller.listar_todos(MySQLConnection())
 
+@app.get("/clientes/{cliente_id}", tags=['Clientes'])
+async def retornar_cliente(cliente_id: int):
+    try:
+        return cliente_controller.retornar_pelo_id(MySQLConnection(), cliente_id)
+    except ClienteNotFoundException as e:
+        raise HTTPException(status_code=404, detail=e.message)
+    
+## POST ##
+    
 @app.post("/clientes/", tags=['Clientes'])
 async def inserir_cliente(clienteDTO: ClienteModel):
     try:
@@ -33,12 +35,7 @@ async def inserir_cliente(clienteDTO: ClienteModel):
     except ClienteAlreadyExistsException as e:
         raise HTTPException(status_code=404, detail=e.message)
 
-@app.get("/clientes/{cliente_id}", tags=['Clientes'])
-async def retornar_cliente(cliente_id: int):
-    try:
-        return cliente_controller.retornar_pelo_id(MySQLConnection(), cliente_id)
-    except ClienteNotFoundException as e:
-        raise HTTPException(status_code=404, detail=e.message)
+## PUT ##
 
 @app.put("/clientes/", tags=['Clientes'])
 async def editar_cliente(cliente: ClienteModel) -> bool:
@@ -53,6 +50,8 @@ async def editar_cliente(cliente: ClienteModel) -> bool:
         ))        
     except ClienteNotFoundException as e:
         raise HTTPException(status_code=404, detail=e.message)
+
+## DELETE ##
 
 @app.delete("/clientes/{cliente_id}", tags=['Clientes'])
 async def deletar_cliente(cliente_id: int) -> bool:

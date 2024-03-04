@@ -13,12 +13,26 @@ class PedidoGateway (PedidoGatewayInterface):
         self.repositorio = repositorio
     
     def listar_todos(self) -> List[Pedido]:
-        result = self.repositorio.buscar_todas(self.nomeTabela, None)
+        ordem = [
+            ['status_pedido', 'ASC'],
+            ['datahora_recebido', "ASC"],
+            
+        ]
+        result = self.repositorio.buscar_por_parametros(
+            self.nomeTabela, 
+            None, 
+            [
+                ParametroBd(campo = "status_pedido", valor = 1),
+                ParametroBd(campo = "status_pedido", valor = 2),
+                ParametroBd(campo = "status_pedido", valor = 3)
+            ], 
+            "OR",
+            ordem)
 
         if result == None: return None
         
         returnData: List[Pedido] = []
-        
+
         for p in result:
             returnData.append(Pedido(
                 id = p['id'],
@@ -160,7 +174,9 @@ class PedidoGateway (PedidoGatewayInterface):
         result = self.repositorio.buscar_por_parametros(
             self.nomeTabela,
             None,
-            [ParametroBd(campo = "status_pedido", valor = 4)])
+            [ParametroBd(campo = "status_pedido", valor = 1),
+            ParametroBd(campo = "status_pedido", valor = 2),
+            ParametroBd(campo = "status_pedido", valor = 3)])
 
         if result == None: return None
         if len(result) < 1: return None
@@ -214,3 +230,7 @@ class PedidoGateway (PedidoGatewayInterface):
         print(retornoBd[0]['status_pagamento'])
         return str(retornoBd[0]['status_pagamento'])
 
+
+    def retorna_ultimo_id(self) -> int:
+        return self.repositorio.retorna_ultimo_id(self.nomeTabela)[0]['id']
+    

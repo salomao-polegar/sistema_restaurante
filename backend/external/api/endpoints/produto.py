@@ -1,36 +1,17 @@
 
 from external.api.SingletonFastAPI import SingletonFastAPI
-from typing import List
 from external import MySQLConnection
 from fastapi import HTTPException
-from pydantic import BaseModel
 from adapters.controllers import ProdutoController
 from common.dto import ProdutoDTO
 from common.exceptions import ProdutoNotFoundException
-
+from external.api.models import ProdutoModel
 app = SingletonFastAPI.app().app
 produto_controller = ProdutoController()
 
-class ProdutoModel(BaseModel):
-    id: int | None = None
-    nome: str
-    categoria: int
-    valor: float
-    descricao: str | None
-    ativo: bool | None = None
-
 ### PRODUTOS ###
 
-@app.post("/produtos/", tags=['Produtos'])
-async def inserir_produto(produto: ProdutoModel):
-    produto_dto = ProdutoDTO(
-        None,
-        produto.nome,
-        produto.categoria,
-        produto.valor,
-        produto.descricao,
-        produto.ativo) 
-    return produto_controller.novo(produto_dto, MySQLConnection())
+## GET ##
     
 @app.get("/produtos/{produto_id}", tags=['Produtos'])
 async def retornar_produto(produto_id):
@@ -59,6 +40,21 @@ async def listar_bebidas():
 async def listar_sobremesas():
     return produto_controller.listar_sobremesas(MySQLConnection())
 
+## POST ##
+
+@app.post("/produtos/", tags=['Produtos'])
+async def inserir_produto(produto: ProdutoModel):
+    produto_dto = ProdutoDTO(
+        None,
+        produto.nome,
+        produto.categoria,
+        produto.valor,
+        produto.descricao,
+        produto.ativo) 
+    return produto_controller.novo(produto_dto, MySQLConnection())
+
+## PUT ##
+
 @app.put("/produtos/", tags=['Produtos'])
 async def editar_produto(produto: ProdutoModel):
     try:
@@ -73,10 +69,12 @@ async def editar_produto(produto: ProdutoModel):
     except ProdutoNotFoundException as e:
         raise HTTPException(status_code=404, detail = e.message)
 
+## DELETE ##
+    
 @app.delete("/produtos/{produto_id}", tags=['Produtos'])
 async def deletar_produto(produto_id: int) -> bool:
     try:
-        return produto_controller.deletar(produto_id)
+        return produto_controller.deletar(MySQLConnection(), produto_id)
     except ProdutoNotFoundException as e:
         raise HTTPException(status_code=404, detail = e.message)
     

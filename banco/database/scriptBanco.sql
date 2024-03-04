@@ -67,6 +67,7 @@ CREATE TABLE pedidos (
     datahora_finalizado datetime DEFAULT NULL,
     status_pedido int DEFAULT 1,
     status_pagamento int DEFAULT 1,
+    id_pagamento varchar(200) DEFAULT NULL,
     cliente int,
     PRIMARY KEY (id),
     FOREIGN KEY (cliente) REFERENCES clientes(id));
@@ -82,10 +83,16 @@ CREATE TABLE pedidos (
 -- APROVADO = 3
 -- RECUSADO = 4
 
-INSERT INTO pedidos(status_pedido, cliente) VALUES
-(1, 1),
-(1, 2),
-(1, 3);
+INSERT INTO pedidos(datahora_recebido, status_pedido, cliente) VALUES
+('2024-05-12 20:38:05', 1, 1),
+('2024-03-10 20:38:05', 2, 2),
+('2024-08-13 20:38:05', 3, 3),
+('2024-01-14 20:38:05', 4, 1),
+('2024-03-21 20:38:05', 1, 2),
+('2024-09-03 20:38:05', 2, 3),
+('2024-02-01 20:38:05', 3, 1),
+('2024-12-25 20:38:05', 3, 2),
+('2024-08-12 20:38:05', 2, 3);
 
 CREATE TABLE itens (
     pedido int, 

@@ -2,6 +2,21 @@
 
 ## Contexto
 
+Entrega da seguinte documentação no ReadMe
+    
+### a. Desenho da arquitetura pensado por você, pessoa arquiteta de software, contemplando: ###
+- i.	Os requisitos do negócio (problema).
+- ii.	Os requisitos de infraestrutura:
+Você pode utilizar o MiniKube, Docker Kubernetes, AKS, EKS, GKE ou qualquer nuvem que você desenha. 
+    
+### b. Collection com todas as APIs desenvolvidas com exemplo de requisição (que não seja vazia): ###
+- i.	Link do Swagger no projeto ou link para download da collection do Postman (JSON).
+### c. Guia completo com todas as instruções para execução do projeto e a ordem de execução das APIs, caso seja necessário. ###
+### d. Link para vídeo demonstrando a arquitetura desenvolvida na nuvem ou localmente ###
+- i.	O vídeo deve ser postado no Youtube ou Vimeo.
+- ii.	Não esqueça de deixá-lo público ou não listado.
+ No arquivo entregue na plataforma, é necessário somente colocar a URL do Github com as informações.
+
 O projeto é um back-end para gestão de pedidos através de totens automáticos de uma lanchonete, com todos os processos gerenciados através da API, que é capaz de gerenciar os clientes, produtos do cardápio e os pedidos realizados.
 
 Os produtos são divididos entre Lanches, Acompanhamentos, Bebidas e Sobremesas. 

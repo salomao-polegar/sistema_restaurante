@@ -16,3 +16,6 @@ class DbConnection (Protocol):
 
   def deletar(nomeTabela, condicoes = list[ParametroBd]):
     pass
+
+  def retorna_ultimo_id(self, nomeTabela) -> int:
+    pass

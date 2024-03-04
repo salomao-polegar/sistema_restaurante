@@ -38,3 +38,6 @@ class PedidoGatewayInterface(Protocol):
         
     def retorna_status_pagamento(self, pedido_id: int) -> str:
         pass
+
+    def retorna_ultimo_id(self) -> int:
+        pass

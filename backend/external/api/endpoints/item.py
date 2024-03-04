@@ -1,23 +1,14 @@
 
 from external.api.SingletonFastAPI import SingletonFastAPI
-from typing import List
 from external import MySQLConnection
 from fastapi import HTTPException
-from pydantic import BaseModel
 from adapters.controllers import ItemController
-from common.dto import ItemDTO, ProdutoDTO, PedidoDTO
 from common.exceptions import ItemNotFoundException, ProdutoNotFoundException, PedidoNotFoundException
-from .pedido import PedidoModel
-from .produto import ProdutoModel
+from common.dto import ItemDTO
+from external.api.models import ItemModel
 
 app = SingletonFastAPI.app().app
 item_controller = ItemController()
-
-class ItemModel(BaseModel):
-    produto: int
-    pedido: int
-    quantidade: int = 0
-    descricao: str | None
     
 @app.get('/item/{pedido_id}', tags=['Itens'])
 async def listar_itens(pedido_id: int):
@@ -40,7 +31,7 @@ async def editar_item(item: ItemModel):
     except ItemNotFoundException as e:
         raise HTTPException(status_code=404, detail = e.message)
     
-@app.delete('/item/{pedido_id}/{produto_id}')
+@app.delete('/item/{pedido_id}/{produto_id}', tags=['Itens'])
 async def deletar_item(item: ItemModel) -> bool:
     try:
         return item_controller.deletar(MySQLConnection(), 

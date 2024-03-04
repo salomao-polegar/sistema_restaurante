@@ -3,40 +3,17 @@ from external.api.SingletonFastAPI import SingletonFastAPI
 from typing import List
 from external import MySQLConnection
 from fastapi import HTTPException
-from pydantic import BaseModel
 from adapters.controllers import PedidoController
 from common.dto import PedidoDTO
 from common.exceptions import PedidoNotFoundException
-from datetime import datetime
+from external.api.models import PedidoCheckoutModel, PedidoModel
 
 app = SingletonFastAPI.app().app
 pedido_controller = PedidoController()
 
-class PedidoModel(BaseModel):
-    id: int | None = None
-    status_pedido: int | None = None
-    cliente: int
-    datahora_recebido: datetime | None = None
-    datahora_preparacao: datetime | None = None
-    datahora_pronto: datetime | None = None
-    datahora_finalizado: datetime | None = None
-    status_pagamento: int | None = None
-
 ### PEDIDOS ###
 
-@app.post("/pedidos/", tags=['Pedidos'])
-async def inserir_pedido(pedido: PedidoModel):
-    pedido_dto = PedidoDTO(
-        None,
-        pedido.status_pedido,
-        pedido.cliente,
-        pedido.datahora_recebido,
-        pedido.datahora_preparacao,
-        pedido.datahora_pronto,
-        pedido.datahora_finalizado,
-        pedido.status_pagamento)
-     
-    return pedido_controller.novo(pedido_dto, MySQLConnection())
+## GET ##
 
 @app.get("/pedidos/{pedido_id}", tags=['Pedidos'])
 async def retornar_pedido(pedido_id: int):
@@ -61,9 +38,47 @@ async def listar_pedidos_em_preparacao():
 async def listar_pedidos_finalizados():
     return pedido_controller.listar_pedidos_finalizados(MySQLConnection())
     
-@app.get("/pedidos/naofinalizados/", tags=['Pedidos'])
-async def listar_pedidos_nao_finalizados():
-    return pedido_controller.listar_pedidos_nao_finalizados(MySQLConnection())
+# @app.get("/pedidos/naofinalizados/", tags=['Pedidos'])
+# async def listar_pedidos_nao_finalizados():
+#     return pedido_controller.listar_pedidos_nao_finalizados(MySQLConnection())
+
+@app.get("/pedidos/fila/", tags=['Pedidos']) 
+async def listar_fila():
+    return pedido_controller.listar_fila(MySQLConnection())
+
+@app.get('/pedidos/status_pagamento/{pedido_id}', tags=['Pedidos'])
+async def retorna_status_pagamento(pedido_id: int) -> str:
+    try:
+        return pedido_controller.retorna_status_pagamento(pedido_id, MySQLConnection())
+        
+    except PedidoNotFoundException as e:
+        raise HTTPException(status_code=404, detail = e.message)
+    
+## POST ##
+
+@app.post("/pedidos/", tags=['Pedidos'])
+async def inserir_pedido(pedido: PedidoModel):
+    pedido_dto = PedidoDTO(
+        None,
+        pedido.status_pedido,
+        pedido.cliente,
+        pedido.datahora_recebido,
+        pedido.datahora_preparacao,
+        pedido.datahora_pronto,
+        pedido.datahora_finalizado,
+        pedido.status_pagamento)
+     
+    return pedido_controller.novo(pedido_dto, MySQLConnection())
+
+@app.post('/pedidos/checkout/', tags=['Pedidos'])
+async def checkout(pedido: PedidoCheckoutModel):
+    try:
+        return pedido_controller.checkout(pedido, MySQLConnection())
+        
+    except PedidoNotFoundException as e:
+        raise HTTPException(status_code=404, detail = e.message)
+
+## PUT ##
 
 @app.put("/pedidos/", tags=['Pedidos'])
 async def editar_pedido(pedido: PedidoModel):
@@ -80,33 +95,20 @@ async def editar_pedido(pedido: PedidoModel):
     except PedidoNotFoundException as e:
         raise HTTPException(status_code=404, detail = e.message)
     
+## DELETE ##
 
 @app.delete("/pedidos/{pedido_id}", tags=['Pedidos'])
 async def deletar_pedido(pedido_id: int):
     try:
-        return pedido_controller.deletar(pedido_id)
+        return pedido_controller.deletar(MySQLConnection(), pedido_id)
     except PedidoNotFoundException as e:
         raise HTTPException(status_code=404, detail = e.message)
     
-@app.get("/pedidos/fila/", tags=['Pedidos']) 
-async def listar_fila():
-    return pedido_controller.listar_fila(MySQLConnection())
+
     
-@app.post('/pedidos/checkout/{pedido_id}', tags=['Pedidos'])
-async def checkout(pedido_id: int):
-    try:
-        return pedido_controller.checkout(pedido_id, MySQLConnection())
-        
-    except PedidoNotFoundException as e:
-        raise HTTPException(status_code=404, detail = e.message)
+
     
-@app.get('/pedidos/status_pagamento/{pedido_id}', tags=['Pedidos'])
-async def retorna_status_pagamento(pedido_id: int) -> str:
-    try:
-        return pedido_controller.retorna_status_pagamento(pedido_id, MySQLConnection())
-        
-    except PedidoNotFoundException as e:
-        raise HTTPException(status_code=404, detail = e.message)
+
 
 
 
