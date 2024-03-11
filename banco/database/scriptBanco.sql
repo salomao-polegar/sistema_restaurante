@@ -78,10 +78,9 @@ CREATE TABLE pedidos (
 -- FINALIZADO = 4
 
 -- STATUS_PAGAMENTO
--- INICIAL = 1
--- AGUARDANDO = 2
--- APROVADO = 3
--- RECUSADO = 4
+-- AGUARDANDO = 1
+-- APROVADO = 2
+-- RECUSADO = 3
 
 INSERT INTO pedidos(datahora_recebido, status_pedido, cliente) VALUES
 ('2024-05-12 20:38:05', 1, 1),

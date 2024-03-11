@@ -1,9 +1,10 @@
 from entities import Pedido
-from common.interfaces.dbconnection import DbConnection
+from common.interfaces import DbConnection, MercadoPagoInterface
 from common.interfaces.gateways import PedidoGatewayInterface
 from common.tipos import ParametroBd
 from common.dto import PedidoDTO
 from typing import List
+import requests
 
 class PedidoGateway (PedidoGatewayInterface):
     repositorio: DbConnection
@@ -34,7 +35,7 @@ class PedidoGateway (PedidoGatewayInterface):
         returnData: List[Pedido] = []
 
         for p in result:
-            returnData.append(Pedido(
+            returnData.append(PedidoDTO(
                 id = p['id'],
                 status_pedido= p['status_pedido'],
                 cliente= p['cliente'],
@@ -42,7 +43,10 @@ class PedidoGateway (PedidoGatewayInterface):
                 datahora_preparacao = p['datahora_preparacao'],
                 datahora_pronto = p['datahora_pronto'],
                 datahora_finalizado= p['datahora_finalizado'],
-                status_pagamento=p['status_pagamento']))
+                status_pagamento=p['status_pagamento'],
+                id_pagamento=p['id_pagamento']
+                ))
+                
             
         return returnData
         
@@ -65,7 +69,7 @@ class PedidoGateway (PedidoGatewayInterface):
         if len(retornoBd) < 1: return None
 
         p = retornoBd[0]
-        return Pedido(
+        return PedidoDTO(
                     id = p['id'],
                     status_pedido= p['status_pedido'],
                     cliente= p['cliente'],
@@ -73,7 +77,9 @@ class PedidoGateway (PedidoGatewayInterface):
                 datahora_preparacao = p['datahora_preparacao'],
                 datahora_pronto = p['datahora_pronto'],
                 datahora_finalizado= p['datahora_finalizado'],
-                    status_pagamento=p['status_pagamento'])
+                    status_pagamento=p['status_pagamento'],
+                id_pagamento=p['id_pagamento'],
+                )
         
     def editar(self, pedido_dto: PedidoDTO) -> bool:
         parametros: List[ParametroBd] = []
@@ -84,6 +90,7 @@ class PedidoGateway (PedidoGatewayInterface):
         parametros.append(ParametroBd(campo = "datahora_pronto", valor = pedido_dto.datahora_pronto))
         parametros.append(ParametroBd(campo = "datahora_finalizado", valor = pedido_dto.datahora_finalizado))
         parametros.append(ParametroBd(campo = "status_pagamento", valor = pedido_dto.status_pagamento))
+        parametros.append(ParametroBd(campo = "id_pagamento", valor = pedido_dto.id_pagamento))
         
         retornoBd = self.repositorio.editar(
             self.nomeTabela,
@@ -119,7 +126,8 @@ class PedidoGateway (PedidoGatewayInterface):
                 datahora_preparacao = p['datahora_preparacao'],
                 datahora_pronto = p['datahora_pronto'],
                 datahora_finalizado= p['datahora_finalizado'],
-                status_pagamento=p['status_pagamento']))
+                status_pagamento=p['status_pagamento'],
+                id_pagamento=p['id_pagamento']))
             
         return returnData
 
@@ -143,7 +151,8 @@ class PedidoGateway (PedidoGatewayInterface):
                 datahora_preparacao = p['datahora_preparacao'],
                 datahora_pronto = p['datahora_pronto'],
                 datahora_finalizado= p['datahora_finalizado'],
-                status_pagamento=p['status_pagamento']))
+                status_pagamento=p['status_pagamento'],
+                id_pagamento=p['id_pagamento']))
             
         return returnData
     
@@ -166,7 +175,8 @@ class PedidoGateway (PedidoGatewayInterface):
                 datahora_preparacao = p['datahora_preparacao'],
                 datahora_pronto = p['datahora_pronto'],
                 datahora_finalizado= p['datahora_finalizado'],
-                status_pagamento=p['status_pagamento']))
+                status_pagamento=p['status_pagamento'],
+                id_pagamento=p['id_pagamento']))
             
         return returnData
 
@@ -191,7 +201,8 @@ class PedidoGateway (PedidoGatewayInterface):
                 datahora_preparacao = p['datahora_preparacao'],
                 datahora_pronto = p['datahora_pronto'],
                 datahora_finalizado= p['datahora_finalizado'],
-                status_pagamento=p['status_pagamento']))
+                status_pagamento=p['status_pagamento'],
+                id_pagamento=p['id_pagamento']))
             
         return returnData
     
@@ -215,7 +226,8 @@ class PedidoGateway (PedidoGatewayInterface):
                 datahora_preparacao = p['datahora_preparacao'],
                 datahora_pronto = p['datahora_pronto'],
                 datahora_finalizado= p['datahora_finalizado'],
-                status_pagamento=p['status_pagamento']))
+                status_pagamento=p['status_pagamento'],
+                id_pagamento=p['id_pagamento']))
             
         return returnData
 
@@ -227,10 +239,30 @@ class PedidoGateway (PedidoGatewayInterface):
 
         if retornoBd == None: return None
         if len(retornoBd) < 1: return None
-        print(retornoBd[0]['status_pagamento'])
         return str(retornoBd[0]['status_pagamento'])
 
 
     def retorna_ultimo_id(self) -> int:
         return self.repositorio.retorna_ultimo_id(self.nomeTabela)[0]['id']
     
+    def retornar_pelo_id_pagamento(self, id_pagamento):
+        retornoBd = self.repositorio.buscar_por_parametros(
+            self.nomeTabela,
+            None,
+            [ParametroBd(campo = "id_pagamento", valor = id_pagamento)])
+        if retornoBd == None: return None
+        if len(retornoBd) < 1: return None
+        p = retornoBd[0]
+        return Pedido(
+                    id = p['id'],
+                    status_pedido= p['status_pedido'],
+                    cliente= p['cliente'],
+                    datahora_recebido= p['datahora_recebido'],
+                datahora_preparacao = p['datahora_preparacao'],
+                datahora_pronto = p['datahora_pronto'],
+                datahora_finalizado= p['datahora_finalizado'],
+                    status_pagamento=p['status_pagamento'],
+                    id_pagamento=p['id_pagamento'],)
+
+
+

@@ -41,3 +41,7 @@ class PedidoGatewayInterface(Protocol):
 
     def retorna_ultimo_id(self) -> int:
         pass
+
+    def retornar_pelo_id_pagamento(self, id_pagamento):
+        pass
+

@@ -1,2 +1,3 @@
 from .dbconnection import DbConnection
-from .gateways import ClienteGatewayInterface
+from .gateways import *
+from .mercadopago import *

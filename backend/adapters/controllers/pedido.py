@@ -1,14 +1,18 @@
-from adapters.gateways import PedidoGateway, ProdutoGateway, ItemGateway, ClienteGateway
-from common.interfaces import DbConnection
-from common.dto import PedidoDTO, PedidoCheckoutDTO
+from adapters.gateways import PedidoGateway, ProdutoGateway, ItemGateway, ClienteGateway, MercadoPagoGateway
+from common.interfaces import DbConnection, PagamentoInterface
+from common.dto import PedidoDTO, PedidoCheckoutDTO, WebhookResponseDTO
 from useCases import PedidoUseCases
 from adapters.presenters import PedidoAdapter
 from typing import Dict, List
 
 class PedidoController:
     def listar_todos(self, dbconnection: DbConnection) -> List[Dict]:
-        pedidosGateway = PedidoGateway(dbconnection)
-        todosOsPedidos = PedidoUseCases().listar_pedidos(pedidosGateway)
+        
+        todosOsPedidos = PedidoUseCases().listar_pedidos(
+            pedido_gateway=PedidoGateway(dbconnection),
+            item_gateway=ItemGateway(dbconnection),
+            produto_gateway=ProdutoGateway(dbconnection)
+            )
         return PedidoAdapter.pedidos_to_json(todosOsPedidos)
     
     def novo(self, pedido_dto: PedidoDTO,
@@ -17,8 +21,13 @@ class PedidoController:
         return PedidoAdapter.pedidos_to_json(PedidoUseCases().inserir_pedido(pedido_dto, PedidoGateway(dbconnection)))
     
     def retornar_pelo_id(self, db_connection: DbConnection, pedido_id: int) -> List[Dict]:
-        pedidoGateway = PedidoGateway(db_connection)
-        retorno_pedido = PedidoUseCases().retornar_pedido(pedido_id, pedidoGateway)
+        
+        retorno_pedido = PedidoUseCases().retornar_pedido(
+            pedido_id, 
+            PedidoGateway(db_connection), 
+            ItemGateway(db_connection),
+            ProdutoGateway(db_connection)
+            )
         return PedidoAdapter.pedidos_to_json([retorno_pedido])
     
     
@@ -30,23 +39,39 @@ class PedidoController:
         return PedidoUseCases().deletar_pedido(pedido_id, PedidoGateway(db_connection))
 
     def listar_pedidos_recebidos(self, db_connection: DbConnection) -> List[Dict]:
-        pedidosGateway = PedidoGateway(db_connection)
-        todosOsPedidos = PedidoUseCases().listar_pedidos_recebidos(pedidosGateway)
+        
+        todosOsPedidos = PedidoUseCases().listar_pedidos_recebidos(
+            pedido_gateway=PedidoGateway(db_connection),
+            item_gateway=ItemGateway(db_connection),
+            produto_gateway=ProdutoGateway(db_connection)
+        )
         return PedidoAdapter.pedidos_to_json(todosOsPedidos)
 
     def listar_pedidos_em_preparacao(self, db_connection: DbConnection) -> List[Dict]:
-        pedidosGateway = PedidoGateway(db_connection)
-        todosOsPedidos = PedidoUseCases().listar_pedidos_em_preparacao(pedidosGateway)
+        todosOsPedidos = PedidoUseCases().listar_pedidos_em_preparacao(
+            
+            pedido_gateway=PedidoGateway(db_connection),
+            item_gateway=ItemGateway(db_connection),
+            produto_gateway=ProdutoGateway(db_connection)
+        )
         return PedidoAdapter.pedidos_to_json(todosOsPedidos)
     
     def listar_pedidos_finalizados(self, db_connection: DbConnection) -> List[Dict]:
-        pedidosGateway = PedidoGateway(db_connection)
-        todosOsPedidos = PedidoUseCases().listar_pedidos_finalizados(pedidosGateway)
+        todosOsPedidos = PedidoUseCases().listar_pedidos_finalizados(
+            
+            pedido_gateway=PedidoGateway(db_connection),
+            item_gateway=ItemGateway(db_connection),
+            produto_gateway=ProdutoGateway(db_connection)
+        )
         return PedidoAdapter.pedidos_to_json(todosOsPedidos)
 
     def listar_pedidos_nao_finalizados(self, db_connection: DbConnection) -> List[Dict]:
-        pedidosGateway = PedidoGateway(db_connection)
-        todosOsPedidos = PedidoUseCases().listar_pedidos_nao_finalizados(pedidosGateway)
+        todosOsPedidos = PedidoUseCases().listar_pedidos_nao_finalizados(
+            
+            pedido_gateway=PedidoGateway(db_connection),
+            item_gateway=ItemGateway(db_connection),
+            produto_gateway=ProdutoGateway(db_connection)
+        )
         return PedidoAdapter.pedidos_to_json(todosOsPedidos)
     
     def listar_fila(self, db_connection: DbConnection) -> list:
@@ -54,13 +79,19 @@ class PedidoController:
         todosOsPedidos = PedidoUseCases().listar_fila(pedidosGateway)
         return PedidoAdapter.pedidos_to_json(todosOsPedidos)
 
-    def checkout(self, pedido_dto: PedidoCheckoutDTO, db_connection: DbConnection) -> bool:
+    def checkout(
+            self, 
+            pedido_dto: PedidoCheckoutDTO, 
+            db_connection: DbConnection,
+            pagamento_connection: PagamentoInterface) -> bool:
+        
         pedido = PedidoUseCases().checkout(pedido_dto,
             PedidoGateway(db_connection), 
             ProdutoGateway(db_connection), 
             ItemGateway(db_connection),
-            ClienteGateway(db_connection))
-        
+            ClienteGateway(db_connection),
+            MercadoPagoGateway(pagamento_connection))
+        print(pedido)
         return PedidoAdapter.pedidos_to_json([pedido])
         
     def retorna_status_pagamento(self, pedido_id: int, db_connection: DbConnection) -> str:
@@ -68,3 +99,11 @@ class PedidoController:
         pedidosGateway = PedidoGateway(db_connection)
         
         return PedidoUseCases().retorna_status_pagamento(pedido_id, pedidosGateway)
+
+    def atualiza_status_pagamento(self, status: WebhookResponseDTO, db_connection: DbConnection) -> str:
+        
+        pedidosGateway = PedidoGateway(db_connection)
+        
+        PedidoUseCases().atualiza_status_pagamento(status, pedidosGateway)
+
+        return True

@@ -14,7 +14,7 @@ class ItemGateway(ItemGatewayInterface):
     def __init__(self, repositorio: DbConnection):
         self.repositorio = repositorio
 
-    def novo(self, item_dto: ItemDTO) -> bool:
+    def novo(self, item_dto: Item) -> bool:
         parametros: List[ParametroBd] = []
         
         parametros.append(ParametroBd(campo = "produto", valor = item_dto.produto.id))
@@ -74,8 +74,8 @@ class ItemGateway(ItemGatewayInterface):
         
         retornoBd = self.repositorio.editar(
             self.nomeTabela,
-            [ParametroBd(campo = "produto", valor = item_dto.produto.id),
-            ParametroBd(campo = "pedido", valor = item_dto.pedido.id)],
+            [ParametroBd(campo = "produto", valor = item_dto.produto),
+            ParametroBd(campo = "pedido", valor = item_dto.pedido)],
             parametros
         )
         if retornoBd == None: return None

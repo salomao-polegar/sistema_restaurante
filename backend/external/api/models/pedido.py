@@ -11,6 +11,8 @@ class PedidoModel(BaseModel):
     datahora_pronto: datetime | None = None
     datahora_finalizado: datetime | None = None
     status_pagamento: int | None = None
+    id_pagamento: str | None = None
+    valor_total: float = 0
 
 class ItemModel(BaseModel):
     produto: int

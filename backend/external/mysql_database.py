@@ -1,4 +1,6 @@
-from common.interfaces.dbconnection import DbConnection
+# Integração externa com o mercado pago
+
+from common.interfaces import DbConnection
 from common.tipos import ParametroBd
 import mysql.connector
 from mysql.connector import MySQLConnection
@@ -6,11 +8,7 @@ from typing import Protocol, List, Dict
 import sys
 from datetime import datetime
 
-class Parametros(Protocol):
-    restricao: str
-    valores: List[any]
-
-
+''
 class MySQLConnection (DbConnection):
     
     def open_database(self):
@@ -50,11 +48,9 @@ class MySQLConnection (DbConnection):
         camposBusca = self.ajustar_campos(campos)
         parametrosBusca = self.preparar_parametros_busca(parametros)
         ordem_ajustada = self.preparar_order_by(ordem)
-        print(ordem)
-        print(ordem_ajustada)
-
+        
         sql = f"SELECT {camposBusca} FROM {nomeTabela} WHERE {f" {tipo_where} ".join(parametrosBusca)} {ordem_ajustada}"
-        print(sql)
+        
         self.open_database()
         self._cursor.execute(sql)
         
@@ -72,13 +68,11 @@ class MySQLConnection (DbConnection):
             if type(item.valor) == bool: valor = int(item.valor)
             else: valor = item.valor
             nomesValores.append(valor)
-        print(nomesCampos)
-        print(nomesValores)
 
         sql = f"""INSERT INTO {nomeTabela} 
             ({", ".join(nomesCampos)}) 
             VALUES ({self.ajustar_campos_string(nomesValores)});"""
-        print(sql)
+        
         self.open_database()
         self._cursor.execute(sql)
         self._conexao.commit()
@@ -91,7 +85,7 @@ class MySQLConnection (DbConnection):
         sql = f"""UPDATE {nomeTabela}
             SET {", ".join(parametrosBusca)}
             WHERE  {" AND ".join(condicoesBusca)}"""
-        print(sql)
+        
         self.open_database()
         self._cursor.execute(sql)
         self._conexao.commit()
@@ -104,7 +98,7 @@ class MySQLConnection (DbConnection):
 
         sql = f"""DELETE FROM {nomeTabela} 
                 WHERE {" AND ".join(condicoesBusca)}"""
-        print(sql)
+        
         self.open_database()
         self._cursor.execute(sql)
         self._conexao.commit()
@@ -127,7 +121,7 @@ class MySQLConnection (DbConnection):
         camposRestricao: List[str] = []
         
         for item in params:
-            # print(item.campo, " --> ", item.valor, " --> ", type(item.valor))
+            
             if type(item.valor) == bool:
                 camposRestricao.append(f"{item.campo} = {int(item.valor)}")
             elif type(item.valor) == datetime or type(item.valor) == str:

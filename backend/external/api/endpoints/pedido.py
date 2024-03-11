@@ -1,7 +1,7 @@
 
 from external.api.SingletonFastAPI import SingletonFastAPI
 from typing import List
-from external import MySQLConnection
+from external import MySQLConnection, MercadoPagoConnection
 from fastapi import HTTPException
 from adapters.controllers import PedidoController
 from common.dto import PedidoDTO
@@ -73,7 +73,7 @@ async def inserir_pedido(pedido: PedidoModel):
 @app.post('/pedidos/checkout/', tags=['Pedidos'])
 async def checkout(pedido: PedidoCheckoutModel):
     try:
-        return pedido_controller.checkout(pedido, MySQLConnection())
+        return pedido_controller.checkout(pedido, MySQLConnection(), MercadoPagoConnection())
         
     except PedidoNotFoundException as e:
         raise HTTPException(status_code=404, detail = e.message)
