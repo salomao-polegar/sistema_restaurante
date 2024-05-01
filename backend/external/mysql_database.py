@@ -3,26 +3,37 @@
 from common.interfaces import DbConnection
 from common.tipos import ParametroBd
 import mysql.connector
-from mysql.connector import MySQLConnection
-from typing import Protocol, List, Dict
-import sys
+from typing import List
+import sys, os
 from datetime import datetime
 
-''
+# if 'pytest' in sys.modules:
+#             host = '127.0.0.1'
+#         else:
+#             host = 'tc_database'
+
+#         self._conexao = mysql.connector.connect(
+#                     user='root',
+#                     password='ROOTPASS',
+#                     host=host, # Deve ser o mesmo nome do serviço/container criado no docker-compose.yml, (ou verificar no docker network)
+#                     port=3306,
+#                     database='TechChallenge'
+
+
 class MySQLConnection (DbConnection):
     
     def open_database(self):
         if 'pytest' in sys.modules:
             host = '127.0.0.1'
         else:
-            host = 'tc_database'
+            host = os.getenv('MYSQL_HOST')
 
         self._conexao = mysql.connector.connect(
-                    user='root',
-                    password='ROOTPASS',
-                    host=host, # Deve ser o mesmo nome do serviço/container criado no docker-compose.yml, (ou verificar no docker network)
-                    port=3306,
-                    database='TechChallenge'
+                    user = os.getenv('MYSQL_USER'),
+                    password = os.getenv('MYSQL_PASS'),
+                    host = host, # Deve ser o mesmo nome do serviço/container criado no docker-compose.yml, (ou verificar no docker network)
+                    port = os.getenv('MYSQL_PORT'),
+                    database = os.getenv('MYSQL_DATABASE')
                 )
         self._cursor = self._conexao.cursor(dictionary=True)
     

@@ -166,3 +166,9 @@ frontend/
 clean_architecture.jpg
 backend/tests
 checklist.docx
+secret-mysql.yaml
+docker-secret.yaml
+create-resources
+*.code-workspace
+stress_test
+ignoregit/

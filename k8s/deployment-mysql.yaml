@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  pod-mysql
+  labels:
+    app:  pod-mysql
+spec:
+  selector:
+    matchLabels:
+      app: pod-mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app:  pod-mysql
+    spec:
+      containers:
+      - name: tcmysql
+        image: salomaopolegar/banco:1.2
+        ports:
+        - containerPort: 3306
+          protocol: TCP
+          
+        env:      
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-mysql
+                key: MYSQL_PASS
+            
+          - name: MYSQL_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: db-config
+                key: MYSQL_DATABASE
+
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: "512Mi"
+          requests:
+            cpu: "0.5"
+            memory: "256Mi"
+        
+        volumeMounts:
+          - name:  mysql-persistent-storage
+            mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc

@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  pod-backend
+  labels:
+    app:  pod-backend
+spec:
+  selector:
+    matchLabels:
+      app: pod-backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app:  pod-backend
+    spec:
+      containers:
+      - name: tcapi
+        image: salomaopolegar/restaurante:1.2
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        # livenessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 80
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 30
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 80
+        #   initialDelaySeconds: 40
+        #   failureThreshold: 3
+        #   periodSeconds: 20
+        # startupProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 80
+        #   failureThreshold: 3
+        #   periodSeconds: 10
+        env:      
+          - name: MYSQL_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: db-config
+                key: MYSQL_DATABASE
+
+          - name: MYSQL_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: db-config
+                key: MYSQL_HOST
+
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: secret-mysql
+                key: MYSQL_USER
+
+          - name: MYSQL_PASS
+            valueFrom:
+              secretKeyRef:
+                name: secret-mysql
+                key: MYSQL_PASS
+
+          - name: MYSQL_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: db-config
+                key: MYSQL_PORT
+        resources:
+          limits:
+            cpu: "100m"
+            memory: "512Mi"
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+            
+      #   volumeMounts:
+      #     - name:  shared
+      #       mountPath: /data
+      # volumes:
+      #   - name: shared
+      #     persistentVolumeClaim:
+      #       claimName: backend-pvc

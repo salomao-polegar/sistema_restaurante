@@ -19,9 +19,12 @@ class PedidoUseCases ():
             item_gateway: ItemGatewayInterface,
             produto_gateway: ProdutoGatewayInterface
             ) -> PedidoDTO:
+        pedido = pedido_gateway.retornar_pelo_id(pedido_id)
+        if not pedido:
+            raise PedidoNotFoundException()
         
         return self.ajustar_pedidos_retorno(
-            [pedido_gateway.retornar_pelo_id(pedido_id)],
+            [pedido],
             pedido_gateway,
             produto_gateway,
             item_gateway
