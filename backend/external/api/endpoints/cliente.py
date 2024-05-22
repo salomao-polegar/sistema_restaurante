@@ -5,6 +5,7 @@ from common.dto import ClienteDTO
 from common.exceptions import ClienteNotFoundException, ClienteAlreadyExistsException
 from fastapi import HTTPException
 from external.api.models import ClienteModel
+from pydantic import BaseModel
 
 app = SingletonFastAPI.app().app
 cliente_controller = ClienteController()
@@ -61,3 +62,22 @@ async def deletar_cliente(cliente_id: int) -> bool:
         raise HTTPException(status_code=404, detail=e.message)
 
 
+class LoginModel (BaseModel):
+    email:str
+    senha:str
+
+class AuthResponse (BaseModel):
+    auth: bool
+    token: str
+    rota:str
+
+## AUTH ##
+@app.post("/auth/login", tags=['Clientes'])
+async def login(loginDTO: LoginModel) -> AuthResponse:
+    auth = loginDTO.email=="admin" and loginDTO.senha=="admin"
+    if auth == False: return False
+    return {
+        "auth":True,
+        "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4ZjU4OWIyLTljNmYtNDhjZC1iYTVjLWQ1OGM2OWYyYmNiOCIsInJvbGUiOiJQQUNJRU5URSIsImlhdCI6MTY4MTkxMjY0MSwiZXhwIjoxNjgxOTk5MDQxfQ.FpL09UPBn7_4e9nx84QGh7Ekut14gdQl7Acp32KyMI",
+        "rota":"/paciente"
+    }

@@ -32,3 +32,5 @@ class ClienteController:
 
     def deletar(self, db_connection: DbConnection, cliente_id: int) -> bool:
         return ClienteUseCases().deletar_cliente(cliente_id, ClienteGateway(db_connection))
+
+    

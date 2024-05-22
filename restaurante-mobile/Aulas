@@ -1,0 +1,31 @@
+EXPO: ajuda a criar apps para diversas plataformas.
+
+Criar novo projeto React usando o Expo:
+npx create-expo-app restaurante-mobile
+
+npx expo start
+
+Native Base:
+https://nativebase.io/
+npm install native-base
+expo install react-native-svg@12.1.1
+expo install react-native-safe-area-context@3.3.2
+
+
+ReactNavigation: ajuda a navegação entre telas
+npm install @react-navigation/native
+npx expo install react-native-screens react-native-safe-area-context
+
+
+Tipos de navegação:
+-- Pilhas (telas organizadas hierarquicamente) -- npm install @react-navigation/native-stack
+-- Tabulação (telas independentes) - bottom tabs -- npm install @react-navigation/bottom-tabs
+-- Gaveta
+Possui transições suaves
+
+Lib de ícones:
+npm i react-native-vector-icons
+
+Conexão com APIs:
+bibliotexa axios facilita comunicação com APIs
+npm install axios

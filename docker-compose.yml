@@ -1,4 +1,4 @@
-version: "0.1"
+version: "3.8"
 services:
   db:
     container_name: tc_database
@@ -29,6 +29,19 @@ services:
       MYSQL_USER: root
       MYSQL_PASS: ROOTPASS
       MYSQL_PORT: 3306
+  
+  # frontend:
+  #   container_name: restaurante_mobile
+  #   build: ./restaurante-mobile/
+  #   ports:
+  #     - 19000:19000
+  #     - 19001:19001
+  #     - 19002:19002
+  #     - 8081:8081
+      
+  #   environment:
+  #     - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+  #     - CHOKIDAR_USEPOLLING=true    
 
 networks:
   tc_network:

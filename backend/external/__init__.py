@@ -1,2 +1,2 @@
 from .mysql_database import MySQLConnection
-from .mercadoPagoExternal import MercadoPagoConnection
+from .ignoregit.mercadoPagoExternal import MercadoPagoConnection
