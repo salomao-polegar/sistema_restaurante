@@ -39,7 +39,7 @@ class PedidoDTO():
         self.valor_total = valor_total
 
 class ItemCheckoutDTO():
-    item: int
+    produto: int
     quantidade: int
     descricao: str
 class PedidoCheckoutDTO():

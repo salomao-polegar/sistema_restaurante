@@ -34,7 +34,7 @@ class SingletonFastAPI():
         self.app = FastAPI(
             title = "restauranteAPI",
             description = "API desenvolvida no contexto do Tech Challenge do curso de pós graduação em Software Architecture da FIAP",
-            version='0.0.1',
+            version='1.0.0',
             openapi_tags= tags_metadata
         )
         self.app.add_middleware(

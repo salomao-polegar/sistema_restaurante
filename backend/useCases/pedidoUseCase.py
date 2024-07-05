@@ -1,4 +1,4 @@
-from entities import Pedido, Produto, Cliente, Item
+from entities import Pedido, Produto, Item
 from common.exceptions import PedidoNotFoundException, ProdutoNotFoundException, ClienteNotFoundException
 from common.interfaces.gateways import PedidoGatewayInterface, ProdutoGatewayInterface, ItemGatewayInterface, ClienteGatewayInterface, PagamentoInterface   
 from common.dto import PedidoCheckoutDTO, WebhookResponseDTO, ItemDTO, PedidoDTO
@@ -130,7 +130,7 @@ class PedidoUseCases ():
         # TODO
         # Recebe uma lista com produtos e retorna o pedido criado
         for produto in produtos_checkout.itens:
-            prod = produto_gateway.retornar_pelo_id(produto.item)
+            prod = produto_gateway.retornar_pelo_id(produto.produto)
             if not prod:
                 raise ProdutoNotFoundException()
         cliente = cliente_gateway.retornar_pelo_id(produtos_checkout.id_cliente)
@@ -142,7 +142,9 @@ class PedidoUseCases ():
         pedido = pedido_gateway.retornar_pelo_id(pedido_gateway.retorna_ultimo_id())
 
         for produto in produtos_checkout.itens:
-            item_gateway.novo(Item(produto=Produto(id=produto.item), pedido=pedido, quantidade = produto.quantidade, descricao=produto.descricao))
+            novo_item = Item(produto=Produto(id=produto.produto), pedido=pedido, quantidade = produto.quantidade, descricao=produto.descricao)
+            item_gateway.novo(novo_item)
+            pedido.itens.append(novo_item)
         
         # Enviar pedido de pagamento
             
@@ -166,12 +168,8 @@ class PedidoUseCases ():
         
         pedido.id_pagamento = pagamento['id_pagamento']
         pedido_gateway.editar(pedido)
-
-        return self.ajustar_pedidos_retorno(
-            [pedido_gateway.retornar_pelo_id(pedido.id)],
-            pedido_gateway,
-            produto_gateway,
-            item_gateway)[0]
+        print('Pedido Use Cases:\n', pedido)
+        return pedido
     
         
     def retorna_status_pagamento(self, pedido_id: int, pedido_gateway: PedidoGatewayInterface) -> str:

@@ -93,7 +93,18 @@ class PedidoController:
             self, 
             pedido_dto: PedidoCheckoutDTO, 
             db_connection: DbConnection,
-            pagamento_connection: PagamentoInterface) -> bool:
+            pagamento_connection: PagamentoInterface) -> Dict:
+        
+     # pedido = {
+    #     "id_cliente": 1,
+    #     "itens": [
+    #         {
+    #             "produto": 1,
+    #             "quantidade": 3,
+    #             "descricao": "descricao"
+    #         }
+    #     ]
+    # }
         
         pedido = PedidoUseCases().checkout(pedido_dto,
             PedidoGateway(db_connection), 
@@ -101,7 +112,7 @@ class PedidoController:
             ItemGateway(db_connection),
             ClienteGateway(db_connection),
             MercadoPagoGateway(pagamento_connection))
-        print(pedido)
+        
         return PedidoAdapter.pedidos_to_json([pedido])
         
     def retorna_status_pagamento(self, pedido_id: int, db_connection: DbConnection) -> str:

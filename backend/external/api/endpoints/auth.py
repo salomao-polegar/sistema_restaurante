@@ -2,7 +2,6 @@
 from typing import Annotated
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from passlib.context import CryptContext
 import jwt
 from jwt.exceptions import InvalidTokenError
 from external.api.SingletonFastAPI import SingletonFastAPI
@@ -123,8 +122,8 @@ async def get_current_active_user(
     return current_user
 
 
-@app.post("/token")
-async def login_for_access_token(
+@app.post("/token", tags=['Users'])
+async def login(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
     user: ClienteModel = authenticate_user(users_db, form_data.username, form_data.password)
@@ -141,14 +140,14 @@ async def login_for_access_token(
     return Token(access_token=access_token, token_type="bearer", user=user)
 
 
-@app.get("/users/me")
-async def read_users_me(
+@app.get("/users/me", tags=['Users'])
+async def retornar_usuario_logado(
     current_user: Annotated[ClienteModel, Depends(get_current_active_user)],
 ):
     return current_user
 
-@app.get("/users/me/pedidos")
-async def read_users_me(
+@app.get("/users/me/pedidos", tags=['Users'])
+async def retornar_pedidos_usuario_logado(
     current_user: Annotated[ClienteModel, Depends(get_current_active_user)],
 ):
     #TODO: retornar somente os pedidos do usuário

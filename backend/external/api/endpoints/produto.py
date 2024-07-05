@@ -6,6 +6,7 @@ from adapters.controllers import ProdutoController
 from common.dto import ProdutoDTO
 from common.exceptions import ProdutoNotFoundException
 from external.api.models import ProdutoModel
+from typing import List
 app = SingletonFastAPI.app().app
 produto_controller = ProdutoController()
 
@@ -14,36 +15,36 @@ produto_controller = ProdutoController()
 ## GET ##
     
 @app.get("/produtos/{produto_id}", tags=['Produtos'])
-async def retornar_produto(produto_id):
+async def retornar_produto_pelo_id(produto_id: int) -> ProdutoModel:
     try:
         return produto_controller.retornar_pelo_id(MySQLConnection(), produto_id)
     except ProdutoNotFoundException as e:
         raise HTTPException(status_code=404, detail = e.message)
 
 @app.get("/produtos/", tags=['Produtos'])
-async def listar_produtos():
+async def listar_todos_os_produtos() -> List[ProdutoModel]:
     return produto_controller.listar_todos(MySQLConnection())
 
 @app.get("/lanches/", tags=['Produtos'])
-async def listar_lanches():
+async def listar_lanches() -> List[ProdutoModel]:
     return produto_controller.listar_lanches(MySQLConnection())
 
 @app.get("/acompanhamentos/", tags=['Produtos'])
-async def listar_acompanhamentos():
+async def listar_acompanhamentos() -> List[ProdutoModel]:
     return produto_controller.listar_acompanhamentos(MySQLConnection())
 
 @app.get("/bebidas/", tags=['Produtos'])
-async def listar_bebidas():
+async def listar_bebidas() -> List[ProdutoModel]:
     return produto_controller.listar_bebidas(MySQLConnection())
     
 @app.get("/sobremesas/", tags=['Produtos'])
-async def listar_sobremesas():
+async def listar_sobremesas() -> List[ProdutoModel]:
     return produto_controller.listar_sobremesas(MySQLConnection())
 
 ## POST ##
 
 @app.post("/produtos/", tags=['Produtos'])
-async def inserir_produto(produto: ProdutoModel):
+async def cadastrar_produto(produto: ProdutoModel) -> ProdutoModel:
     produto_dto = ProdutoDTO(
         None,
         produto.nome,
@@ -56,7 +57,7 @@ async def inserir_produto(produto: ProdutoModel):
 ## PUT ##
 
 @app.put("/produtos/", tags=['Produtos'])
-async def editar_produto(produto: ProdutoModel):
+async def editar_produto(produto: ProdutoModel) -> ProdutoModel:
     try:
         return produto_controller.editar(MySQLConnection(), ProdutoDTO(
             id=produto.id,

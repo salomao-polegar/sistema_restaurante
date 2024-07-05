@@ -5,8 +5,6 @@ from common.dto import ClienteDTO
 from common.exceptions import ClienteNotFoundException, ClienteAlreadyExistsException
 from fastapi import HTTPException
 from external.api.models import ClienteModel
-from passlib.context import CryptContext
-from pydantic import BaseModel
 
 app = SingletonFastAPI.app().app
 cliente_controller = ClienteController()
@@ -20,7 +18,7 @@ async def listar_clientes():
     return cliente_controller.listar_todos(MySQLConnection())
 
 @app.get("/clientes/{cliente_id}", tags=['Clientes'])
-async def retornar_cliente(cliente_id: int):
+async def retornar_cliente_pelo_id(cliente_id: int):
     try:
         return cliente_controller.retornar_pelo_id(MySQLConnection(), cliente_id)
     except ClienteNotFoundException as e:

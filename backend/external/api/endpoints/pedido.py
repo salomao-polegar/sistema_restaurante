@@ -5,7 +5,7 @@ from external import MySQLConnection, MercadoPagoConnection
 from fastapi import HTTPException
 from adapters.controllers import PedidoController
 from common.dto import PedidoDTO
-from common.exceptions import PedidoNotFoundException
+from common.exceptions import PedidoNotFoundException, ClienteNotFoundException, ProdutoNotFoundException
 from external.api.models import PedidoCheckoutModel, PedidoModel, ClienteModel
 from typing import Dict
 
@@ -76,11 +76,23 @@ async def inserir_pedido(pedido: PedidoModel):
     return pedido_controller.novo(pedido_dto, MySQLConnection())
 
 @app.post('/pedidos/checkout/', tags=['Pedidos'])
-async def checkout(pedido: PedidoCheckoutModel):
+async def checkout(pedido: PedidoCheckoutModel) -> PedidoModel:
+    # pedido = {
+    #     "id_cliente": 1,
+    #     "itens": [
+    #         {
+    #             "produto": 1,
+    #             "quantidade": 3,
+    #             "descricao": "descricao"
+    #         }
+    #     ]
+    # }
     try:
-        return pedido_controller.checkout(pedido, MySQLConnection(), MercadoPagoConnection())
+        pedido_inserido = pedido_controller.checkout(pedido, MySQLConnection(), MercadoPagoConnection())
+        print(pedido_inserido)
+        return pedido_inserido
         
-    except PedidoNotFoundException as e:
+    except ClienteNotFoundException | ProdutoNotFoundException as e:
         raise HTTPException(status_code=404, detail = e.message)
 
 ## PUT ##
