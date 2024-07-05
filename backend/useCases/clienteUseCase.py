@@ -17,9 +17,10 @@ class ClienteUseCases ():
             cpf = cliente_dto.cpf, 
             nome = cliente_dto.nome, 
             email = cliente_dto.email, 
+            hashed_password = cliente_dto.hashed_password,
             telefone = cliente_dto.telefone, 
             ativo = cliente_dto.ativo) 
-
+        
         cliente_gateway.novo(novo_cliente)
         return True
     
@@ -46,6 +47,7 @@ class ClienteUseCases ():
             cpf = cliente_dto.cpf, 
             nome = cliente_dto.nome, 
             email = cliente_dto.email, 
+            hashed_password = cliente_dto.hashed_password,
             telefone = cliente_dto.telefone, 
             ativo = cliente_dto.ativo) 
         cliente_gateway.editar(cliente_editar)

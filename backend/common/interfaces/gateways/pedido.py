@@ -11,6 +11,9 @@ class PedidoGatewayInterface(Protocol):
    
     def listar_todos(self) -> List[Pedido]:
         pass
+
+    def listar_pedidos_por_cliente_id(self, cliente_id: str | int) -> List[Pedido]:
+        pass
     
     def editar(self, pedido_dto: PedidoDTO) -> bool:
         pass

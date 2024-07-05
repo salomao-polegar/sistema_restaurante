@@ -6,7 +6,8 @@ from fastapi import HTTPException
 from adapters.controllers import PedidoController
 from common.dto import PedidoDTO
 from common.exceptions import PedidoNotFoundException
-from external.api.models import PedidoCheckoutModel, PedidoModel
+from external.api.models import PedidoCheckoutModel, PedidoModel, ClienteModel
+from typing import Dict
 
 app = SingletonFastAPI.app().app
 pedido_controller = PedidoController()
@@ -23,8 +24,10 @@ async def retornar_pedido(pedido_id: int):
         raise HTTPException(status_code=404, detail = e.message)
 
 @app.get("/pedidos/", tags=['Pedidos'])
-async def listar_pedidos() -> List[PedidoModel] | None:
-    return pedido_controller.listar_todos(MySQLConnection())
+async def listar_pedidos(cliente: ClienteModel = None):
+    
+    if (cliente): return pedido_controller.listar_por_cliente_id(MySQLConnection(), cliente.id)
+    else: return pedido_controller.listar_todos(MySQLConnection())
 
 @app.get("/pedidos/recebidos/", tags=['Pedidos'])
 async def listar_pedidos_recebidos():
@@ -59,14 +62,16 @@ async def retorna_status_pagamento(pedido_id: int) -> str:
 @app.post("/pedidos/", tags=['Pedidos'])
 async def inserir_pedido(pedido: PedidoModel):
     pedido_dto = PedidoDTO(
-        None,
-        pedido.status_pedido,
-        pedido.cliente,
-        pedido.datahora_recebido,
-        pedido.datahora_preparacao,
-        pedido.datahora_pronto,
-        pedido.datahora_finalizado,
-        pedido.status_pagamento)
+        id=None,
+        status_pedido=pedido.status_pedido,
+        cliente=pedido.cliente,
+        datahora_recebido=pedido.datahora_recebido,
+        datahora_preparacao=pedido.datahora_preparacao,
+        datahora_pronto=pedido.datahora_pronto,
+        datahora_finalizado=pedido.datahora_finalizado,
+        status_pagamento=pedido.status_pagamento,
+        itens=pedido.itens,
+        valor_total=pedido.valor_total)
      
     return pedido_controller.novo(pedido_dto, MySQLConnection())
 

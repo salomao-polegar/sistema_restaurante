@@ -1,49 +1,54 @@
-import { VStack, ScrollView, Text, Divider, Image } from "native-base";
-import { Titulo } from "../components/Titulo";
-import Logo from '../assets/Logo.png'
-import { CardBusca } from "../components/CardBusca";
+import { VStack, ScrollView } from "native-base";
+import { CardInicialProduto } from "../components/CardInicial";
+import Produtos from "./Produtos";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { pegarDadosClienteLogado as pegarDadosCliente } from "@/servicos/clienteServico";
+import { Cliente } from "../interfaces/Cliente";
 
-export default function Principal(){
+export default function Principal({ navigation }: any) {
 
-    const depoimentos = [
-        {
-            key:1,
-            texto:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            referencia:"Julio, 40 anos, São Paulo/SP."
-        },
+    const [dadosCliente, setDadosCliente] = useState({} as Cliente)
 
-        {
-            key:2,
-            texto:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            referencia:"Julio, 40 anos, São Paulo/SP."
-        },
-    ]
-    return(
+    useEffect(() => {
+        async function carregarClientes() {
+
+            const clienteId = await AsyncStorage.getItem("userId")
+            console.log(clienteId)
+            if (!clienteId) return null
+            const resultado = await pegarDadosCliente(clienteId)
+            if (resultado) {
+                setDadosCliente(resultado[0])
+                console.log(dadosCliente)
+            }
+        }
+
+    })
+
+    return (
 
         <ScrollView flex={1}>
-            <VStack 
-                p={10}
+            <VStack p={10}
                 flex={1}
-                alignItems="center">
-                <Image source={Logo} alt="Logo Restaurante" alignSelf="flex-start" />
-                <Titulo color="blue.500" alignSelf="flex-start" mb={10}>Boas-vindas!</Titulo>
-                <CardBusca />
-                <Titulo color="blue.800" mb={10}>Depoimentos</Titulo>
-                {depoimentos.map((depoimento) => (
-                    <VStack key={depoimento.key}
-                        alignItems="center">
+
+                alignSelf="center"
+                w="100%"
+                maxW={800}>
+                <VStack
+                    flex={1}
+                    direction="row"
+                    justifyContent="space-between">
                         
-                        <Text mb={4} fontSize="sm">{depoimento.texto}</Text>
-                        <Text fontSize="md" bold mb={10}>{depoimento.referencia}</Text>
-                        <Divider />
-                    </VStack>
-                ))}
-                
+                    <CardInicialProduto icone="wallet-outline" texto="Formas de Pagamento" />
+                    <CardInicialProduto icone="storefront-outline" texto="Sobre" />
+                    <CardInicialProduto icone="share-social-outline" texto="Compartilhar" />
+                </VStack>
+
+                <Produtos navigation={navigation} administrador={dadosCliente.administrador} />
 
 
-                
-                
             </VStack>
+
         </ScrollView>
     )
 }

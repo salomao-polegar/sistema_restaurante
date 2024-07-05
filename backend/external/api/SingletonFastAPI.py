@@ -1,3 +1,4 @@
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 
 class SingletonFastAPI():
@@ -35,8 +36,13 @@ class SingletonFastAPI():
             description = "API desenvolvida no contexto do Tech Challenge do curso de pós graduação em Software Architecture da FIAP",
             version='0.0.1',
             openapi_tags= tags_metadata
-            
         )
+        self.app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_credentials=True,
+            allow_methods=['*'],
+            allow_headers=["*"])
     
     @classmethod
     def app(self):

@@ -11,6 +11,7 @@ class PedidoAdapter:
         alldata = []
         
         for i in dados:
+            print(i.itens)
             to_append = {
                 'id' : i.id,
                 'status_pedido' : i.status_pedido,
@@ -33,4 +34,5 @@ class PedidoAdapter:
 
             alldata.append(to_append)
             
+        
         return alldata

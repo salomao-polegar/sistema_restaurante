@@ -6,6 +6,7 @@ import Perfil from "./Perfil";
 
 import { Ionicons } from "@expo/vector-icons";
 import Produtos from "./Produtos";
+import Carrinho from "./Carrinho";
 
 const Tab = createBottomTabNavigator()
 
@@ -18,31 +19,33 @@ const screenOptions = {
 }
 
 const tabs = [
+    // {
+    //     name: 'Produtos',
+    //     component: Produtos,
+    //     icon: 'ice-cream'
+    // },
     {
-        name: 'Principal',
+        name: 'Início',
         component: Principal,
-        icon: 'home'
+        icon: 'ice-cream'
     },
     {
-        name: 'Consultas',
-        component: Consultas,
-        icon: 'calendar'
+        name: 'Carrinho',
+        component: Carrinho,
+        icon: 'list-box'
     },
-    {
-        name: 'Explorar',
-        component: Explorar,
-        icon: 'search'
-    },
+
+    // {
+    //     name: 'Explorar',
+    //     component: Explorar,
+    //     icon: 'search'
+    // },
     {
         name: 'Perfil',
         component: Perfil,
         icon: 'person'
     },
-    {
-        name: 'Produtos',
-        component: Produtos,
-        icon: 'ice-cream'
-    },
+    
 ]
 
 export default function Tabs() {

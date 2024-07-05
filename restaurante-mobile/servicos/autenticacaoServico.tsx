@@ -1,13 +1,15 @@
 import api from "./api"
 
-export async function fazerLogin(email:string, senha:string) {
-    if (!email || !senha) return null
+export async function fazerLogin(username:string, password:string) {
+    if (!username || !password) return null
         
     try {
-        const resultado = await api.post('/auth/login', {
-            email,
-            senha
-        })
+        var formdata = new FormData();
+        formdata.append('username', username)
+        formdata.append('password', password)
+        formdata.append('grant_type', "password")
+    
+        const resultado = await api.post('/token', formdata)
         console.log(resultado.data)
         return resultado.data
 

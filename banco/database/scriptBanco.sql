@@ -41,23 +41,26 @@ INSERT INTO produtos (nome, categoria, valor, descricao)  VALUES
 
 CREATE TABLE clientes (
     id int NOT NULL AUTO_INCREMENT,
-    cpf varchar(11),
-    nome varchar(50),
-    email varchar(150),
+    cpf varchar(11) NOT NULL,
+    nome varchar(50) NOT NULL,
+    email varchar(150) NOT NULL,
+    hashed_password varchar(150),
+    administrador int DEFAULT 0,
     telefone varchar(11),
     ativo int DEFAULT 1,
     PRIMARY KEY (id));
 
-INSERT INTO clientes (id, nome) VALUES 
-(0, 'SEM IDENTIFICAÇÃO');
+INSERT INTO clientes (id, nome, cpf, email, hashed_password, administrador) VALUES 
+(0, 'Administrador', '12345678901', 'adm@adm', 'fdddc25a825d6f6ab8fe08b88fb1ef55f32560bfb563db818b58b008c865daf0', 1); 
+-- #senha: testeagora
 
-INSERT INTO clientes (cpf, nome, email, telefone) VALUES 
-('11111111111', 'nome 1', 'nome1@teste', '1112345678'),
-('22222222222', 'nome 2', 'nome2@teste', '1112345678'),
-('33333333333', 'nome 3', 'nome3@teste', '1112345678'),
-('44444444444', 'nome 4', 'nome4@teste', '1112345678'),
-('55555555555', 'nome 5', 'nome5@teste', '1112345678'),
-('66666666666', 'nome 6', 'nome6@teste', '1112345678');
+INSERT INTO clientes (cpf, nome, email, hashed_password, telefone) VALUES 
+('11111111111', 'teste', 'testeagora', '6546', '1112345678'),
+('22222222222', 'nome 2', 'nome2@teste', '5678',  '1112345678'),
+('33333333333', 'nome 3', 'nome3@teste', '9012',  '1112345678'),
+('44444444444', 'nome 4', 'nome4@teste', '3456',  '1112345678'),
+('55555555555', 'nome 5', 'nome5@teste', '7890',  '1112345678'),
+('66666666666', 'nome 6', 'nome6@teste', '0987',  '1112345678');
 
 CREATE TABLE pedidos (
     id int NOT NULL AUTO_INCREMENT, 
@@ -83,9 +86,14 @@ CREATE TABLE pedidos (
 -- RECUSADO = 3
 
 INSERT INTO pedidos(datahora_recebido, status_pedido, cliente) VALUES
-('2024-05-12 20:38:05', 1, 1),
-('2024-03-10 20:38:05', 2, 2),
+('2024-03-10 20:38:05', 2, 1),
 ('2024-08-13 20:38:05', 3, 3),
+('2024-01-14 20:38:05', 4, 3),
+('2024-03-21 20:38:05', 1, 3),
+('2024-09-03 20:38:05', 2, 2),
+('2024-02-01 20:38:05', 3, 1),
+('2024-12-25 20:38:05', 3, 2),
+('2024-08-12 20:38:05', 2, 3),
 ('2024-01-14 20:38:05', 4, 1),
 ('2024-03-21 20:38:05', 1, 2),
 ('2024-09-03 20:38:05', 2, 3),

@@ -5,23 +5,23 @@ import { CardBusca } from "../components/CardBusca";
 
 export default function Explorar(){
 
-    const resultadoBusca = [
-        {
-            nome:"Dra. Ana Paula",
-            especialidade: "Cardiologista",
-            foto: "https://github.com/salomao-polegar.png"
-        },
-        {
-            nome:"Dra. Júlia Maria",
-            especialidade: "Endócrinologista",
-            foto: "https://github.com/salomao-polegar.png"
-        },
-        {
-            nome:"Dra. Mara Maravilha",
-            especialidade: "Cardiologista",
-            foto: "https://github.com/salomao-polegar.png"
-        }
-    ]
+    // const resultadoBusca = [
+    //     {
+    //         nome:"Dra. Ana Paula",
+    //         especialidade: "Cardiologista",
+    //         foto: "https://github.com/salomao-polegar.png"
+    //     },
+    //     {
+    //         nome:"Dra. Júlia Maria",
+    //         especialidade: "Endócrinologista",
+    //         foto: "https://github.com/salomao-polegar.png"
+    //     },
+    //     {
+    //         nome:"Dra. Mara Maravilha",
+    //         especialidade: "Cardiologista",
+    //         foto: "https://github.com/salomao-polegar.png"
+    //     }
+    // ]
 
     return(
         <ScrollView flex={1}>
@@ -32,13 +32,14 @@ export default function Explorar(){
                 <CardBusca />
 
                 <Titulo color="blue.500" mb={10}>Resultado da busca</Titulo>
-                {resultadoBusca.map((resultado) => (
+                {/* {resultadoBusca.map((resultado) => (
                     <CardConsulta 
+                        key = {resultado.id}
                         nome = {resultado.nome}
                         especialidade= {resultado.especialidade}
                         foto= {resultado.foto}
                         />
-                ))}
+                ))} */}
                 
                 
             </VStack>

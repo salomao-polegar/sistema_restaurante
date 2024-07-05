@@ -1,15 +1,16 @@
 from external.api.SingletonFastAPI import SingletonFastAPI
-from adapters.controllers import ClienteController
+from adapters.controllers import ClienteController, PedidoController
 from external import MySQLConnection
 from common.dto import ClienteDTO
 from common.exceptions import ClienteNotFoundException, ClienteAlreadyExistsException
 from fastapi import HTTPException
 from external.api.models import ClienteModel
+from passlib.context import CryptContext
 from pydantic import BaseModel
 
 app = SingletonFastAPI.app().app
 cliente_controller = ClienteController()
-
+pedidos_controller = PedidoController()
 ### CLIENTES ###
 
 ## GET ##
@@ -25,16 +26,27 @@ async def retornar_cliente(cliente_id: int):
     except ClienteNotFoundException as e:
         raise HTTPException(status_code=404, detail=e.message)
     
+
+@app.get("/clientes/{cliente_id}/pedidos/")
+async def retornar_pedidos_pelo_ciente(cliente_id: int):
+    try:
+        return pedidos_controller.listar_por_cliente_id(MySQLConnection(), cliente_id)
+    except ClienteNotFoundException as e:
+        raise HTTPException(status_code=404, detail=e.message)
+
+
 ## POST ##
     
 @app.post("/clientes/", tags=['Clientes'])
-async def inserir_cliente(clienteDTO: ClienteModel):
+async def inserir_cliente(cliente: ClienteModel):
+    # pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
+
     try:
-        cliente = ClienteDTO(None, clienteDTO.cpf, clienteDTO.nome, clienteDTO.email, clienteDTO.telefone, clienteDTO.ativo)
-        
+        cliente = ClienteDTO(None, cliente.cpf, cliente.nome, cliente.email, cliente.hashed_password, cliente.telefone, cliente.ativo)
+        print(cliente)
         return cliente_controller.novo(cliente, MySQLConnection())
     except ClienteAlreadyExistsException as e:
-        raise HTTPException(status_code=404, detail=e.message)
+        raise HTTPException(status_code=409, detail=e.message)
 
 ## PUT ##
 
@@ -46,6 +58,7 @@ async def editar_cliente(cliente: ClienteModel) -> bool:
             cpf=cliente.cpf,
             nome=cliente.nome,
             email=cliente.email,
+            hashed_password=cliente.hashed_password,
             telefone=cliente.telefone,
             ativo=cliente.ativo
         ))        
@@ -60,24 +73,3 @@ async def deletar_cliente(cliente_id: int) -> bool:
         return cliente_controller.deletar(MySQLConnection(), cliente_id)
     except ClienteNotFoundException as e:
         raise HTTPException(status_code=404, detail=e.message)
-
-
-class LoginModel (BaseModel):
-    email:str
-    senha:str
-
-class AuthResponse (BaseModel):
-    auth: bool
-    token: str
-    rota:str
-
-## AUTH ##
-@app.post("/auth/login", tags=['Clientes'])
-async def login(loginDTO: LoginModel) -> AuthResponse:
-    auth = loginDTO.email=="admin" and loginDTO.senha=="admin"
-    if auth == False: return False
-    return {
-        "auth":True,
-        "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4ZjU4OWIyLTljNmYtNDhjZC1iYTVjLWQ1OGM2OWYyYmNiOCIsInJvbGUiOiJQQUNJRU5URSIsImlhdCI6MTY4MTkxMjY0MSwiZXhwIjoxNjgxOTk5MDQxfQ.FpL09UPBn7_4e9nx84QGh7Ekut14gdQl7Acp32KyMI",
-        "rota":"/paciente"
-    }

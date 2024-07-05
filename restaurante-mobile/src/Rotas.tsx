@@ -7,18 +7,30 @@ const Tab = createNativeStackNavigator();
 import Login from "./Login";
 import Cadastro from "./Cadastro";
 import Tabs from "./Tabs";
+import ProdutoDescricao from "./Tabs/ProdutoDescricao";
+import { PedidoDescricao } from "./Tabs/PedidoDescricao";
 
-export default function Rotas () {
+export default function Rotas() {
     return (
         <NavigationContainer independent={true}>
             <Tab.Navigator>
+                <Tab.Screen
+                    name="Tabs"
+                    component={Tabs}
+                    options={{
+                        headerShown: false // não mostra o header
+                    }}
+
+                />
+
                 <Tab.Screen
                     name="Login"
                     component={Login}
                     options={{
                         headerShown: false // não mostra o header
                     }}
-                    />
+                />
+
                 <Tab.Screen
                     name="Cadastro"
                     component={Cadastro}
@@ -26,13 +38,23 @@ export default function Rotas () {
                         headerShown: false // não mostra o header
                     }}
                 />
+
+
                 <Tab.Screen
-                    name="Tabs"
-                    component={Tabs}
+                    name="ProdutoDescricao"
+                    component={ProdutoDescricao}
                     options={{
                         headerShown: false // não mostra o header
                     }}
                 />
+                <Tab.Screen
+                    name="PedidoDescricao"
+                    component={PedidoDescricao}
+                    options={{
+                        headerShown: false // não mostra o header
+                    }}
+                />
+
             </Tab.Navigator>
         </NavigationContainer>
     )

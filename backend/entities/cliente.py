@@ -1,13 +1,22 @@
 from pydantic import BaseModel
 from validate_docbr import CPF
 
+# class Endereco():
+#     cep: str
+#     rua: str
+#     numero: str
+#     complemento: str
+#     estado: str
+
 class Cliente():
     id: int | None = None
     cpf: str | None = None
     nome: str | None = None
     email: str | None = None
+    hashed_password: str | None = None
     telefone: str | None = None
     ativo: bool = True
+    # endereco: Endereco | None = None
 
     def __init__(self,
         id: str | None = None,
@@ -15,7 +24,10 @@ class Cliente():
         nome: str | None = None,
         email: str | None = None,
         telefone: str | None = None,
-        ativo: bool = True):
+        ativo: bool = True,
+        hashed_password: str | None = None,
+        # endereco: Endereco | None = None
+        ):
         # if not CPF().validate(cpf): raise CPFInvalidoException
         # super().__init__(id = id,
         #     cpf = cpf,
@@ -29,5 +41,7 @@ class Cliente():
         self.cpf: str = cpf
         self.nome: str = nome
         self.email: str = email
+        self.hashed_password: str = hashed_password
         self.telefone: str = telefone
         self.ativo = ativo
+        # self.endereco = endereco

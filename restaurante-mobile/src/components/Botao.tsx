@@ -7,6 +7,9 @@ export default function Botao ({...rest}){
             bg="blue.800"
             mt="10"
             borderRadius="lg"
+            maxW={300}
+            justifyContent="center"
+            alignItems="center"
             {...rest} />
     )
 }

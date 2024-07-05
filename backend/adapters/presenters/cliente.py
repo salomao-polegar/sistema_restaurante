@@ -11,11 +11,13 @@ class ClienteAdapter:
         alldata = []
         
         for i in dados:
+            
             alldata.append({
                 'id': i.id, 
                 'cpf': i.cpf,
                 'nome': i.nome,
                 'email': i.email,
+                'hashed_password': i.hashed_password,
                 'telefone': i.telefone,
                 'ativo': i.ativo,
                 })

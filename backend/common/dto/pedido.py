@@ -1,6 +1,5 @@
 from typing import List, Dict
 from datetime import datetime
-from . import ProdutoDTO
 class PedidoDTO():
     id: int | None = None
     status_pedido: int | None = None
@@ -11,7 +10,7 @@ class PedidoDTO():
     datahora_finalizado: datetime | None = None
     status_pagamento: int | None = None
     id_pagamento: str = None
-    itens: Dict | None = None
+    itens: List[Dict] | None = None
     valor_total: float = 0
 
     def __init__(self,
@@ -24,7 +23,7 @@ class PedidoDTO():
     datahora_finalizado: datetime | None,
     status_pagamento: int | None,
     id_pagamento: str = None,
-    itens: Dict | None = None,
+    itens: List[Dict] | None = None,
     valor_total: float = None):
         
         self.id = id

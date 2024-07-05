@@ -14,6 +14,16 @@ class PedidoController:
             produto_gateway=ProdutoGateway(dbconnection)
             )
         return PedidoAdapter.pedidos_to_json(todosOsPedidos)
+
+    def listar_por_cliente_id(self, dbconnection: DbConnection, cliente_id) -> List[Dict]:
+        pedidos = PedidoUseCases().listar_pedidos_por_cliente_id(
+            cliente_id,
+            pedido_gateway=PedidoGateway(dbconnection),
+            item_gateway=ItemGateway(dbconnection),
+            produto_gateway=ProdutoGateway(dbconnection)
+            
+        )
+        return PedidoAdapter.pedidos_to_json(pedidos)
     
     def novo(self, pedido_dto: PedidoDTO,
             dbconnection: DbConnection):

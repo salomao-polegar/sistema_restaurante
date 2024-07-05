@@ -172,3 +172,4 @@ create-resources
 *.code-workspace
 stress_test
 ignoregit/
+restaurante-mobile/

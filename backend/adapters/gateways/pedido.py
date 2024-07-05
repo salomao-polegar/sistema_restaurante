@@ -49,6 +49,42 @@ class PedidoGateway (PedidoGatewayInterface):
                 
             
         return returnData
+    
+    def listar_pedidos_por_cliente_id(self, cliente_id) -> List[Pedido]:
+        ordem = [
+            ['status_pedido', 'ASC'],
+            ['datahora_recebido', "ASC"],
+            
+        ]
+        result = self.repositorio.buscar_por_parametros(
+            self.nomeTabela, 
+            None, 
+            [
+                ParametroBd(campo = "cliente", valor = cliente_id)
+            ], 
+            "OR",
+            ordem)
+
+        if result == None: return None
+        
+        returnData: List[Pedido] = []
+
+        for p in result:
+            returnData.append(PedidoDTO(
+                id = p['id'],
+                status_pedido= p['status_pedido'],
+                cliente= p['cliente'],
+                datahora_recebido= p['datahora_recebido'],
+                datahora_preparacao = p['datahora_preparacao'],
+                datahora_pronto = p['datahora_pronto'],
+                datahora_finalizado= p['datahora_finalizado'],
+                status_pagamento=p['status_pagamento'],
+                id_pagamento=p['id_pagamento']
+                ))
+        
+        print(returnData)
+            
+        return returnData
         
     def novo(self, pedido_dto: PedidoDTO) -> bool:
         parametros: List[ParametroBd] = []

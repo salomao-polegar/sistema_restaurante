@@ -34,10 +34,24 @@ class PedidoUseCases ():
             self, 
             pedido_gateway: PedidoGatewayInterface,
             item_gateway: ItemGatewayInterface,
-            produto_gateway: ProdutoGatewayInterface) -> List[Pedido]:
+            produto_gateway: ProdutoGatewayInterface) -> List[PedidoDTO]:
 
         return self.ajustar_pedidos_retorno(
             pedido_gateway.listar_todos(),
+            pedido_gateway,
+            produto_gateway,
+            item_gateway
+        )
+    
+    def listar_pedidos_por_cliente_id(
+            self, 
+            cliente_id: str | int,
+            pedido_gateway: PedidoGatewayInterface,
+            item_gateway: ItemGatewayInterface,
+            produto_gateway: ProdutoGatewayInterface) -> List[Pedido]:
+
+        return self.ajustar_pedidos_retorno(
+            pedido_gateway.listar_pedidos_por_cliente_id(cliente_id),
             pedido_gateway,
             produto_gateway,
             item_gateway

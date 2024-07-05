@@ -1,6 +1,3 @@
-from .pedido import PedidoDTO
-from .produto import ProdutoDTO
-
 class ItemDTO():
     pedido: int
     produto: int

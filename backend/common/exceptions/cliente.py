@@ -3,7 +3,7 @@ class ClienteNotFoundException(BaseException):
         self.message = message
 
 class ClienteAlreadyExistsException(BaseException):
-    def __init__(self, message = "Cliente já existe"):
+    def __init__(self, message = "CPF já cadastrado"):
         self.message = message
 
 class CPFInvalidoException(BaseException):

@@ -5,6 +5,9 @@ interface InputProps {
   placeholder: string;
   secureTextEntry?: boolean;
   value?: string;
+  required?: boolean;
+  w?: string | number;
+  
   onChangeText?: (text: string) => void;
 }
 
@@ -13,7 +16,11 @@ export function EntradaTexto ({
   placeholder, 
   secureTextEntry = false,
   value,
+  required = false,
+  w = "100%",
+  
   onChangeText
+
 } : InputProps) : JSX.Element {
   return (
     <FormControl mt={3}>
@@ -21,13 +28,14 @@ export function EntradaTexto ({
       <Input
         placeholder={placeholder}
         size="lg"
-        w="100%"
+        w={w}
         borderRadius="lg"
         bgColor="gray.100"
         secureTextEntry={secureTextEntry}
         shadow={3}
         value={value}
         onChangeText={onChangeText}
+        isRequired={required}
       />
     </FormControl>
   );

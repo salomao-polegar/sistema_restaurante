@@ -19,7 +19,7 @@ class ClienteGateway (ClienteGatewayInterface):
         else:
             returnData: List[Cliente] = []
             for c in result:
-                returnData.append(Cliente(id = c['id'], cpf = c['cpf'], nome = c['nome'], email= c['email'], telefone=c['telefone'], ativo=c['ativo']))
+                returnData.append(Cliente(id = c['id'], cpf = c['cpf'], nome = c['nome'], email= c['email'], hashed_password = c['hashed_password'], telefone=c['telefone'], ativo=c['ativo']))
             return returnData
         
     def novo(self, cliente_dto: ClienteDTO) -> bool:
@@ -27,6 +27,7 @@ class ClienteGateway (ClienteGatewayInterface):
         parametros.append(ParametroBd(campo = "cpf", valor = cliente_dto.cpf))
         parametros.append(ParametroBd(campo = "nome", valor = cliente_dto.nome))
         parametros.append(ParametroBd(campo = "email", valor = cliente_dto.email))
+        parametros.append(ParametroBd(campo = "hashed_password", valor = cliente_dto.hashed_password))
         parametros.append(ParametroBd(campo = "telefone", valor = cliente_dto.telefone))
         parametros.append(ParametroBd(campo = "ativo", valor = cliente_dto.ativo))
         
@@ -47,6 +48,7 @@ class ClienteGateway (ClienteGatewayInterface):
             cpf = retorno['cpf'], 
             nome = retorno['nome'], 
             email = retorno['email'], 
+            hashed_password = retorno['hashed_password'], 
             telefone = retorno['telefone'], 
             ativo = retorno['ativo'])
     
@@ -65,6 +67,7 @@ class ClienteGateway (ClienteGatewayInterface):
             cpf = retorno['cpf'], 
             nome = retorno['nome'], 
             email = retorno['email'], 
+            hashed_password = retorno['hashed_password'], 
             telefone = retorno['telefone'], 
             ativo = retorno['ativo'])
         
@@ -73,6 +76,7 @@ class ClienteGateway (ClienteGatewayInterface):
         parametros.append(ParametroBd(campo = "cpf", valor = cliente_dto.cpf))
         parametros.append(ParametroBd(campo = "nome", valor = cliente_dto.nome))
         parametros.append(ParametroBd(campo = "email", valor = cliente_dto.email))
+        parametros.append(ParametroBd(campo = "hashed_password", valor = cliente_dto.hashed_password))
         parametros.append(ParametroBd(campo = "telefone", valor = cliente_dto.telefone))
         parametros.append(ParametroBd(campo = "ativo", valor = cliente_dto.ativo))
         

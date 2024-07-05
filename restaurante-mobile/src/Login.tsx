@@ -7,15 +7,19 @@ import { useEffect, useState } from 'react';
 import { fazerLogin } from '@/servicos/autenticacaoServico';
 import { jwtDecode } from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Botao from './components/Botao';
+// import { useParams }  from 'react-router-dom'
 
-export default function Login({ navigation }:any) {
+export default function Login({ route, navigation }:any) {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [carregando, setCarregando] = useState(true)
   const toast = useToast();
-  
+  // const { emailParam } = useParams()
+
   useEffect(() => {
-    AsyncStorage.removeItem('token')
+    
+    // setEmail(String(emailParam))
     async function verificarLogin(){
       const token = await AsyncStorage.getItem('token')
       if (token) {
@@ -31,11 +35,10 @@ export default function Login({ navigation }:any) {
     const resultado = await fazerLogin(email, senha)
     if (resultado){
       // AsyncStorage: armazena informações namemória do dispositivo
-      const { token } = resultado
-      AsyncStorage.setItem('token', token)
-      const tokenDecodificado = jwtDecode(token) as any
-      const pacienteId = tokenDecodificado.id
-      AsyncStorage.setItem("pacienteId", pacienteId)
+      const { access_token, user } = resultado
+      AsyncStorage.setItem('token', access_token)
+      AsyncStorage.setItem("userId", user.id)
+      AsyncStorage.getItem("userId").then((item)=>console.log(item))
       navigation.navigate("Tabs")
     }
     else{
@@ -74,15 +77,11 @@ export default function Login({ navigation }:any) {
           onChangeText={setSenha}
           secureTextEntry />
       </Box>
-      <Button
-        w="100%"
-        bg="blue.800"
-        mt="10"
-        borderRadius="lg"
-        onPress={login}
+      <Botao
+        onPress={login}        
       >
         Entrar
-      </Button>
+      </Botao>
       <Link href='https://www.alura.com.br' mt={2}>
         Esqueceu sua senha?
       </Link>

@@ -5,6 +5,7 @@ class ClienteDTO():
     cpf: str
     nome: str
     email: str
+    hashed_password: str
     telefone: str
     ativo: bool
 
@@ -14,6 +15,7 @@ class ClienteDTO():
             cpf: str,
             nome: str,
             email: str,
+            hashed_password: str,
             telefone: str,
             ativo: bool):
         
@@ -21,5 +23,9 @@ class ClienteDTO():
         self.cpf = cpf
         self.nome = nome
         self.email = email
+        self.hashed_password = hashed_password
         self.telefone = telefone
         self.ativo = ativo
+
+    def __str__(self):
+        return str([self.id, self.cpf, self.nome, self.email, self.hashed_password, self.telefone, self.ativo])
