@@ -2,22 +2,29 @@
 
 ## Contexto
 
-O projeto é um back-end para gestão de pedidos através de totens automáticos de uma lanchonete, com todos os processos gerenciados através da API, que é capaz de gerenciar os clientes, produtos do cardápio e os pedidos realizados.
+    Sistema para gestão de pedidos de um restaurante, com todos os processos gerenciados através da API, que é capaz de gerenciar os clientes, produtos do cardápio e os pedidos realizados.
 
-Os produtos são divididos entre Lanches, Acompanhamentos, Bebidas e Sobremesas. 
-O cliente poderá acompanhar os status do pedido, sendo eles: Recebido, Em preparação, Pronto e Finalizado e o atendente/funcionário poderá atualizar estes status em tempo real.
+    Os produtos são divididos entre Lanches, Acompanhamentos, Bebidas e Sobremesas. 
+    
+    O cliente poderá acompanhar os status do pedido, sendo eles: Recebido, Em preparação, Pronto e Finalizado e o atendente/funcionário poderá atualizar estes status em tempo real.
 
 <i>A documentação da API estará disponível ao rodar o projeto, conforme passos abaixo descritos.</i>
 
-- Utilizamos arquitetura hexagonal para estruturar a API deste projeto, e o framework utilizado foi [FastAPI](https://fastapi.tiangolo.com/), em Python. 
+- Projeto desenvolvido com base na Arquitetura Limpa.
+- Utilização do framework [FastAPI](https://fastapi.tiangolo.com/), em Python. 
 - O banco de dados deste projeto é o MySQL.
 - O projeto é executado em containers do Docker. Você precisa ter o Docker instalado na sua máquina para executar a API.
+
+### Arquitetura
+
+### Infraestrutura
+
 
 ## Rodando o projeto
 
 O projeto tem instruções para a criação de dois containers, orquestrados com o Docker Compose. 
 
-### 1. Subir o docker-compose
+### Subir o docker-compose
 
 Na pasta `root` do repositório:
 
@@ -34,15 +41,15 @@ Para apagar os containers criados:
 docker rm tc_api -f; docker rm tc_database -f; 
 ```
 
-### 2. Acessar a documentação da API
+## Acessar a documentação da API
 
-A documentação da API contém uma lista de todos os endpoints do serviço. Para acessá-la, após a execução da etapa anterior, acesse a URL [http://127.0.0.1/redoc](http://127.0.0.1/redoc).
+A documentação da API contém uma lista de todos os endpoints do serviço. Para acessá-la, após a execução da etapa anterior, acesse a URL [http://127.0.0.1/docs](http://127.0.0.1/docs) ou [http://127.0.0.1/redoc](http://127.0.0.1/redoc).
 
-### 3. Instruções ###
+## Instruções ###
 
 Novos endpoints desaa fase:
 
-- i.	Checkout Pedido que deverá receber os produtos solicitados e retornar a identificação do pedido.
+- 1.	Checkout Pedido que deverá receber os produtos solicitados e retornar a identificação do pedido.
 
 Requisição POST no seguinte endpoint:
 
@@ -58,12 +65,16 @@ BODY da requisição:
         {
             "item": 3,
             "quantidade": 5,
-            "descricao": "sem tomate"
+            "descricao": "sem tomate",
+            "valor": 15.2,
+            
         },
         {
             "item": 2,
             "quantidade": 3,
-            "descricao": "com tomate"
+            "descricao": "com tomate",
+            "valor": 11,
+            
         }
     ]
 }
@@ -130,7 +141,7 @@ Body da requisição:
     "status_pedido": 4
 }
 ```
-Retorno:
+Retorno ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR :
 ```bash
 {
     "id": 2,
@@ -138,13 +149,16 @@ Retorno:
     "cliente": 2
 }
 ```
-- vi.	Como desafio extra, opcionalmente, você pode implementar a integração com Mercado Pago para gerar o QRCode para pagamento e integrar com o WebHook para capturar os pagamentos. Caso contrário, será necessário realizar o mock da parte de pagamentos. Como referência, acesse: <a href="https://www.mercadopago.com.br/developers/pt/docs/qr-code/integration-configuration/qr-dynamic/integration" rel="noopener" target="_blank">site do mercado pago</a>.
+### Pagamento
+Integração com Mercado Pago para gerar o QRCode para pagamento e integrar com o WebHook para capturar os pagamentos realizados. 
 
-<i> O pagamento tem uma integração fake com o MercadoPago. Ao realizar o checkout do pagamento, ele envia um pedido de pagamento, e salva no banco de dados do Pedido o id_pagamento retornado pelo MercadoPago.
+Como referência, acesse o <a href="https://www.mercadopago.com.br/developers/pt/docs/qr-code/integration-configuration/qr-dynamic/integration" rel="noopener" target="_blank">site do mercado pago</a>.
 
-Para receber a confirmação do pagamento, foi configurado um endpoint POST em que o MercadoPago vai enviar uma confirmação de pagamento ou de cancelamento, conforme item iii.
+Ao realizar o checkout do pagamento, o sistema envia um pedido de pagamento ao sistema do MercadoPago, salvando no bando de dados o id do pagamento retornado pelo MercadoPago.
 
-A requisição recebida seguirá o seguinte padrão:
+Para receber a confirmação do pagamento, foi configurado um endpoint POST (WebHook) em que o MercadoPago vai enviar uma confirmação de pagamento ou de cancelamento.
+
+A requisição recebida segue o seguinte padrão:
 
 ```bash
 {
@@ -158,9 +172,16 @@ A requisição recebida seguirá o seguinte padrão:
 ```
 
 onde:
-
+<i>
 ```bash
 "action": "state_FINISHED" --> FINALIZADO
 "action": "state_CANCELED" --> CANCELADO
-
 ```
+</i>
+
+## Demonstração
+
+https://youtube.com/dkjsafnksjdfbsdfsdhf
+
+## Créditos
+Sistema e documentação desenvolvidos por <Salomão Pôlegar>.
