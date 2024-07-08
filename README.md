@@ -2,11 +2,11 @@
 
 ## Contexto
 
-    Sistema para gestão de pedidos de um restaurante, com todos os processos gerenciados através da API, que é capaz de gerenciar os clientes, produtos do cardápio e os pedidos realizados.
+Sistema para gestão de pedidos de um restaurante, com todos os processos gerenciados através da API, que é capaz de gerenciar os clientes, produtos do cardápio e os pedidos realizados.
 
-    Os produtos são divididos entre Lanches, Acompanhamentos, Bebidas e Sobremesas. 
+Os produtos são divididos entre Lanches, Acompanhamentos, Bebidas e Sobremesas. 
     
-    O cliente poderá acompanhar os status do pedido, sendo eles: Recebido, Em preparação, Pronto e Finalizado e o atendente/funcionário poderá atualizar estes status em tempo real.
+O cliente poderá acompanhar os status do pedido, sendo eles: Recebido, Em preparação, Pronto e Finalizado e o atendente/funcionário poderá atualizar estes status em tempo real.
 
 <i>A documentação da API estará disponível ao rodar o projeto, conforme passos abaixo descritos.</i>
 
