@@ -8,7 +8,7 @@ from common.interfaces.gateways import ProdutoGatewayInterface
 class ProdutoUseCases ():
     def inserir_produto(self,
         produto_dto: ProdutoDTO,
-        produto_gateway: ProdutoGatewayInterface) -> bool:
+        produto_gateway: ProdutoGatewayInterface) -> Produto:
 
         novo_produto = Produto(
             id = None, 
@@ -18,8 +18,7 @@ class ProdutoUseCases ():
             descricao=produto_dto.descricao,
             ativo=produto_dto.ativo) 
 
-        produto_gateway.novo(novo_produto)
-        return True
+        return produto_gateway.novo(novo_produto)
     
     def listar_produtos(self, produto_gateway: ProdutoGatewayInterface) -> List[Produto]:
         return produto_gateway.listar_todos()
@@ -43,9 +42,13 @@ class ProdutoUseCases ():
     
     def editar_produto(self,
             produto_dto: ProdutoDTO,
-            produto_gateway: ProdutoGatewayInterface) -> True:
+            produto_gateway: ProdutoGatewayInterface) -> Produto:
+        
+        if not produto_dto.id: raise ProdutoNotFoundException
+        
         produto = produto_gateway.retornar_pelo_id(produto_dto.id)
-        if not produto: ProdutoNotFoundException
+        if not produto: raise ProdutoNotFoundException
+        
         produto_editar = Produto(
             id = produto_dto.id, 
             nome= produto_dto.nome,
@@ -54,10 +57,11 @@ class ProdutoUseCases ():
             descricao=produto_dto.descricao,
             ativo=produto_dto.ativo)
          
-        produto_gateway.editar(produto_editar)
-        return True             
+        
+        return produto_gateway.editar(produto_editar)
 
     def deletar_produto(self, produto_id: int, produto_gateway: ProdutoGatewayInterface) -> bool:
-        if not produto_gateway.retornar_pelo_id(produto_id): ProdutoNotFoundException()
+        produto_deletado = produto_gateway.retornar_pelo_id(produto_id)
+        if not produto_deletado: raise ProdutoNotFoundException()
         return produto_gateway.deletar(produto_id)
 

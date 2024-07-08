@@ -103,7 +103,7 @@ class ProdutoGateway (ProdutoGatewayInterface):
             return returnData
 
         
-    def novo(self, produto_dto: ProdutoDTO) -> bool:
+    def novo(self, produto_dto: ProdutoDTO) -> Produto:
         parametros: List[ParametroBd] = []
         
         parametros.append(ParametroBd(campo = "nome", valor = produto_dto.nome))
@@ -111,8 +111,17 @@ class ProdutoGateway (ProdutoGatewayInterface):
         parametros.append(ParametroBd(campo = "valor", valor = produto_dto.valor))
         parametros.append(ParametroBd(campo = "descricao", valor = produto_dto.descricao))
         parametros.append(ParametroBd(campo = "ativo", valor = produto_dto.ativo))
+        self.repositorio.inserir(self.nomeTabela, parametros)
+
+        id_inserido = self.repositorio.retorna_ultimo_id(self.nomeTabela)
         
-        return self.repositorio.inserir(self.nomeTabela, parametros)
+        return Produto(
+                    id = id_inserido,
+                    nome = produto_dto.nome,
+                    categoria = produto_dto.categoria,
+                    valor = produto_dto.valor,
+                    descricao = produto_dto.descricao,
+                    ativo = produto_dto.ativo) 
 
     def retornar_pelo_id(self, produto_id: int) -> Produto:
         retornoBd = self.repositorio.buscar_por_parametros(
@@ -132,7 +141,7 @@ class ProdutoGateway (ProdutoGatewayInterface):
                     descricao = p['descricao'],
                     ativo = p['ativo'])
         
-    def editar(self, produto_dto: ProdutoDTO) -> bool:
+    def editar(self, produto_dto: ProdutoDTO) -> Produto:
         parametros: List[ParametroBd] = []
         parametros.append(ParametroBd(campo = "nome", valor = produto_dto.nome))
         parametros.append(ParametroBd(campo = "categoria", valor = produto_dto.categoria))
@@ -146,7 +155,24 @@ class ProdutoGateway (ProdutoGatewayInterface):
             parametros
         )
         if retornoBd == None: return None
-        return True
+        
+        produto_editado = self.repositorio.buscar_por_parametros(
+            self.nomeTabela,
+            None,
+            [ParametroBd(campo = "id", valor = produto_dto.id)])
+
+        if produto_editado == None: return None
+        if len(produto_editado) < 1: return None
+
+        p = produto_editado[0]
+        return Produto(
+                    id = p['id'],
+                    nome = p['nome'],
+                    categoria = p['categoria'],
+                    valor = p['valor'],
+                    descricao = p['descricao'],
+                    ativo = p['ativo'])
+        
 
     def deletar(self, produto_id: int) -> bool:
         self.repositorio.deletar(

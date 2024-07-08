@@ -1,5 +1,5 @@
-from entities import Pedido, Produto, Item
-from common.exceptions import PedidoNotFoundException, ProdutoNotFoundException, ClienteNotFoundException
+from entities import Pedido, Produto, Item, ItemPedido
+from common.exceptions import PedidoNotFoundException, ProdutoNotFoundException, ClienteNotFoundException, PedidoEditadoComItensException
 from common.interfaces.gateways import PedidoGatewayInterface, ProdutoGatewayInterface, ItemGatewayInterface, ClienteGatewayInterface, PagamentoInterface   
 from common.dto import PedidoCheckoutDTO, WebhookResponseDTO, ItemDTO, PedidoDTO
 from typing import List
@@ -35,20 +35,27 @@ class PedidoUseCases ():
             pedido_gateway: PedidoGatewayInterface,
             item_gateway: ItemGatewayInterface,
             produto_gateway: ProdutoGatewayInterface) -> List[PedidoDTO]:
-
-        return self.ajustar_pedidos_retorno(
-            pedido_gateway.listar_todos(),
-            pedido_gateway,
-            produto_gateway,
-            item_gateway
+            
+            pedidos=pedido_gateway.listar_todos()
+            if not pedidos: return []
+            
+            pedido_ajustado = self.ajustar_pedidos_retorno(
+                pedidos,
+                    pedido_gateway,
+                    produto_gateway,
+                    item_gateway
         )
+            return pedido_ajustado
     
     def listar_pedidos_por_cliente_id(
             self, 
             cliente_id: str | int,
+            cliente_gateway: ClienteGatewayInterface,
             pedido_gateway: PedidoGatewayInterface,
             item_gateway: ItemGatewayInterface,
             produto_gateway: ProdutoGatewayInterface) -> List[Pedido]:
+        
+        
 
         return self.ajustar_pedidos_retorno(
             pedido_gateway.listar_pedidos_por_cliente_id(cliente_id),
@@ -63,7 +70,7 @@ class PedidoUseCases ():
             produto_gateway: ProdutoGatewayInterface) -> List[Pedido]:
         
         return self.ajustar_pedidos_retorno(
-            pedido_gateway.listar_pedidos_recebidos(),
+            pedido_gateway.listar_pedidos_por_status(1),
             pedido_gateway,
             produto_gateway,
             item_gateway)
@@ -75,7 +82,19 @@ class PedidoUseCases ():
             produto_gateway: ProdutoGatewayInterface) -> List[Pedido]:
         
         return self.ajustar_pedidos_retorno(
-            pedido_gateway.listar_pedidos_em_preparacao(),
+            pedido_gateway.listar_pedidos_por_status(2),
+            pedido_gateway,
+            produto_gateway,
+            item_gateway)
+    
+    def listar_pedidos_prontos(
+            self, 
+            pedido_gateway: PedidoGatewayInterface,
+            item_gateway: ItemGatewayInterface,
+            produto_gateway: ProdutoGatewayInterface) -> List[Pedido]:
+        
+        return self.ajustar_pedidos_retorno(
+            pedido_gateway.listar_pedidos_por_status(3),
             pedido_gateway,
             produto_gateway,
             item_gateway)
@@ -86,7 +105,7 @@ class PedidoUseCases ():
             produto_gateway: ProdutoGatewayInterface) -> List[Pedido]:
         
         return self.ajustar_pedidos_retorno(
-            pedido_gateway.listar_pedidos_finalizados(),
+            pedido_gateway.listar_pedidos_por_status(4),
             pedido_gateway,
             produto_gateway,
             item_gateway)
@@ -102,12 +121,32 @@ class PedidoUseCases ():
             produto_gateway,
             item_gateway)
 
-    def editar_pedido(self, pedido: Pedido, pedido_gateway: PedidoGatewayInterface) -> bool:
-        _p = pedido_gateway.retornar_pelo_id(pedido.id)
-
-        if not _p:
+    def editar_pedido(self, 
+                      pedido: Pedido, 
+                      pedido_gateway: PedidoGatewayInterface,
+                      item_gateway: ItemGatewayInterface,
+                      produto_gateway: ProdutoGatewayInterface,
+                      cliente_gateway: ClienteGatewayInterface) -> Pedido:
+        if not pedido.id:
             raise PedidoNotFoundException()
-        return pedido_gateway.editar(pedido)
+    
+        if not pedido_gateway.retornar_pelo_id(pedido.id):
+            raise PedidoNotFoundException()
+        
+        if not cliente_gateway.retornar_pelo_id(pedido.cliente):
+            raise ClienteNotFoundException()
+
+        print("itens:\n", pedido.itens)
+        if pedido.itens != None and pedido.itens != []:
+            raise PedidoEditadoComItensException()
+        
+        
+        
+        return self.ajustar_pedidos_retorno(
+            [pedido_gateway.editar(pedido)],
+            pedido_gateway,
+            produto_gateway,
+            item_gateway)[0]
 
     def deletar_pedido(self, pedido_id: int, pedido_gateway: PedidoGatewayInterface) -> bool:
         get_pedido = pedido_gateway.retornar_pelo_id(pedido_id)
@@ -117,11 +156,11 @@ class PedidoUseCases ():
         return pedido_gateway.deletar(pedido_id)
 
     def listar_fila(self, pedido_gateway: PedidoGatewayInterface) -> list:
-        return pedido_gateway.listar_fila()
+        return pedido_gateway.listar_pedidos_por_status(1)
 
     def checkout(
             self, 
-            produtos_checkout: PedidoCheckoutDTO,
+            pedido_checkout: PedidoCheckoutDTO,
             pedido_gateway: PedidoGatewayInterface, 
             produto_gateway: ProdutoGatewayInterface,
             item_gateway: ItemGatewayInterface,
@@ -129,47 +168,35 @@ class PedidoUseCases ():
             pagamento_gateway: PagamentoInterface) -> Pedido:
         # TODO
         # Recebe uma lista com produtos e retorna o pedido criado
-        for produto in produtos_checkout.itens:
-            prod = produto_gateway.retornar_pelo_id(produto.produto)
-            if not prod:
-                raise ProdutoNotFoundException()
-        cliente = cliente_gateway.retornar_pelo_id(produtos_checkout.id_cliente)
-        if not cliente:
-            raise ClienteNotFoundException()
         
-        pedido_gateway.novo(Pedido(cliente=produtos_checkout.id_cliente))
-
+        if not cliente_gateway.retornar_pelo_id(pedido_checkout.id_cliente): raise ClienteNotFoundException()
+        
+        pedido_gateway.novo(Pedido(cliente=pedido_checkout.id_cliente))
         pedido = pedido_gateway.retornar_pelo_id(pedido_gateway.retorna_ultimo_id())
 
-        for produto in produtos_checkout.itens:
-            novo_item = Item(produto=Produto(id=produto.produto), pedido=pedido, quantidade = produto.quantidade, descricao=produto.descricao)
-            item_gateway.novo(novo_item)
-            pedido.itens.append(novo_item)
         
-        # Enviar pedido de pagamento
+
+        for item in pedido_checkout.itens:
             
-        payment_data = {
-            "transaction_amount": self.retorna_valor_do_pedido(pedido.id, pedido_gateway, item_gateway, produto_gateway),
-            "token": "TOKEN-ALEATORIO-TESTE",
-            "description": pedido.id,
-            "payment_method_id": 1,
-            "notification_url":  "https://127.0.0.1/pedidos/status_pagamento/",
-            "payer": {
-                "email": cliente.email,
-                "identification": {
-                    "type": "teste", 
-                    "number": "teste"
-                }
+            produto = produto_gateway.retornar_pelo_id(item.produto)
+            if not produto: raise ProdutoNotFoundException()
 
-            }
-        }
-
-        pagamento = pagamento_gateway.enviar_pagamento(payment_data)
+            novo_item = Item(produto=produto, pedido=pedido, quantidade = item.quantidade, descricao=item.descricao, valor=produto.valor)
+            item_gateway.novo(novo_item)
+            # pedido.itens.append(ItemPedido(
+            #     valor=novo_item.valor, 
+            #     descricao=novo_item.descricao, 
+            #     produto=novo_item.produto.id, 
+            #     quantidade=novo_item.quantidade))
         
-        pedido.id_pagamento = pagamento['id_pagamento']
-        pedido_gateway.editar(pedido)
+        
         print('Pedido Use Cases:\n', pedido)
-        return pedido
+        return self.ajustar_pedidos_retorno(
+            [pedido], 
+            pedido_gateway=pedido_gateway,
+            item_gateway=item_gateway,
+            produto_gateway=produto_gateway
+            )[0]
     
         
     def retorna_status_pagamento(self, pedido_id: int, pedido_gateway: PedidoGatewayInterface) -> str:
@@ -192,62 +219,81 @@ class PedidoUseCases ():
         pedido_gateway.editar(pedido)
 
 
-    def retorna_valor_do_pedido(
-            self, 
-            pedido_id: int, 
-            pedido_gateway: PedidoGatewayInterface,
-            itens_gateway: ItemGatewayInterface,
-            produtos_gateway: ProdutoGatewayInterface
-            ) -> float:
-        pedido = pedido_gateway.retornar_pelo_id(pedido_id)
-        if not pedido or pedido == []:
-            raise PedidoNotFoundException()
-        # itens_no_pedido = pd.DataFrame(itens_gateway.listar_itens(pedido_id))
-        # valor = itens_no_pedido["valor"].sum()
-        itens_no_pedido = itens_gateway.listar_itens(pedido_id)
-        valor = 0
-        for item in itens_no_pedido:
-            quantidade = item.quantidade
-            produto = produtos_gateway.retornar_pelo_id(item.produto.id)
-            valor += quantidade * produto.valor
-        return valor        
+    
             
     def ajustar_pedidos_retorno(
             self, 
             pedidos: List[Pedido],
             pedido_gateway: PedidoGatewayInterface, 
             produto_gateway: ProdutoGatewayInterface,
-            item_gateway: ItemGatewayInterface):
+            item_gateway: ItemGatewayInterface) -> List[PedidoDTO]:
         pedidos_retorno = []
 
         for p in pedidos:
-            pedido: Pedido = pedido_gateway.retornar_pelo_id(p.id)
-            itens: List[Item] = item_gateway.listar_itens(p.id)
-
-            produtos = []
-            for item in itens:
-                produto = produto_gateway.retornar_pelo_id(item.produto.id)
-                produtos.append({
-                    "id" : produto.id,
-                    "nome" : produto.nome,
-                    "valor" : produto.valor,
-                    "quantidade" : item.quantidade
-                })
             
-            if not pedido:
-                raise PedidoNotFoundException()
-            pedido_dto = PedidoDTO(
-                id = pedido.id,
-                status_pedido=pedido.status_pedido,
-                cliente=pedido.cliente,
-                datahora_recebido=pedido.datahora_recebido,
-                datahora_preparacao=pedido.datahora_preparacao,
-                datahora_pronto=pedido.datahora_pronto,
-                datahora_finalizado=pedido.datahora_finalizado,
-                status_pagamento=pedido.status_pagamento,
-                id_pagamento=pedido.id_pagamento,
-                itens=produtos,
-                valor_total = self.retorna_valor_do_pedido(pedido.id, pedido_gateway, item_gateway, produto_gateway)
-            )
-            pedidos_retorno.append(pedido_dto)
+            itens: List[Item] = item_gateway.listar_itens(p.id)
+            
+            produtos = []
+            valor_total = 0
+            for item in itens:
+                produtos.append({
+                    "produto" : item.produto.id,
+                    "valor" : item.valor,
+                    "quantidade" : item.quantidade,
+                    "descricao": item.descricao
+                })
+                valor_total += item.valor * item.quantidade
+            p.itens = produtos
+            p.valor_total = valor_total
+            
+            pedidos_retorno.append(p)
+
         return pedidos_retorno
+    
+
+
+
+    # Enviar pedido de pagamento
+            
+        # def retorna_valor_do_pedido(
+        #     self, 
+        #     pedido_id: int, 
+        #     pedido_gateway: PedidoGatewayInterface,
+        #     itens_gateway: ItemGatewayInterface,
+        #     produtos_gateway: ProdutoGatewayInterface
+        #     ) -> float:
+        # pedido = pedido_gateway.retornar_pelo_id(pedido_id)
+        # if not pedido or pedido == []:
+        #     raise PedidoNotFoundException()
+        # # itens_no_pedido = pd.DataFrame(itens_gateway.listar_itens(pedido_id))
+        # # valor = itens_no_pedido["valor"].sum()
+        # itens_no_pedido = itens_gateway.listar_itens(pedido_id)
+        # valor = 0
+        # for item in itens_no_pedido:
+        #     quantidade = item.quantidade
+        #     produto = produtos_gateway.retornar_pelo_id(item.produto.id)
+        #     valor += quantidade * produto.valor
+        # return valor        
+    
+        # payment_data = {
+        #     "transaction_amount": self.retorna_valor_do_pedido(pedido.id, pedido_gateway, item_gateway, produto_gateway),
+        #     "token": "TOKEN-ALEATORIO-TESTE",
+        #     "description": pedido.id,
+        #     "payment_method_id": 1,
+        #     "notification_url":  "https://127.0.0.1/pedidos/status_pagamento/",
+        #     "payer": {
+        #         "email": "cliente.email",
+        #         "identification": {
+        #             "type": "teste", 
+        #             "number": "teste"
+        #         }
+
+        #     }
+        # }
+
+        # pagamento = pagamento_gateway.enviar_pagamento(payment_data)
+        
+        # pedido.id_pagamento = pagamento['id_pagamento']
+        # pedido_gateway.editar(pedido)
+
+        ######

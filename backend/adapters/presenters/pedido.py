@@ -1,9 +1,9 @@
 from common.dto import PedidoDTO
-from typing import Protocol, List
-import json
+from typing import Dict, List
+
 
 class PedidoAdapter:
-    def pedidos_to_json(dados: List[PedidoDTO] | None) -> str:
+    def pedidos_to_json(dados: List[PedidoDTO] | None) -> List[Dict]:
         """ Recebe uma lista de Pedidos e retorna uma Lista de Dict"""
         if not dados: return {}
         if type(dados) == bool: return dados
@@ -11,7 +11,7 @@ class PedidoAdapter:
         alldata = []
         
         for i in dados:
-            print(i.itens)
+            
             to_append = {
                 'id' : i.id,
                 'status_pedido' : i.status_pedido,
@@ -29,10 +29,10 @@ class PedidoAdapter:
             if i.itens:
                 for item in i.itens:
                     produtos.append(item)
-                to_append['itens'] = produtos
+            to_append['itens'] = produtos
             to_append['valor_total'] = i.valor_total
 
             alldata.append(to_append)
             
-        
+        # print('PEDIDO: ', alldata)
         return alldata

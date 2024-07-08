@@ -13,11 +13,14 @@ class PedidoController:
             item_gateway=ItemGateway(dbconnection),
             produto_gateway=ProdutoGateway(dbconnection)
             )
-        return PedidoAdapter.pedidos_to_json(todosOsPedidos)
+        pedidosRetorno = PedidoAdapter.pedidos_to_json(todosOsPedidos)
+        # print("Pedidos Retorno", pedidosRetorno)
+        return pedidosRetorno
 
     def listar_por_cliente_id(self, dbconnection: DbConnection, cliente_id) -> List[Dict]:
         pedidos = PedidoUseCases().listar_pedidos_por_cliente_id(
             cliente_id,
+            cliente_gateway=ClienteGateway(dbconnection),
             pedido_gateway=PedidoGateway(dbconnection),
             item_gateway=ItemGateway(dbconnection),
             produto_gateway=ProdutoGateway(dbconnection)
@@ -38,12 +41,18 @@ class PedidoController:
             ItemGateway(db_connection),
             ProdutoGateway(db_connection)
             )
-        return PedidoAdapter.pedidos_to_json([retorno_pedido])
+        return PedidoAdapter.pedidos_to_json([retorno_pedido])[0]
     
     
-    def editar(self, db_connection: DbConnection, pedido_dto: PedidoDTO) -> bool:
+    def editar(self, db_connection: DbConnection, pedido_dto: PedidoDTO) -> Dict:
         
-        return PedidoUseCases().editar_pedido(pedido_dto, PedidoGateway(db_connection))
+        return PedidoAdapter.pedidos_to_json(
+            [PedidoUseCases().editar_pedido(pedido_dto, 
+                                            PedidoGateway(db_connection), 
+                                            ItemGateway(db_connection), 
+                                            ProdutoGateway(db_connection),
+                                            ClienteGateway(db_connection))
+                                            ])[0]
 
     def deletar(self, db_connection: DbConnection, pedido_id: int) -> bool:
         return PedidoUseCases().deletar_pedido(pedido_id, PedidoGateway(db_connection))
@@ -59,6 +68,15 @@ class PedidoController:
 
     def listar_pedidos_em_preparacao(self, db_connection: DbConnection) -> List[Dict]:
         todosOsPedidos = PedidoUseCases().listar_pedidos_em_preparacao(
+            
+            pedido_gateway=PedidoGateway(db_connection),
+            item_gateway=ItemGateway(db_connection),
+            produto_gateway=ProdutoGateway(db_connection)
+        )
+        return PedidoAdapter.pedidos_to_json(todosOsPedidos)
+    
+    def listar_pedidos_prontos(self, db_connection: DbConnection) -> List[Dict]:
+        todosOsPedidos = PedidoUseCases().listar_pedidos_prontos(
             
             pedido_gateway=PedidoGateway(db_connection),
             item_gateway=ItemGateway(db_connection),
@@ -95,16 +113,6 @@ class PedidoController:
             db_connection: DbConnection,
             pagamento_connection: PagamentoInterface) -> Dict:
         
-     # pedido = {
-    #     "id_cliente": 1,
-    #     "itens": [
-    #         {
-    #             "produto": 1,
-    #             "quantidade": 3,
-    #             "descricao": "descricao"
-    #         }
-    #     ]
-    # }
         
         pedido = PedidoUseCases().checkout(pedido_dto,
             PedidoGateway(db_connection), 
@@ -113,7 +121,7 @@ class PedidoController:
             ClienteGateway(db_connection),
             MercadoPagoGateway(pagamento_connection))
         
-        return PedidoAdapter.pedidos_to_json([pedido])
+        return PedidoAdapter.pedidos_to_json([pedido])[0]
         
     def retorna_status_pagamento(self, pedido_id: int, db_connection: DbConnection) -> str:
         

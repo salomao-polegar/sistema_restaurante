@@ -1,9 +1,8 @@
 from entities import Produto
-from typing import Protocol, List
-import json
+from typing import Dict, List
 
 class ProdutoAdapter:
-    def produtos_to_json(dados: List[Produto] | None) -> str:
+    def produtos_to_json(dados: List[Produto] | None) -> List[Dict]:
         """ Recebe uma lista de Produtos e retorna uma Lista de Dict"""
         if not dados: return {}
         if type(dados) == bool: return dados

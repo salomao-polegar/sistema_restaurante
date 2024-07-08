@@ -15,27 +15,24 @@ class SingletonFastAPI():
             {
                 "name": "Clientes",
                 "description": "Você pode criar, editar, remover e retornar a lista de clientes.",
-                # "externalDocs": {
-                #     "description": "Items external docs",
-                #     "url": "https://fastapi.tiangolo.com/",
-                # },
             },
             {
                 "name": "Pedidos",
                 "description": "Você pode gerenciar os pedidos do restaurante e alterar suas situações.",
             
             },
-            {
-                "name": "Itens",
-                "description": "Você pode gerenciar os itens dentro dos pedidos"
-            }
+            # {
+            #     "name": "Itens",
+            #     "description": "Você pode gerenciar os itens dentro dos pedidos"
+            # }
         ]
 
         self.app = FastAPI(
             title = "restauranteAPI",
             description = "API desenvolvida no contexto do Tech Challenge do curso de pós graduação em Software Architecture da FIAP",
             version='1.0.0',
-            openapi_tags= tags_metadata
+            openapi_tags= tags_metadata,
+            swagger_ui_parameters={"operationsSorter": "method"}
         )
         self.app.add_middleware(
             CORSMiddleware,

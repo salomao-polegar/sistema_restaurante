@@ -3,7 +3,7 @@ from entities.produto import Produto
 from common.dto import ProdutoDTO
 
 class ProdutoGatewayInterface(Protocol):
-    def novo(self, produto_dto: ProdutoDTO) -> bool:
+    def novo(self, produto_dto: ProdutoDTO) -> Produto:
         pass
      
     def retornar_pelo_id(self, produto_id: int) -> Produto:
@@ -12,7 +12,7 @@ class ProdutoGatewayInterface(Protocol):
     def listar_todos(self) -> List[Produto]:
         pass
     
-    def editar(self, produto_dto: ProdutoDTO) -> bool:
+    def editar(self, produto_dto: ProdutoDTO) -> Produto:
         pass
 
     def deletar(self, produto_id: int) -> bool:

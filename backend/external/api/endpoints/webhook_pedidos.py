@@ -22,7 +22,7 @@ class webhookModel(BaseModel):
 
 
 @app.post('/pedidos/status_pagamento/', tags=['Pedidos'])
-async def retorna_status_pagamento(status_pagamento: webhookModel) -> Response:
+async def webhook_status_pagamento(status_pagamento: webhookModel) -> Response:
     try:
         pedido_controller.atualiza_status_pagamento(status_pagamento, MySQLConnection())
         return status.HTTP_200_OK

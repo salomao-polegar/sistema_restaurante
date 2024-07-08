@@ -1,8 +1,8 @@
 from entities import Item
-from typing import List
+from typing import List, Dict
 
 class ItemAdapter:
-    def items_to_json(dados: List[Item] | None) -> str:
+    def items_to_json(dados: List[Item] | None) -> List[Dict]:
         """ Recebe uma lista de Items e retorna uma Lista de Dict"""
         if not dados: return {}
         if type(dados) == bool: return dados

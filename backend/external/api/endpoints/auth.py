@@ -12,6 +12,7 @@ from adapters.controllers import ClienteController
 from external import MySQLConnection
 from typing import List
 import hashlib
+from common.exceptions import MysqlConnectionException
 
 app = SingletonFastAPI.app().app
 cliente_controller = ClienteController()
@@ -24,17 +25,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 users_db = cliente_controller.listar_todos(MySQLConnection())
-# [
-#     {
-#         "id": 1,
-#         "cpf": null,
-#         "nome": "SEM IDENTIFICAÇÃO",
-#         "email": null,
-#         "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-#         "telefone": null,
-#         "ativo": 1
-#     }
-# ]
+
 
 class UsuarioNaoEncontradoException(BaseException):
     def __init__(self, message = "Usuário não encontrado"):
@@ -126,6 +117,7 @@ async def get_current_active_user(
 async def login(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
+    
     user: ClienteModel = authenticate_user(users_db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
@@ -138,12 +130,14 @@ async def login(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer", user=user)
+    
 
 
 @app.get("/users/me", tags=['Users'])
 async def retornar_usuario_logado(
     current_user: Annotated[ClienteModel, Depends(get_current_active_user)],
 ):
+    
     return current_user
 
 @app.get("/users/me/pedidos", tags=['Users'])

@@ -162,8 +162,6 @@ cython_debug/
 desktop.ini
 Instruções
 dockercompose.yml
-frontend/
-clean_architecture.jpg
 backend/tests
 checklist.docx
 secret-mysql.yaml
@@ -172,4 +170,4 @@ create-resources
 *.code-workspace
 stress_test
 ignoregit/
-restaurante-mobile/
+.vscode/

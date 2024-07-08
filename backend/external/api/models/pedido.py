@@ -6,12 +6,13 @@ from pydantic import BaseModel
 class ItemCheckoutModel(BaseModel):
     produto: int
     quantidade: int
-    descricao: str
+    valor: float
+    descricao: str | None = None
 class PedidoModel(BaseModel):
     id: int | None = None
     status_pedido: int | None = None
     cliente: int
-    itens: List[ItemCheckoutModel]
+    itens: List[ItemCheckoutModel] | None = None
     datahora_recebido: datetime | None = None
     datahora_preparacao: datetime | None = None
     datahora_pronto: datetime | None = None
@@ -26,6 +27,7 @@ class ItemModel(BaseModel):
     pedido: int
     quantidade: int = 0
     descricao: str | None
+    valor: float
     
     
 class PedidoCheckoutModel(BaseModel):

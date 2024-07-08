@@ -5,7 +5,18 @@ class ItemPedido():
     produto: str | None = None
     quantidade: int | None = None
     descricao: str | None = None
+    valor: float
 
+    def __init__(self,
+                produto: str | None,
+                quantidade: int | None,
+                descricao: str | None,
+                valor: float):
+
+        self.produto = produto
+        self.quantidade = quantidade
+        self.descricao = descricao
+        self.valor = valor
 class Pedido():
     id: int | None = None
     status_pedido: int | None = None
@@ -17,6 +28,7 @@ class Pedido():
     datahora_finalizado: datetime | None = None    
     status_pagamento: int | None = None
     id_pagamento: str | None = None
+    valor_total: float
 
     def __init__(self,
             id: int | None = None,
@@ -28,7 +40,8 @@ class Pedido():
             datahora_pronto: datetime | None = None,
             datahora_finalizado: datetime | None = None,
             status_pagamento: int | None = None,
-            id_pagamento: str | None = None):
+            id_pagamento: str | None = None,
+            valor_total: float = 0):
         
         self.id = id
         self.status_pedido = status_pedido
@@ -40,5 +53,6 @@ class Pedido():
         self.datahora_finalizado = datahora_finalizado
         self.status_pagamento = status_pagamento
         self.id_pagamento = id_pagamento
+        self.valor_total = valor_total
 
     

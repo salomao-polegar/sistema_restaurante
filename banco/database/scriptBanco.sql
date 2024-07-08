@@ -105,14 +105,15 @@ CREATE TABLE itens (
     pedido int, 
     produto int, 
     quantidade int, 
+    valor decimal(7, 2),
     descricao VARCHAR (100),
     PRIMARY KEY (pedido, produto),
     FOREIGN KEY (produto) REFERENCES produtos(id) ON DELETE CASCADE,
     FOREIGN KEY (pedido) REFERENCES pedidos(id) ON DELETE CASCADE);
 -- Tabela que contém os produtos adicionados em um pedido
 
-INSERT INTO itens (pedido, produto, quantidade) VALUES
-(1, 1, 42),
-(1, 2, 21),
-(2, 2, 2),
-(3, 4, 4);
+INSERT INTO itens (pedido, produto, quantidade, valor) VALUES
+(1, 1, 42, 22.9),
+(1, 2, 21, 33.4),
+(2, 2, 2, 10),
+(3, 4, 4, 9);

@@ -14,13 +14,14 @@ class ItemGateway(ItemGatewayInterface):
     def __init__(self, repositorio: DbConnection):
         self.repositorio = repositorio
 
-    def novo(self, item_dto: Item) -> bool:
+    def novo(self, item_dto: ItemDTO) -> bool:
         parametros: List[ParametroBd] = []
         
         parametros.append(ParametroBd(campo = "produto", valor = item_dto.produto.id))
         parametros.append(ParametroBd(campo = "pedido", valor = item_dto.pedido.id))
         parametros.append(ParametroBd(campo = "quantidade", valor = item_dto.quantidade))
         parametros.append(ParametroBd(campo = "descricao", valor = item_dto.descricao))
+        parametros.append(ParametroBd(campo = "valor", valor = item_dto.valor))
         
         
         return self.repositorio.inserir(self.nomeTabela, parametros)
@@ -41,7 +42,8 @@ class ItemGateway(ItemGatewayInterface):
                     produto= Produto(id=p['produto']),
                     pedido = Pedido(id=p['pedido']),
                     quantidade = p['quantidade'],
-                    descricao = p['descricao']))
+                    descricao = p['descricao'],
+                    valor = p['valor']))
                 
             return returnData
         

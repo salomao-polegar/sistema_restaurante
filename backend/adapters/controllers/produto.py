@@ -32,17 +32,17 @@ class ProdutoController:
         return ProdutoAdapter.produtos_to_json(sobremesas)
 
     def novo(self, produto_dto: ProdutoDTO,
-            dbconnection: DbConnection):
-
-        return ProdutoAdapter.produtos_to_json(ProdutoUseCases().inserir_produto(produto_dto, ProdutoGateway(dbconnection)))
+            dbconnection: DbConnection) -> Dict:
+        
+        return ProdutoAdapter.produtos_to_json([ProdutoUseCases().inserir_produto(produto_dto, ProdutoGateway(dbconnection))])[0]
     
-    def retornar_pelo_id(self, db_connection: DbConnection, produto_id: int) -> List[Dict]:
+    def retornar_pelo_id(self, db_connection: DbConnection, produto_id: int) -> Dict:
         produtoGateway = ProdutoGateway(db_connection)
         retorno_produto = ProdutoUseCases().retornar_pelo_id(produto_id, produtoGateway)
-        return ProdutoAdapter.produtos_to_json([retorno_produto])
+        return ProdutoAdapter.produtos_to_json([retorno_produto])[0]
     
     
-    def editar(self, db_connection: DbConnection, produto_dto: ProdutoDTO) -> bool:
+    def editar(self, db_connection: DbConnection, produto_dto: ProdutoDTO) -> ProdutoDTO:
         
         return ProdutoUseCases().editar_produto(produto_dto, ProdutoGateway(db_connection))
 

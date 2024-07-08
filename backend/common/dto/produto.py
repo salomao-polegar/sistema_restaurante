@@ -21,4 +21,5 @@ class ProdutoDTO():
         self.descricao = descricao
         self.ativo = ativo
 
-
+    def __str__(self):
+        return str([self.id, self.nome, self.categoria, self.valor, self.descricao, self.ativo])

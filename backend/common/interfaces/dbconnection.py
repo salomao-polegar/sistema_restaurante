@@ -1,8 +1,12 @@
 from common.tipos import ParametroBd
-from typing import Protocol
+from typing import Protocol, List
 
 class DbConnection (Protocol):
-  def buscar_por_parametros(nomeTabela: str, campos: list[str] | None, parametros: list[ParametroBd]):
+  def buscar_por_parametros(nomeTabela: str, 
+                            campos: list[str] | None, 
+                            parametros: list[ParametroBd],
+                            tipo_where: str = "AND",
+                            ordem: List[List[str]] | None = None):
     pass
 
   def buscar_todas(nomeTabela: str, campos: list[str] | None = None):

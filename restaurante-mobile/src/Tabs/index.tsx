@@ -32,7 +32,7 @@ const tabs = [
     {
         name: 'Carrinho',
         component: Carrinho,
-        icon: 'list-box'
+        icon: 'list'
     },
 
     // {

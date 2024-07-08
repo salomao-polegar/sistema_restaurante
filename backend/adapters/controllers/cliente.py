@@ -12,23 +12,23 @@ class ClienteController:
         return ClienteAdapter.clientes_to_json(todosOsClientes)
         
     def novo(self, cliente_dto: ClienteDTO,
-            dbconnection: DbConnection):
+            dbconnection: DbConnection) -> Dict:
 
-        return ClienteAdapter.clientes_to_json(ClienteUseCases().inserir_cliente(cliente_dto, ClienteGateway(dbconnection)))
+        return ClienteAdapter.clientes_to_json([ClienteUseCases().inserir_cliente(cliente_dto, ClienteGateway(dbconnection))])[0]
     
     def retornar_pelo_id(self, db_connection: DbConnection, cliente_id: int) -> List[Dict]:
         clienteGateway = ClienteGateway(db_connection)
         retorno_cliente = ClienteUseCases().retornar_pelo_id(cliente_id, clienteGateway)
-        return ClienteAdapter.clientes_to_json([retorno_cliente])
+        return ClienteAdapter.clientes_to_json([retorno_cliente])[0]
     
     def retornar_pelo_cpf(self, db_connection: DbConnection, cliente_cpf: int) -> List[Dict]:
         clienteGateway = ClienteGateway(db_connection)
         retorno_cliente = ClienteUseCases().retornar_pelo_cpf(cliente_cpf, clienteGateway)
         return ClienteAdapter.clientes_to_json([retorno_cliente])
     
-    def editar(self, db_connection: DbConnection, cliente_dto: ClienteDTO) -> bool:
+    def editar(self, db_connection: DbConnection, cliente_dto: ClienteDTO) -> Dict:
         
-        return ClienteUseCases().editar_cliente(cliente_dto, ClienteGateway(db_connection))
+        return ClienteAdapter.clientes_to_json([ClienteUseCases().editar_cliente(cliente_dto, ClienteGateway(db_connection))])[0]
 
     def deletar(self, db_connection: DbConnection, cliente_id: int) -> bool:
         return ClienteUseCases().deletar_cliente(cliente_id, ClienteGateway(db_connection))

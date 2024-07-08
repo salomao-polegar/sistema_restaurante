@@ -4,7 +4,7 @@ from external import MySQLConnection
 from fastapi import HTTPException
 from adapters.controllers import ProdutoController
 from common.dto import ProdutoDTO
-from common.exceptions import ProdutoNotFoundException
+from common.exceptions import ProdutoNotFoundException, MysqlConnectionException
 from external.api.models import ProdutoModel
 from typing import List
 app = SingletonFastAPI.app().app
@@ -17,42 +17,66 @@ produto_controller = ProdutoController()
 @app.get("/produtos/{produto_id}", tags=['Produtos'])
 async def retornar_produto_pelo_id(produto_id: int) -> ProdutoModel:
     try:
-        return produto_controller.retornar_pelo_id(MySQLConnection(), produto_id)
+        produto = produto_controller.retornar_pelo_id(MySQLConnection(), produto_id)
+        print("Produto:\n", produto)
+        return produto
     except ProdutoNotFoundException as e:
         raise HTTPException(status_code=404, detail = e.message)
+    except MysqlConnectionException as e:
+        raise HTTPException(status_code=503, detail= e.message)
 
 @app.get("/produtos/", tags=['Produtos'])
 async def listar_todos_os_produtos() -> List[ProdutoModel]:
-    return produto_controller.listar_todos(MySQLConnection())
+    try:
+        return produto_controller.listar_todos(MySQLConnection())
+    except MysqlConnectionException as e:
+        raise HTTPException(status_code=503, detail= e.message)
 
 @app.get("/lanches/", tags=['Produtos'])
 async def listar_lanches() -> List[ProdutoModel]:
-    return produto_controller.listar_lanches(MySQLConnection())
+    try:
+        return produto_controller.listar_lanches(MySQLConnection())
+    except MysqlConnectionException as e:
+        raise HTTPException(status_code=503, detail= e.message)
 
 @app.get("/acompanhamentos/", tags=['Produtos'])
 async def listar_acompanhamentos() -> List[ProdutoModel]:
-    return produto_controller.listar_acompanhamentos(MySQLConnection())
+    try:
+        return produto_controller.listar_acompanhamentos(MySQLConnection())
+    except MysqlConnectionException as e:
+        raise HTTPException(status_code=503, detail= e.message)
 
 @app.get("/bebidas/", tags=['Produtos'])
 async def listar_bebidas() -> List[ProdutoModel]:
-    return produto_controller.listar_bebidas(MySQLConnection())
+    try:
+        return produto_controller.listar_bebidas(MySQLConnection())
+    except MysqlConnectionException as e:
+        raise HTTPException(status_code=503, detail= e.message)
     
 @app.get("/sobremesas/", tags=['Produtos'])
 async def listar_sobremesas() -> List[ProdutoModel]:
-    return produto_controller.listar_sobremesas(MySQLConnection())
+    try:
+        return produto_controller.listar_sobremesas(MySQLConnection())
+    except MysqlConnectionException as e:
+        raise HTTPException(status_code=503, detail= e.message)
 
 ## POST ##
 
 @app.post("/produtos/", tags=['Produtos'])
 async def cadastrar_produto(produto: ProdutoModel) -> ProdutoModel:
-    produto_dto = ProdutoDTO(
-        None,
-        produto.nome,
-        produto.categoria,
-        produto.valor,
-        produto.descricao,
-        produto.ativo) 
-    return produto_controller.novo(produto_dto, MySQLConnection())
+    try:
+        produto_dto = ProdutoDTO(
+            None,
+            produto.nome,
+            produto.categoria,
+            produto.valor,
+            produto.descricao,
+            produto.ativo) 
+        produto = produto_controller.novo(produto_dto, MySQLConnection())
+        
+        return  produto
+    except MysqlConnectionException as e:
+        raise HTTPException(status_code=503, detail= e.message)
 
 ## PUT ##
 
@@ -69,6 +93,8 @@ async def editar_produto(produto: ProdutoModel) -> ProdutoModel:
         ))
     except ProdutoNotFoundException as e:
         raise HTTPException(status_code=404, detail = e.message)
+    except MysqlConnectionException as e:
+        raise HTTPException(status_code=503, detail= e.message)
 
 ## DELETE ##
     
@@ -78,4 +104,6 @@ async def deletar_produto(produto_id: int) -> bool:
         return produto_controller.deletar(MySQLConnection(), produto_id)
     except ProdutoNotFoundException as e:
         raise HTTPException(status_code=404, detail = e.message)
+    except MysqlConnectionException as e:
+        raise HTTPException(status_code=503, detail= e.message)
     
