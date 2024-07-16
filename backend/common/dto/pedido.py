@@ -6,6 +6,7 @@ class ItemPedido():
     produto: int
     quantidade: int
     descricao: str
+
 class PedidoDTO():
     id: int | None = None
     status_pedido: int | None = None
@@ -49,3 +50,7 @@ class PedidoDTO():
 class PedidoCheckoutDTO():
     id_cliente: int
     itens: List[ItemPedido]
+
+# class PedidoAtualizarStatusDTO():
+#     id: int
+#     status_pedido: int

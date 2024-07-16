@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from adapters.controllers import PedidoController
 from common.dto import PedidoDTO
 from common.exceptions import PedidoNotFoundException, ClienteNotFoundException, ProdutoNotFoundException, PedidoEditadoComItensException, MysqlConnectionException
-from external.api.models import PedidoCheckoutModel, PedidoModel, ClienteModel
+from external.api.models import PedidoCheckoutModel, PedidoModel, PedidoEditarModel
 from typing import Dict
 
 app = SingletonFastAPI.app().app
@@ -126,7 +126,7 @@ async def checkout(pedido: PedidoCheckoutModel) -> PedidoModel:
 ## PUT ##
 
 @app.put("/pedidos/", tags=['Pedidos'])
-async def editar_pedido(pedido: PedidoModel) -> PedidoModel:
+async def editar_pedido(pedido: PedidoEditarModel) -> PedidoModel:
     try:
         
         return pedido_controller.editar(MySQLConnection(), PedidoDTO(
@@ -146,6 +146,22 @@ async def editar_pedido(pedido: PedidoModel) -> PedidoModel:
         raise HTTPException(status_code=422, detail = e.message)
     except MysqlConnectionException as e:
         raise HTTPException(status_code=503, detail= e.message)
+    
+# @app.put("/pedidos/status/", tags=['Pedidos'])
+# async def editar_pedido(pedido: PedidoAtualizarStatusModel) -> PedidoModel:
+#     try:
+        
+#         return pedido_controller.editar_status(MySQLConnection(), PedidoAtualizarStatusDTO(
+#         id=pedido.id,
+#         status_pedido=pedido.status_pedido))
+#     except PedidoNotFoundException as e:
+#         raise HTTPException(status_code=404, detail = e.message)
+#     except ClienteNotFoundException as e:
+#         raise HTTPException(status_code=404, detail = e.message)
+#     except PedidoEditadoComItensException as e:
+#         raise HTTPException(status_code=422, detail = e.message)
+#     except MysqlConnectionException as e:
+#         raise HTTPException(status_code=503, detail= e.message)
     
     
 ## DELETE ##

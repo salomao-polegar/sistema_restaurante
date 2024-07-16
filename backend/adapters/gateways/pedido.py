@@ -15,7 +15,7 @@ class PedidoGateway (PedidoGatewayInterface):
     
     def listar_todos(self) -> List[Pedido]:
         ordem = [
-            ['status_pedido', 'ASC'],
+            ['status_pedido', 'DESC'],
             ['datahora_recebido', "ASC"],
             
         ]
@@ -158,6 +158,39 @@ class PedidoGateway (PedidoGatewayInterface):
                       id_pagamento=p['id_pagamento'],
                       status_pagamento=p['status_pagamento'],
                       status_pedido=p['status_pedido'])
+    
+    # def editar_status_pedido(self, pedido_dto: PedidoDTO) -> Pedido:
+        
+    #     parametros: List[ParametroBd] = []
+    #     parametros.append(ParametroBd(campo = "status_pedido", valor = pedido_dto.status_pedido))
+        
+    #     retornoBd = self.repositorio.editar(
+    #         self.nomeTabela,
+    #         [ParametroBd(campo = "id", valor = pedido_dto.id)],
+    #         parametros
+    #     )
+    #     if retornoBd == None: return None
+        
+        
+    #     pedido_editado = self.repositorio.buscar_por_parametros(
+    #         self.nomeTabela,
+    #         None,
+    #         [ParametroBd(campo = "id", valor = pedido_dto.id)])
+
+    #     if pedido_editado == None: return None
+    #     if len(pedido_editado) < 1: return None
+
+    #     p = pedido_editado[0]
+
+    #     return Pedido(id=p['id'],
+    #                   cliente=p['cliente'],
+    #                   datahora_finalizado=p['datahora_finalizado'],
+    #                   datahora_preparacao=p['datahora_preparacao'],
+    #                   datahora_pronto=p['datahora_pronto'],
+    #                   datahora_recebido=p['datahora_recebido'],
+    #                   id_pagamento=p['id_pagamento'],
+    #                   status_pagamento=p['status_pagamento'],
+    #                   status_pedido=p['status_pedido'])
 
     def deletar(self, pedido_id: int) -> bool:
         self.repositorio.deletar(

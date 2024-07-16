@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-from validate_docbr import CPF
+# from common.exceptions.cliente import CPFInvalidoException
+# from validate_docbr import CPF
 
 # class Endereco():
 #     cep: str
@@ -29,13 +29,6 @@ class Cliente():
         # endereco: Endereco | None = None
         ):
         # if not CPF().validate(cpf): raise CPFInvalidoException
-        # super().__init__(id = id,
-        #     cpf = cpf,
-        #     nome = nome,
-        #     email = email,
-        #     telefone = telefone,
-        #     ativo = ativo)
-
         
         self.id: int = id
         self.cpf: str = cpf
@@ -44,4 +37,3 @@ class Cliente():
         self.hashed_password: str = hashed_password
         self.telefone: str = telefone
         self.ativo = ativo
-        # self.endereco = endereco

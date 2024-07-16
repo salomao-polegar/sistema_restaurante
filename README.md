@@ -2,7 +2,7 @@
 
 ## Contexto
 
-Sistema para gestão de pedidos de um restaurante, com todos os processos gerenciados através da API, que é capaz de gerenciar os clientes, produtos do cardápio e os pedidos realizados.
+Sistema para gestão de pedidos de um restaurante, com todos os processos gerenciados através da API, que é capaz de administrar os clientes, produtos do cardápio e os pedidos realizados.
 
 Os produtos são divididos entre Lanches, Acompanhamentos, Bebidas e Sobremesas. 
     
@@ -54,6 +54,8 @@ Novos endpoints desaa fase:
 Requisição POST no seguinte endpoint:
 
 ```bash 
+POST:
+
 http://127.0.0.1/pedidos/checkout/
 ```
 
@@ -63,17 +65,17 @@ BODY da requisição:
     "id_cliente": 1,
     "itens": [
         {
-            "item": 3,
+            "produto": 3,
             "quantidade": 5,
             "descricao": "sem tomate",
-            "valor": 15.2,
+            "valor": 15.2
             
         },
         {
-            "item": 2,
+            "produto": 2,
             "quantidade": 3,
             "descricao": "com tomate",
-            "valor": 11,
+            "valor": 11
             
         }
     ]
@@ -85,7 +87,9 @@ BODY da requisição:
 Requisição GET no seguinte endpoint:
 
 ```bash 
-http://127.0.0.1/pedidos/status_pagamento/{id_pedido}
+GET:
+
+http://127.0.0.1/pedidos/{id_pedido}/status_pagamento/
 ```
 
 Retorno da requisição:
@@ -100,13 +104,15 @@ Retorno da requisição:
 Requisição POST no seguinte endpoint:
 
 ```bash 
+POST:
+
 http://127.0.0.1/pedidos/status_pagamento/
 ```
 
 BODY da requisição:
 ```bash
 {
-    "id": "94da0f6e-8ab3-4caf-a7aa-51aecb340e15",
+    "id": "b715bik7-2726-4d51-a729-749cc7bda703",
     "type": "payment",
     "date_created": "2015-03-25 10:04:58",
     "user_id": 44444,
@@ -115,14 +121,24 @@ BODY da requisição:
 }
 ```
 
+Onde:
+
+```bash
+"action": "state_CANCELED" --> Pagamento cancelado
+"action": "state_FINISHED" --> Pagamento realizado com sucesso
+```
+Obs.: no exemplo acima, o id_pagamento foi pré-configurado diretamente no banco de dados, e deve retornar o pedido com id 1
+
 - iv. A lista de pedidos deverá retorná-los com suas descrições, ordenados com a seguinte regra:
         1. Pronto &gt; Em Preparação &gt; Recebido;
         2. Pedidos mais antigos primeiro e mais novos depois;
         3. Pedidos com status Finalizado não devem aparecer na lista.
 
-Requisição GET no seguinte endpoint:
+Requisição no seguinte endpoint:
 
 ```bash 
+GET:
+
 http://127.0.0.1/pedidos/
 ```
 
@@ -131,6 +147,8 @@ http://127.0.0.1/pedidos/
 <i>Para alterar o status do pedido, usamos o PUT com o endpoint de pedido, enviando um objeto com o ID e os dados a serem editados (no caso, o status):</i>
 
 ```bash 
+PUT:
+
 http://127.0.0.1/pedidos/
 ```
 
@@ -141,14 +159,8 @@ Body da requisição:
     "status_pedido": 4
 }
 ```
-Retorno ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR ARRUMAR :
-```bash
-{
-    "id": 2,
-    "status_pedido": 4,
-    "cliente": 2
-}
-```
+
+
 ### Pagamento
 Integração com Mercado Pago para gerar o QRCode para pagamento e integrar com o WebHook para capturar os pagamentos realizados. 
 
@@ -162,7 +174,7 @@ A requisição recebida segue o seguinte padrão:
 
 ```bash
 {
-    "id": "94da0f6e-8ab3-4caf-a7aa-51aecb340e15",
+    "id": "b715bik7-2726-4d51-a729-749cc7bda703",
     "type": "payment",
     "date_created": "2015-03-25 10:04:58",
     "user_id": 44444,

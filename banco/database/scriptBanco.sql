@@ -84,6 +84,8 @@ CREATE TABLE pedidos (
 -- AGUARDANDO = 1
 -- APROVADO = 2
 -- RECUSADO = 3
+INSERT INTO pedidos (cliente, id_pagamento) 
+VALUES (1, "b715bik7-2726-4d51-a729-749cc7bda703");
 
 INSERT INTO pedidos(datahora_recebido, status_pedido, cliente) VALUES
 ('2024-03-10 20:38:05', 2, 1),
@@ -100,6 +102,7 @@ INSERT INTO pedidos(datahora_recebido, status_pedido, cliente) VALUES
 ('2024-02-01 20:38:05', 3, 1),
 ('2024-12-25 20:38:05', 3, 2),
 ('2024-08-12 20:38:05', 2, 3);
+
 
 CREATE TABLE itens (
     pedido int, 

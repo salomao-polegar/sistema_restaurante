@@ -1,6 +1,7 @@
 
 from external.api.SingletonFastAPI import SingletonFastAPI
 from external import MySQLConnection
+from external.api.models import PedidoModel
 from fastapi import HTTPException, Response, status
 from adapters.controllers import PedidoController
 from common.dto import ProdutoDTO
@@ -22,10 +23,8 @@ class webhookModel(BaseModel):
 
 
 @app.post('/pedidos/status_pagamento/', tags=['Pedidos'])
-async def webhook_status_pagamento(status_pagamento: webhookModel) -> Response:
+async def webhook_status_pagamento(status_pagamento: webhookModel) -> PedidoModel:
     try:
-        pedido_controller.atualiza_status_pagamento(status_pagamento, MySQLConnection())
-        return status.HTTP_200_OK
-    
+        return pedido_controller.atualiza_status_pagamento(status_pagamento, MySQLConnection())
     except PedidoNotFoundException as e:
         raise HTTPException(status_code=404, detail = e.message)

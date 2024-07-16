@@ -1,7 +1,7 @@
-from entities import Pedido, Produto, Item, ItemPedido
+from entities import Pedido, Item
 from common.exceptions import PedidoNotFoundException, ProdutoNotFoundException, ClienteNotFoundException, PedidoEditadoComItensException
 from common.interfaces.gateways import PedidoGatewayInterface, ProdutoGatewayInterface, ItemGatewayInterface, ClienteGatewayInterface, PagamentoInterface   
-from common.dto import PedidoCheckoutDTO, WebhookResponseDTO, ItemDTO, PedidoDTO
+from common.dto import PedidoCheckoutDTO, WebhookResponseDTO, PedidoDTO
 from typing import List
 import pandas as pd
 
@@ -133,10 +133,10 @@ class PedidoUseCases ():
         if not pedido_gateway.retornar_pelo_id(pedido.id):
             raise PedidoNotFoundException()
         
-        if not cliente_gateway.retornar_pelo_id(pedido.cliente):
-            raise ClienteNotFoundException()
+        if pedido.cliente:
+            if not cliente_gateway.retornar_pelo_id(pedido.cliente):
+                raise ClienteNotFoundException()
 
-        print("itens:\n", pedido.itens)
         if pedido.itens != None and pedido.itens != []:
             raise PedidoEditadoComItensException()
         
@@ -147,6 +147,24 @@ class PedidoUseCases ():
             pedido_gateway,
             produto_gateway,
             item_gateway)[0]
+    
+    # def editar_status_pedido(self, 
+    #                   pedido: Pedido, 
+    #                   pedido_gateway: PedidoGatewayInterface,
+    #                   item_gateway: ItemGatewayInterface,
+    #                   produto_gateway: ProdutoGatewayInterface
+    #                   ) -> Pedido:
+    #     if not pedido.id:
+    #         raise PedidoNotFoundException()
+    
+    #     if not pedido_gateway.retornar_pelo_id(pedido.id):
+    #         raise PedidoNotFoundException()
+        
+    #     return self.ajustar_pedidos_retorno(
+    #         [pedido_gateway.editar_status_pedido(pedido)],
+    #         pedido_gateway,
+    #         produto_gateway,
+    #         item_gateway)[0]
 
     def deletar_pedido(self, pedido_id: int, pedido_gateway: PedidoGatewayInterface) -> bool:
         get_pedido = pedido_gateway.retornar_pelo_id(pedido_id)
@@ -190,7 +208,6 @@ class PedidoUseCases ():
             #     quantidade=novo_item.quantidade))
         
         
-        print('Pedido Use Cases:\n', pedido)
         return self.ajustar_pedidos_retorno(
             [pedido], 
             pedido_gateway=pedido_gateway,
@@ -201,22 +218,28 @@ class PedidoUseCases ():
         
     def retorna_status_pagamento(self, pedido_id: int, pedido_gateway: PedidoGatewayInterface) -> str:
         pedido = pedido_gateway.retornar_pelo_id(pedido_id)
-        if not pedido:
-            raise PedidoNotFoundException()
+        if not pedido: raise PedidoNotFoundException()
         
         return pedido_gateway.retorna_status_pagamento(pedido_id)
 
-    def atualiza_status_pagamento(self, status: WebhookResponseDTO, pedido_gateway: PedidoGatewayInterface):
-        pedido: Pedido = pedido_gateway.retornar_pelo_id_pagamento(status.id)
-        if not pedido:
-            raise PedidoNotFoundException
+    def atualiza_status_pagamento(self, 
+                                  status: WebhookResponseDTO, 
+                                  pedido_gateway: PedidoGatewayInterface,
+                                  item_gateway: ItemGatewayInterface,
+                                  produto_gateway: ProdutoGatewayInterface,
+                                  cliente_gateway: ClienteGatewayInterface
+                                  ) -> Pedido:
+        
+        pedido = pedido_gateway.retornar_pelo_id_pagamento(status.id)
+        
+        if not pedido: raise PedidoNotFoundException()
         
         if status.action == "state_FINISHED":
             pedido.status_pagamento = 2
         elif status.action == "state_CANCELED":
             pedido.status_pagamento = 3
 
-        pedido_gateway.editar(pedido)
+        return self.editar_pedido(pedido, pedido_gateway, item_gateway, produto_gateway, cliente_gateway)
 
 
     

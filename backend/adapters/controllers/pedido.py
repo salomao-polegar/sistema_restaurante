@@ -54,6 +54,16 @@ class PedidoController:
                                             ClienteGateway(db_connection))
                                             ])[0]
 
+    # def editar_status(self, db_connection: DbConnection, pedido_dto: PedidoAtualizarStatusDTO) -> Dict:
+        
+    #     return PedidoAdapter.pedidos_to_json(
+    #         [PedidoUseCases().editar_status_pedido(pedido_dto, 
+    #                                         PedidoGateway(db_connection),
+    #                                         ItemGateway(db_connection), 
+    #                                         ProdutoGateway(db_connection),
+    #                                         )
+    #                                         ])[0]
+
     def deletar(self, db_connection: DbConnection, pedido_id: int) -> bool:
         return PedidoUseCases().deletar_pedido(pedido_id, PedidoGateway(db_connection))
 
@@ -129,10 +139,10 @@ class PedidoController:
         
         return PedidoUseCases().retorna_status_pagamento(pedido_id, pedidosGateway)
 
-    def atualiza_status_pagamento(self, status: WebhookResponseDTO, db_connection: DbConnection) -> str:
+    def atualiza_status_pagamento(self, status: WebhookResponseDTO, db_connection: DbConnection) -> PedidoDTO:
         
-        pedidosGateway = PedidoGateway(db_connection)
-        
-        PedidoUseCases().atualiza_status_pagamento(status, pedidosGateway)
-
-        return True
+        return PedidoUseCases().atualiza_status_pagamento(status, 
+                                                          PedidoGateway(db_connection),
+                                                          ItemGateway(db_connection),
+                                                          ProdutoGateway(db_connection),
+                                                          ClienteGateway(db_connection))

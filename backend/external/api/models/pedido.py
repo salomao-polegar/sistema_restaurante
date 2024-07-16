@@ -8,10 +8,11 @@ class ItemCheckoutModel(BaseModel):
     quantidade: int
     valor: float
     descricao: str | None = None
-class PedidoModel(BaseModel):
+
+class PedidoBaseModel(BaseModel):
     id: int | None = None
     status_pedido: int | None = None
-    cliente: int
+    
     itens: List[ItemCheckoutModel] | None = None
     datahora_recebido: datetime | None = None
     datahora_preparacao: datetime | None = None
@@ -21,6 +22,11 @@ class PedidoModel(BaseModel):
     id_pagamento: str | None = None
     valor_total: float = 0
 
+class PedidoModel(PedidoBaseModel):
+    cliente: int
+
+class PedidoEditarModel(PedidoBaseModel):
+    cliente: int | None = None
 
 class ItemModel(BaseModel):
     produto: int
@@ -33,3 +39,7 @@ class ItemModel(BaseModel):
 class PedidoCheckoutModel(BaseModel):
     id_cliente: int
     itens: List[ItemCheckoutModel]
+
+# class PedidoAtualizarStatusModel(BaseModel):
+#     id: int
+#     status_pedido: int

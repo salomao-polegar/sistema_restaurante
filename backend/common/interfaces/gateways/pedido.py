@@ -18,6 +18,9 @@ class PedidoGatewayInterface(Protocol):
     def editar(self, pedido_dto: PedidoDTO) -> Pedido:
         pass
 
+    # def editar_status_pedido(self, pedido_dto: PedidoAtualizarStatusDTO)->Pedido:
+    #     pass
+
     def deletar(self, pedido_id: int) -> bool:
         pass
 
@@ -48,6 +51,6 @@ class PedidoGatewayInterface(Protocol):
     def retorna_ultimo_id(self) -> int:
         pass
 
-    def retornar_pelo_id_pagamento(self, id_pagamento):
+    def retornar_pelo_id_pagamento(self, id_pagamento: str) -> Pedido:
         pass
 
