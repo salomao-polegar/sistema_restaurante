@@ -8,8 +8,6 @@ Os produtos são divididos entre Lanches, Acompanhamentos, Bebidas e Sobremesas.
     
 O cliente poderá acompanhar os status do pedido, sendo eles: Recebido, Em preparação, Pronto e Finalizado e o atendente/funcionário poderá atualizar estes status em tempo real.
 
-<i>A documentação da API estará disponível ao rodar o projeto, conforme passos abaixo descritos.</i>
-
 - Projeto desenvolvido com base na Arquitetura Limpa.
 - Utilização do framework [FastAPI](https://fastapi.tiangolo.com/), em Python. 
 - O banco de dados deste projeto é o MySQL.
