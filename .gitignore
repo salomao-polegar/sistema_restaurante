@@ -164,7 +164,6 @@ Instruções
 dockercompose.yml
 backend/tests
 checklist.docx
-secret-mysql.yaml
 docker-secret.yaml
 create-resources
 *.code-workspace

@@ -41,9 +41,40 @@ Para apagar os containers criados:
 docker rm tc_api -f; docker rm tc_database -f; 
 ```
 
+## Rodando com Kubernetes
+
+Este projeto também possui instruções para execução dos containers com kubernetes (k8s), incluindo autoescalonamento horizontal de pods (HPA).
+
+O k8s vai ser executado com base nas imagens no docker hub salomaopolegar/restaurante:1.3 e salomaopolegar/banco:1.3
+
+Entrar na pasta k8s e executar os seguintes comandos: 
+
+```bash
+kubectl apply -f secret-mysql.yaml; 
+kubectl apply -f configmap.yaml; 
+kubectl apply -f pv-mysql.yaml; 
+kubectl apply -f pvc-mysql.yaml; 
+kubectl apply -f deployment-backend.yaml; 
+kubectl apply -f deployment-mysql.yaml; 
+kubectl apply -f svc-backend.yaml; 
+kubectl apply -f svc-mysql.yaml; 
+kubectl apply -f metrics.yaml; 
+kubectl apply -f hpa.yaml
+```
+
+Para monitorar o autoprovisionamento de pods:
+```bash
+kubectl get hpa --watch
+```
+
+Para acessar a API, acessar a url http://127.0.0.1:
+
 ## Acessar a documentação da API
 
-A documentação da API contém uma lista de todos os endpoints do serviço. Para acessá-la, após a execução da etapa anterior, acesse a URL [http://127.0.0.1/docs](http://127.0.0.1/docs) ou [http://127.0.0.1/redoc](http://127.0.0.1/redoc).
+A documentação da API contém uma lista de todos os endpoints do serviço. Para acessá-la, após a execução da etapa anterior, acesse a URL:
+-  [http://127.0.0.1/docs](http://127.0.0.1/docs) ou [http://127.0.0.1/redoc](http://127.0.0.1/redoc), se rodou com o docker compose.
+
+-  [http://127.0.0.1:31000/docs](http://127.0.0.1:31000/docs) ou [http://127.0.0.1:31000/redoc](http://127.0.0.1:31000/redoc), se rodou com o k8s.
 
 ## Instruções ###
 
@@ -196,4 +227,4 @@ onde:
 https://youtube.com/dkjsafnksjdfbsdfsdhf
 
 ## Créditos
-Sistema e documentação desenvolvidos por <Salomão Pôlegar>.
+Sistema e documentação desenvolvidos por [Salomão Pôlegar](https://www.linkedin.com/in/salomao-polegar/).
