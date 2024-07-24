@@ -24,9 +24,6 @@ O prjeto possui duas imagens-base, uma com o banco de dados e outra com o backen
 
 <img src="arquitetura.png">
 
-### Infraestrutura
-
-
 ## Rodando o projeto
 
 O projeto tem instruções para a criação de dois containers, orquestrados com o Docker Compose. 
@@ -74,8 +71,6 @@ Para monitorar o autoprovisionamento de pods:
 kubectl get hpa --watch
 ```
 
-Para acessar a API, acessar a url http://127.0.0.1:
-
 ## Acessar a documentação da API
 
 A documentação da API contém uma lista de todos os endpoints do serviço. Para acessá-la, após a execução da etapa anterior, acesse a URL:
@@ -94,7 +89,7 @@ Requisição POST no seguinte endpoint:
 ```bash 
 POST:
 
-http://127.0.0.1/pedidos/checkout/
+http://127.0.0.1:31000/pedidos/checkout/
 ```
 
 BODY da requisição:
@@ -127,7 +122,7 @@ Requisição GET no seguinte endpoint:
 ```bash 
 GET:
 
-http://127.0.0.1/pedidos/{id_pedido}/status_pagamento/
+http://127.0.0.1:31000/pedidos/{id_pedido}/status_pagamento/
 ```
 
 Retorno da requisição:
@@ -144,7 +139,7 @@ Requisição POST no seguinte endpoint:
 ```bash 
 POST:
 
-http://127.0.0.1/pedidos/status_pagamento/
+http://127.0.0.1:31000/pedidos/status_pagamento/
 ```
 
 BODY da requisição:
@@ -177,7 +172,7 @@ Requisição no seguinte endpoint:
 ```bash 
 GET:
 
-http://127.0.0.1/pedidos/
+http://127.0.0.1:31000/pedidos/
 ```
 
 - v.	Atualizar o status do pedido.
@@ -187,7 +182,7 @@ http://127.0.0.1/pedidos/
 ```bash 
 PUT:
 
-http://127.0.0.1/pedidos/
+http://127.0.0.1:31000/pedidos/
 ```
 
 Body da requisição:
