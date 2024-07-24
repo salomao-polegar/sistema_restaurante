@@ -17,6 +17,10 @@ O cliente poderá acompanhar os status do pedido, sendo eles: Recebido, Em prepa
 
 ### Arquitetura
 
+O prjeto possui duas imagens-base, uma com o banco de dados e outra com o backend do projeto. Com o kubernetes, o backend possui um hpa (Horizontal Pod Autoscaling), que aumenta e diminui automaticamente a quantidade de pods ativos de acordo com métricas de CPU e memória.
+
+<img src="arquitetura.png">
+
 ### Infraestrutura
 
 

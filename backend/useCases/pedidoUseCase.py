@@ -3,14 +3,20 @@ from common.exceptions import PedidoNotFoundException, ProdutoNotFoundException,
 from common.interfaces.gateways import PedidoGatewayInterface, ProdutoGatewayInterface, ItemGatewayInterface, ClienteGatewayInterface, PagamentoInterface   
 from common.dto import PedidoCheckoutDTO, WebhookResponseDTO, PedidoDTO
 from typing import List
+import uuid
 import pandas as pd
 
 class PedidoUseCases ():
-    def inserir_pedido(self, 
-        pedido_dto: Pedido,
-        pedido_gateway: PedidoGatewayInterface) -> bool:         
-        pedido_gateway.novo(pedido_dto)
-        return True      
+    # def inserir_pedido(self, 
+    #     pedido_dto: Pedido,
+    #     pedido_gateway: PedidoGatewayInterface,
+    #     cliente_gateway: ClienteGatewayInterface) -> bool:    
+
+    #     if not cliente_gateway.retornar_pelo_id(pedido_dto.cliente):
+    #         raise ClienteNotFoundException()
+
+    #     pedido_gateway.novo(pedido_dto)
+    #     return True      
     
     def retornar_pedido(
             self, 
@@ -127,16 +133,19 @@ class PedidoUseCases ():
                       item_gateway: ItemGatewayInterface,
                       produto_gateway: ProdutoGatewayInterface,
                       cliente_gateway: ClienteGatewayInterface) -> Pedido:
+        
         if not pedido.id:
             raise PedidoNotFoundException()
     
         if not pedido_gateway.retornar_pelo_id(pedido.id):
             raise PedidoNotFoundException()
         
-        if pedido.cliente:
-            if not cliente_gateway.retornar_pelo_id(pedido.cliente):
-                raise ClienteNotFoundException()
-
+        if not pedido.cliente:
+            raise ClienteNotFoundException()
+        
+        if not cliente_gateway.retornar_pelo_id(pedido.cliente):
+            raise ClienteNotFoundException()
+        
         if pedido.itens != None and pedido.itens != []:
             raise PedidoEditadoComItensException()
         
@@ -190,7 +199,10 @@ class PedidoUseCases ():
         if not cliente_gateway.retornar_pelo_id(pedido_checkout.id_cliente): raise ClienteNotFoundException()
         
         
-        pedido_gateway.novo(Pedido(cliente=pedido_checkout.id_cliente))
+        pedido_gateway.novo(Pedido(
+            cliente=pedido_checkout.id_cliente, 
+            id_pagamento=str(uuid.uuid4()), status_pagamento=1 # mock
+                                   ))
         pedido = pedido_gateway.retornar_pelo_id(pedido_gateway.retorna_ultimo_id())
 
         

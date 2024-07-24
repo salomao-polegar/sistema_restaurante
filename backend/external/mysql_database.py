@@ -207,6 +207,7 @@ class MySQLConnection (DbConnection):
         else:
             valores = []
             for campo in campos:
+                
                 if type(campo) == str:
                     valores.append("'" + campo + "'")
                 elif type(campo) == bool:

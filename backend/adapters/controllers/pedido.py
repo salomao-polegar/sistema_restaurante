@@ -28,10 +28,14 @@ class PedidoController:
         )
         return PedidoAdapter.pedidos_to_json(pedidos)
     
-    def novo(self, pedido_dto: PedidoDTO,
-            dbconnection: DbConnection):
+    # def novo(self, pedido_dto: PedidoDTO,
+    #         dbconnection: DbConnection):
 
-        return PedidoAdapter.pedidos_to_json(PedidoUseCases().inserir_pedido(pedido_dto, PedidoGateway(dbconnection)))
+    #     return PedidoAdapter.pedidos_to_json(PedidoUseCases().inserir_pedido(
+    #         pedido_dto, 
+    #         PedidoGateway(dbconnection),
+    #         ClienteGateway(dbconnection)
+    #         ))
     
     def retornar_pelo_id(self, db_connection: DbConnection, pedido_id: int) -> List[Dict]:
         

@@ -89,7 +89,7 @@ class PedidoGateway (PedidoGatewayInterface):
     def novo(self, pedido_dto: PedidoDTO) -> bool:
         parametros: List[ParametroBd] = []
         
-        parametros.append(ParametroBd(campo = "status_pedido", valor = pedido_dto.status_pedido))
+        parametros.append(ParametroBd(campo = "id_pagamento", valor = pedido_dto.id_pagamento))
         parametros.append(ParametroBd(campo = "cliente", valor = pedido_dto.cliente))
         parametros.append(ParametroBd(campo = "status_pagamento", valor = pedido_dto.status_pagamento))
         
