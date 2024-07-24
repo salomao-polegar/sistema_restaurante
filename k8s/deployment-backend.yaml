@@ -71,11 +71,11 @@ spec:
                 key: MYSQL_PORT
         resources:
           limits:
-            cpu: "100m"
-            memory: "512Mi"
+            cpu: "1.2"
+            memory: "1.5Gi"
           requests:
-            cpu: "100m"
-            memory: "256Mi"
+            cpu: "1.2"
+            memory: "1.5Gi"
             
       #   volumeMounts:
       #     - name:  shared

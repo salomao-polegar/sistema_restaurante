@@ -296,34 +296,34 @@ class PedidoGateway (PedidoGatewayInterface):
             
     #     return returnData
 
-    def listar_pedidos_nao_finalizados(self) -> List[Pedido]:
-        result = self.repositorio.buscar_por_parametros(
-            self.nomeTabela,
-            None,
-            [ParametroBd(campo = "status_pedido", valor = 1),
-            ParametroBd(campo = "status_pedido", valor = 2),
-            ParametroBd(campo = "status_pedido", valor = 3)],
-            "OR")
+    # def listar_pedidos_nao_finalizados(self) -> List[Pedido]:
+    #     result = self.repositorio.buscar_por_parametros(
+    #         self.nomeTabela,
+    #         None,
+    #         [ParametroBd(campo = "status_pedido", valor = 1),
+    #         ParametroBd(campo = "status_pedido", valor = 2),
+    #         ParametroBd(campo = "status_pedido", valor = 3)],
+    #         "OR")
 
-        if result == None: return None
-        if len(result) < 1: return None
+    #     if result == None: return None
+    #     if len(result) < 1: return None
         
-        returnData: List[Pedido] = []
-        for p in result:
-            returnData.append(Pedido(
-                id = p['id'],
-                status_pedido= p['status_pedido'],
-                cliente= p['cliente'],
-                datahora_recebido= p['datahora_recebido'],
-                datahora_preparacao = p['datahora_preparacao'],
-                datahora_pronto = p['datahora_pronto'],
-                datahora_finalizado= p['datahora_finalizado'],
-                status_pagamento=p['status_pagamento'],
-                id_pagamento=p['id_pagamento']))
+    #     returnData: List[Pedido] = []
+    #     for p in result:
+    #         returnData.append(Pedido(
+    #             id = p['id'],
+    #             status_pedido= p['status_pedido'],
+    #             cliente= p['cliente'],
+    #             datahora_recebido= p['datahora_recebido'],
+    #             datahora_preparacao = p['datahora_preparacao'],
+    #             datahora_pronto = p['datahora_pronto'],
+    #             datahora_finalizado= p['datahora_finalizado'],
+    #             status_pagamento=p['status_pagamento'],
+    #             id_pagamento=p['id_pagamento']))
             
-        return returnData
+    #     return returnData
     
-    # def listar_fila(self) -> list:
+    # # def listar_fila(self) -> list:
     #     result = self.repositorio.buscar_por_parametros(
     #         self.nomeTabela,
     #         None,

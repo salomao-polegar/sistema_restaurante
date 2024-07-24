@@ -36,8 +36,8 @@ class PedidoGatewayInterface(Protocol):
     # def listar_pedidos_finalizados(self) -> List[Pedido]:
     #     pass
 
-    def listar_pedidos_nao_finalizados(self) -> List[Pedido]:
-        pass
+    # def listar_pedidos_nao_finalizados(self) -> List[Pedido]:
+    #     pass
     
     # def listar_fila(self) -> list:
     #     pass

@@ -103,14 +103,14 @@ class PedidoController:
         )
         return PedidoAdapter.pedidos_to_json(todosOsPedidos)
 
-    def listar_pedidos_nao_finalizados(self, db_connection: DbConnection) -> List[Dict]:
-        todosOsPedidos = PedidoUseCases().listar_pedidos_nao_finalizados(
+    # def listar_pedidos_nao_finalizados(self, db_connection: DbConnection) -> List[Dict]:
+    #     todosOsPedidos = PedidoUseCases().listar_pedidos_nao_finalizados(
             
-            pedido_gateway=PedidoGateway(db_connection),
-            item_gateway=ItemGateway(db_connection),
-            produto_gateway=ProdutoGateway(db_connection)
-        )
-        return PedidoAdapter.pedidos_to_json(todosOsPedidos)
+    #         pedido_gateway=PedidoGateway(db_connection),
+    #         item_gateway=ItemGateway(db_connection),
+    #         produto_gateway=ProdutoGateway(db_connection)
+    #     )
+    #     return PedidoAdapter.pedidos_to_json(todosOsPedidos)
     
     def listar_fila(self, db_connection: DbConnection) -> list:
         pedidosGateway = PedidoGateway(db_connection)

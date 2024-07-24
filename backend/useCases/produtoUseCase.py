@@ -1,5 +1,5 @@
 from entities import Produto
-from common.exceptions import ProdutoNotFoundException
+from common.exceptions import ProdutoNotFoundException, CategoriaNotFoundException, ValorDoProdutoInvalidoException
 from typing import List
 from common.dto import ProdutoDTO
 from common.interfaces.gateways import ProdutoGatewayInterface
@@ -9,7 +9,11 @@ class ProdutoUseCases ():
     def inserir_produto(self,
         produto_dto: ProdutoDTO,
         produto_gateway: ProdutoGatewayInterface) -> Produto:
-
+        if produto_dto.categoria not in [1, 2, 3, 4]:
+            raise CategoriaNotFoundException()
+        if not produto_dto.valor > 0 or not produto_dto.valor:
+            raise ValorDoProdutoInvalidoException()
+        
         novo_produto = Produto(
             id = None, 
             nome= produto_dto.nome,
@@ -45,6 +49,8 @@ class ProdutoUseCases ():
             produto_gateway: ProdutoGatewayInterface) -> Produto:
         
         if not produto_dto.id: raise ProdutoNotFoundException
+        if produto_dto.categoria not in [0, 1, 2, 3]: raise CategoriaNotFoundException()
+        if not produto_dto.valor > 0 or not produto_dto.valor: raise ValorDoProdutoInvalidoException()
         
         produto = produto_gateway.retornar_pelo_id(produto_dto.id)
         if not produto: raise ProdutoNotFoundException

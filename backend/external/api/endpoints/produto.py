@@ -4,7 +4,7 @@ from external import MySQLConnection
 from fastapi import HTTPException
 from adapters.controllers import ProdutoController
 from common.dto import ProdutoDTO
-from common.exceptions import ProdutoNotFoundException, MysqlConnectionException
+from common.exceptions import ProdutoNotFoundException, MysqlConnectionException, CategoriaNotFoundException, ValorDoProdutoInvalidoException
 from external.api.models import ProdutoModel
 from typing import List
 app = SingletonFastAPI.app().app
@@ -77,6 +77,10 @@ async def cadastrar_produto(produto: ProdutoModel) -> ProdutoModel:
         return  produto
     except MysqlConnectionException as e:
         raise HTTPException(status_code=503, detail= e.message)
+    except CategoriaNotFoundException as e:
+        raise HTTPException(status_code=404, detail= e.message)
+    except ValorDoProdutoInvalidoException as e:
+        raise HTTPException(status_code=404, detail= e.message)
 
 ## PUT ##
 
@@ -95,6 +99,10 @@ async def editar_produto(produto: ProdutoModel) -> ProdutoModel:
         raise HTTPException(status_code=404, detail = e.message)
     except MysqlConnectionException as e:
         raise HTTPException(status_code=503, detail= e.message)
+    except CategoriaNotFoundException as e:
+        raise HTTPException(status_code=404, detail= e.message)
+    except ValorDoProdutoInvalidoException as e:
+        raise HTTPException(status_code=404, detail= e.message)
 
 ## DELETE ##
     
@@ -107,3 +115,8 @@ async def deletar_produto(produto_id: int) -> bool:
     except MysqlConnectionException as e:
         raise HTTPException(status_code=503, detail= e.message)
     
+###############
+# TODO
+
+# --> VALOR > 0
+# --> CATEGORIA = 1|2|3|4

@@ -6,7 +6,7 @@ from pydantic import BaseModel
 class ItemCheckoutModel(BaseModel):
     produto: int
     quantidade: int
-    valor: float
+    
     descricao: str | None = None
 
 class PedidoBaseModel(BaseModel):

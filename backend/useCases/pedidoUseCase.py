@@ -1,5 +1,5 @@
 from entities import Pedido, Item
-from common.exceptions import PedidoNotFoundException, ProdutoNotFoundException, ClienteNotFoundException, PedidoEditadoComItensException
+from common.exceptions import PedidoNotFoundException, ProdutoNotFoundException, ClienteNotFoundException, PedidoEditadoComItensException, QuantidadeInvalidaException
 from common.interfaces.gateways import PedidoGatewayInterface, ProdutoGatewayInterface, ItemGatewayInterface, ClienteGatewayInterface, PagamentoInterface   
 from common.dto import PedidoCheckoutDTO, WebhookResponseDTO, PedidoDTO
 from typing import List
@@ -110,16 +110,16 @@ class PedidoUseCases ():
             produto_gateway,
             item_gateway)
 
-    def listar_pedidos_nao_finalizados(self, 
-            pedido_gateway: PedidoGatewayInterface,
-            item_gateway: ItemGatewayInterface,
-            produto_gateway: ProdutoGatewayInterface) -> List[Pedido]:
+    # def listar_pedidos_nao_finalizados(self, 
+    #         pedido_gateway: PedidoGatewayInterface,
+    #         item_gateway: ItemGatewayInterface,
+    #         produto_gateway: ProdutoGatewayInterface) -> List[Pedido]:
         
-        return self.ajustar_pedidos_retorno(
-            pedido_gateway.listar_pedidos_nao_finalizados(),
-            pedido_gateway,
-            produto_gateway,
-            item_gateway)
+    #     return self.ajustar_pedidos_retorno(
+    #         pedido_gateway.listar_pedidos_nao_finalizados(),
+    #         pedido_gateway,
+    #         produto_gateway,
+    #         item_gateway)
 
     def editar_pedido(self, 
                       pedido: Pedido, 
@@ -189,6 +189,7 @@ class PedidoUseCases ():
         
         if not cliente_gateway.retornar_pelo_id(pedido_checkout.id_cliente): raise ClienteNotFoundException()
         
+        
         pedido_gateway.novo(Pedido(cliente=pedido_checkout.id_cliente))
         pedido = pedido_gateway.retornar_pelo_id(pedido_gateway.retorna_ultimo_id())
 
@@ -198,7 +199,7 @@ class PedidoUseCases ():
             
             produto = produto_gateway.retornar_pelo_id(item.produto)
             if not produto: raise ProdutoNotFoundException()
-
+            if not item.quantidade or not item.quantidade >=0: raise QuantidadeInvalidaException()
             novo_item = Item(produto=produto, pedido=pedido, quantidade = item.quantidade, descricao=item.descricao, valor=produto.valor)
             item_gateway.novo(novo_item)
             # pedido.itens.append(ItemPedido(
@@ -265,7 +266,10 @@ class PedidoUseCases ():
                     "quantidade" : item.quantidade,
                     "descricao": item.descricao
                 })
-                valor_total += item.valor * item.quantidade
+                try: 
+                    valor_total += item.valor * item.quantidade
+                except TypeError:
+                    pass
             p.itens = produtos
             p.valor_total = valor_total
             

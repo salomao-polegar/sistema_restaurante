@@ -5,7 +5,7 @@ from external import MySQLConnection, MercadoPagoConnection
 from fastapi import HTTPException
 from adapters.controllers import PedidoController
 from common.dto import PedidoDTO
-from common.exceptions import PedidoNotFoundException, ClienteNotFoundException, ProdutoNotFoundException, PedidoEditadoComItensException, MysqlConnectionException
+from common.exceptions import PedidoNotFoundException, ClienteNotFoundException, ProdutoNotFoundException, PedidoEditadoComItensException, MysqlConnectionException, QuantidadeInvalidaException
 from external.api.models import PedidoCheckoutModel, PedidoModel, PedidoEditarModel
 from typing import Dict
 
@@ -61,12 +61,12 @@ async def listar_pedidos_finalizados() -> List[PedidoModel]:
     except MysqlConnectionException as e:
         raise HTTPException(status_code=503, detail= e.message)
     
-@app.get("/pedidos/naofinalizados/", tags=['Pedidos'])
-async def listar_pedidos_nao_finalizados():
-    try:
-        return pedido_controller.listar_pedidos_nao_finalizados(MySQLConnection())
-    except MysqlConnectionException as e:
-        raise HTTPException(status_code=503, detail= e.message)
+# @app.get("/pedidos/naofinalizados/", tags=['Pedidos'])
+# async def listar_pedidos_nao_finalizados() -> List[PedidoModel]:
+#     try:
+#         return pedido_controller.listar_pedidos_nao_finalizados(MySQLConnection())
+#     except MysqlConnectionException as e:
+#         raise HTTPException(status_code=503, detail= e.message)
 
 @app.get("/pedidos/fila/", tags=['Pedidos']) 
 async def listar_fila() -> List[PedidoModel]:
@@ -122,6 +122,9 @@ async def checkout(pedido: PedidoCheckoutModel) -> PedidoModel:
     
     except MysqlConnectionException as e:
         raise HTTPException(status_code=503, detail= e.message)
+    
+    except QuantidadeInvalidaException  as e:
+        raise HTTPException(status_code=503, detail= e.message)
 
 ## PUT ##
 
@@ -137,7 +140,8 @@ async def editar_pedido(pedido: PedidoEditarModel) -> PedidoModel:
         datahora_preparacao=pedido.datahora_preparacao,
         datahora_pronto=pedido.datahora_pronto,
         datahora_finalizado=pedido.datahora_finalizado,
-        id_pagamento=pedido.status_pagamento))
+        id_pagamento=pedido.id_pagamento,
+        status_pagamento=pedido.status_pagamento))
     except PedidoNotFoundException as e:
         raise HTTPException(status_code=404, detail = e.message)
     except ClienteNotFoundException as e:
