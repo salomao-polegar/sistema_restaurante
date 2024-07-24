@@ -1,0 +1,73 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36" version="24.7.4">
+  <diagram name="Página-1" id="8ZUKXMK9mpDazKkY_s5a">
+    <mxGraphModel dx="840" dy="446" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-18" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;" parent="1" vertex="1">
+          <mxGeometry x="240" y="120" width="320" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-5" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#76608a;fontColor=#ffffff;strokeColor=#432D57;" parent="1" vertex="1">
+          <mxGeometry x="280" y="160" width="240" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-2" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="320" y="200" width="160" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-3" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="360" y="240" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-6" value="ENTIDADES" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#660033;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="380" y="249" width="40" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-7" value="- Cliente&lt;div style=&quot;font-size: 7px;&quot;&gt;- Pedido&lt;/div&gt;&lt;div style=&quot;font-size: 7px;&quot;&gt;- Produto&lt;/div&gt;&lt;div style=&quot;font-size: 7px;&quot;&gt;- Item&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=7;fontColor=#660033;" parent="1" vertex="1">
+          <mxGeometry x="380" y="260" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-8" value="CASOS DE USO" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#990099;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="370" y="208" width="60" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-9" value="&lt;div style=&quot;font-size: 7px;&quot;&gt;- ItemUseCase&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=7;fontColor=#990099;" parent="1" vertex="1">
+          <mxGeometry x="414" y="320" width="50" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-10" value="&lt;div style=&quot;font-size: 7px;&quot;&gt;- ProdutoUseCase&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=7;fontColor=#990099;" parent="1" vertex="1">
+          <mxGeometry x="333" y="317" width="66" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-11" value="&lt;div style=&quot;font-size: 7px;&quot;&gt;- PedidoUseCase&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=7;fontColor=#990099;" parent="1" vertex="1">
+          <mxGeometry x="336" y="226" width="60" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-12" value="- ClienteUseCase" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=7;fontColor=#990099;" parent="1" vertex="1">
+          <mxGeometry x="407" y="227" width="63" height="13" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-13" value="CONTROLLERS" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#000099;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="370" y="167" width="60" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-14" value="&lt;div style=&quot;font-size: 7px;&quot;&gt;- ItemController&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=7;fontColor=#000099;" parent="1" vertex="1">
+          <mxGeometry x="424" y="360" width="56" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-15" value="&lt;div style=&quot;font-size: 7px;&quot;&gt;- ProdutoController&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=7;fontColor=#000099;" parent="1" vertex="1">
+          <mxGeometry x="320" y="360" width="66" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-16" value="&lt;div style=&quot;font-size: 7px;&quot;&gt;- PedidoController&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=7;fontColor=#000099;" parent="1" vertex="1">
+          <mxGeometry x="310" y="193" width="60" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-17" value="- ClienteController" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=7;fontColor=#000099;" parent="1" vertex="1">
+          <mxGeometry x="430" y="194" width="63" height="13" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-20" value="EXTERNO" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#33001A;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="370" y="122" width="60" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-21" value="FASTAPI" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#33001A;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="470" y="174" width="60" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-22" value="MYSQL" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#33001A;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="270" y="174" width="60" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-23" value="SISTEMA DE PAGAMENTOS EXTERNO" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#33001A;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="220" y="270" width="60" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="jDhF3T_VCNA87nLUEaiQ-27" value="FRONTEND" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#33001A;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="520" y="285" width="60" height="10" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

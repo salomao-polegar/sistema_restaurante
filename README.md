@@ -8,10 +8,15 @@ Os produtos são divididos entre Lanches, Acompanhamentos, Bebidas e Sobremesas.
     
 O cliente poderá acompanhar os status do pedido, sendo eles: Recebido, Em preparação, Pronto e Finalizado e o atendente/funcionário poderá atualizar estes status em tempo real.
 
-- Projeto desenvolvido com base na Arquitetura Limpa.
+- Projeto desenvolvido com base na Arquitetura Limpa:
+
+
+<img src="Clean Architecture.drawio.png">
+
+
 - Utilização do framework [FastAPI](https://fastapi.tiangolo.com/), em Python. 
 - O banco de dados deste projeto é o MySQL.
-- O projeto é executado em containers do Docker. Você precisa ter o Docker instalado na sua máquina para executar a API.
+- O projeto é executado em containers, com o kubernetes e Docker. Você precisa ter o Docker instalado na sua máquina, e o kubernetes habilitado, para executar a API.
 
 ### Arquitetura
 
