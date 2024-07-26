@@ -167,6 +167,5 @@ checklist.docx
 docker-secret.yaml
 create-resources
 *.code-workspace
-stress_test
 ignoregit/
 .vscode/
