@@ -1,16 +1,17 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: elasticsearch-pod
+  name: elasticsearch
   labels:
-    app: elasticsearch-pod
+    app: elasticsearch
 spec:
   containers:
     - name: elasticsearch-container
-      image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
+      image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
       env:
         - name: discovery.type
           value: single-node
+      
       ports:
         - containerPort: 9200
           protocol: TCP

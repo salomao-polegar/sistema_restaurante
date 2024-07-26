@@ -1,10 +1,10 @@
-# Tech Challenge - Restaurante
+# Tech Challenge - Sistema Ambrosia
 
 ## Contexto
 
-Sistema para gestão de pedidos de um restaurante, com todos os processos gerenciados através da API, que é capaz de administrar os clientes, produtos do cardápio e os pedidos realizados.
+Ambrosia é um sistema para gestão de pedidos de um restaurante, com todos os processos gerenciados através de uma API capaz de administrar os clientes, produtos do cardápio e os pedidos realizados.
 
-Os produtos são divididos entre Lanches, Acompanhamentos, Bebidas e Sobremesas. 
+Os produtos são divididos entre Lanches, Acompanhamentos, Bebidas e Sobremesas.
     
 O cliente poderá acompanhar os status do pedido, sendo eles: Recebido, Em preparação, Pronto e Finalizado e o atendente/funcionário poderá atualizar estes status em tempo real.
 
@@ -14,17 +14,18 @@ O cliente poderá acompanhar os status do pedido, sendo eles: Recebido, Em prepa
 <img src="Clean Architecture.drawio.png">
 
 
-- Utilização do framework [FastAPI](https://fastapi.tiangolo.com/), em Python. 
-- O banco de dados deste projeto é o MySQL.
-- O projeto é executado em containers, com o kubernetes e Docker. Você precisa ter o Docker instalado na sua máquina, e o kubernetes habilitado, para executar a API.
+- Backend desenvolvido com o framework [FastAPI](https://fastapi.tiangolo.com/), em Python. 
+- O banco de dados utilizado é o [MySQL](https://www.mysql.com/).
+- O projeto é executado em containers, com o [Kubernetes](https://kubernetes.io/) e [Docker](https://www.docker.com/). <i>Você precisa ter o Docker instalado na sua máquina, e o Kubernetes habilitado, para executar a API.</i>
+- O sistema é integrado ao [Mercado Pago](https://www.mercadopago.com.br/developers/pt/reference).
 
 ### Arquitetura
 
-O prjeto possui duas imagens-base, uma com o banco de dados e outra com o backend do projeto. Com o kubernetes, o backend possui um hpa (Horizontal Pod Autoscaling), que aumenta e diminui automaticamente a quantidade de pods ativos de acordo com métricas de CPU e memória.
+O prjeto possui duas imagens-base, uma com o banco de dados e outra com o backend do projeto. Gerenciada pelo Kubernetes, a arquitetura do backend possui um hpa (Horizontal Pod Autoscaling), que aumenta e diminui automaticamente a quantidade de pods ativos de acordo com métricas de CPU pré-definidas.
 
-<img src="arquitetura.png">
+<img src="Desenho da Arquitetura.drawio.png">
 
-## Rodando o projeto
+<!-- ## Rodando o projeto
 
 O projeto tem instruções para a criação de dois containers, orquestrados com o Docker Compose. 
 
@@ -43,21 +44,19 @@ docker-compose up -d
 Para apagar os containers criados:
 ```bash
 docker rm tc_api -f; docker rm tc_database -f; 
-```
+``` -->
 
-## Rodando com Kubernetes
+## Executando o sistema com Kubernetes
 
-Este projeto também possui instruções para execução dos containers com kubernetes (k8s), incluindo autoescalonamento horizontal de pods (HPA).
+A pasta k8s possui instruções para execução dos containers com kubernetes (k8s), incluindo autoescalonamento horizontal de pods (HPA).
 
-O k8s vai ser executado com base nas imagens no docker hub salomaopolegar/restaurante:1.3 e salomaopolegar/banco:1.3
+O k8s será executado com base nas seguintes imagens no docker hub: [salomaopolegar/restaurante:1.3](https://hub.docker.com/r/salomaopolegar/restaurante) e [salomaopolegar/banco:1.3](https://hub.docker.com/r/salomaopolegar/banco)
 
-Entrar na pasta k8s e executar os seguintes comandos: 
+Para iniciar o projeto, entrar na pasta k8s e executar os seguintes comandos: 
 
 ```bash
 kubectl apply -f secret-mysql.yaml; 
 kubectl apply -f configmap.yaml; 
-kubectl apply -f pv-mysql.yaml; 
-kubectl apply -f pvc-mysql.yaml; 
 kubectl apply -f deployment-backend.yaml; 
 kubectl apply -f deployment-mysql.yaml; 
 kubectl apply -f svc-backend.yaml; 
@@ -71,10 +70,15 @@ Para monitorar o autoprovisionamento de pods:
 kubectl get hpa --watch
 ```
 
+Para monitorar os pods criados:
+```bash
+kubectl get pods --watch
+```
+
 ## Acessar a documentação da API
 
 A documentação da API contém uma lista de todos os endpoints do serviço. Para acessá-la, após a execução da etapa anterior, acesse a URL:
--  [http://127.0.0.1/docs](http://127.0.0.1/docs) ou [http://127.0.0.1/redoc](http://127.0.0.1/redoc), se rodou com o docker compose.
+<!-- -  [http://127.0.0.1/docs](http://127.0.0.1/docs) ou [http://127.0.0.1/redoc](http://127.0.0.1/redoc), se rodou com o docker compose. -->
 
 -  [http://127.0.0.1:31000/docs](http://127.0.0.1:31000/docs) ou [http://127.0.0.1:31000/redoc](http://127.0.0.1:31000/redoc), se rodou com o k8s.
 
@@ -160,7 +164,7 @@ Onde:
 "action": "state_CANCELED" --> Pagamento cancelado
 "action": "state_FINISHED" --> Pagamento realizado com sucesso
 ```
-Obs.: no exemplo acima, o id_pagamento foi pré-configurado diretamente no banco de dados, e deve retornar o pedido com id 1
+Obs.: no exemplo acima, o id_pagamento foi pré-configurado diretamente no banco de dados, e deve retornar o pedido com id 1. Ao criar um novo pagamento, o sistema retorna o id do pagamento recebido do gateway de pagamento, e armazena na tabela de pedidos.
 
 - iv. A lista de pedidos deverá retorná-los com suas descrições, ordenados com a seguinte regra:
         1. Pronto &gt; Em Preparação &gt; Recebido;
@@ -223,6 +227,30 @@ onde:
 "action": "state_CANCELED" --> CANCELADO
 ```
 </i>
+
+## Realizando Testes de Carga
+
+A pasta \stress_test\ possui o arquivo locustfile.py, que reliza teste simples com a biblioteca locust.
+Para executar os testes, é necessário instalar essa biblioteca e executar o seguinte comando:
+
+```bash 
+pip install locust
+```
+
+```bash
+locust -f locustfile.py
+```
+
+Após executar o arquivo, acessar [http://localhost:8089/](http://localhost:8089/) e digitar os seguintes parâmetros:
+
+<img src="locust-parameters.png" />
+
+Ao clicar em START, o teste de carga será iniciado.
+
+Podemos verificar o funcionamento do HPA do Kubernetes via terminal:
+
+<img src='locust-resultados.png' />
+
 
 ## Demonstração
 

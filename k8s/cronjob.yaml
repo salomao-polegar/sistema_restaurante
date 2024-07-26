@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: fiap-cronjob
 spec:
-  schedule: "1 * * * *"
+  schedule: "* * * * *" # Executado a cada 1 minuto
   jobTemplate:
     spec:
       template:
@@ -15,5 +15,5 @@ spec:
             command:
                 - /bin/sh
                 - -c
-                - date; echo Ola Fiap curso de Kubernetes
+                - date; echo Ola Fiap curso de Kubernetes. Este é um CRONJOB.
           restartPolicy: OnFailure

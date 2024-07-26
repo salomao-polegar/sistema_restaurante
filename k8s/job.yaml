@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+ name: fiap-job
+spec:
+ ttlSecondsAfterFinished: 100
+ template:
+  spec:
+    containers:
+    - name: hello
+      image: busybox:1.28
+      command:
+      - /bin/sh
+      - -c
+      - date; echo Ola Fiap curso de Kubernetes. Este é o teste de um job, que deve ser encerrado em 100 segundos.
+    restartPolicy: Never

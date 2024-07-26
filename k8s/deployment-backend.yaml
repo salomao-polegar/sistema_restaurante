@@ -70,12 +70,12 @@ spec:
                 name: db-config
                 key: MYSQL_PORT
         resources:
-          limits:
-            cpu: "1.2"
-            memory: "1.5Gi"
           requests:
-            cpu: "1.2"
-            memory: "1.5Gi"
+            cpu: "500m"
+            memory: "256Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1024Mi"
             
       #   volumeMounts:
       #     - name:  shared
