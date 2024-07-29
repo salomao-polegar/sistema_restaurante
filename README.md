@@ -254,7 +254,7 @@ Podemos verificar o funcionamento do HPA do Kubernetes via terminal:
 
 ## Demonstração
 
-https://youtube.com/dkjsafnksjdfbsdfsdhf
+https://www.youtube.com/watch?v=AxV8xU5nGkE
 
 ## Créditos
 Sistema e documentação desenvolvidos por [Salomão Pôlegar](https://www.linkedin.com/in/salomao-polegar/).
