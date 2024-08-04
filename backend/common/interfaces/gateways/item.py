@@ -1,6 +1,6 @@
 from typing import Protocol, List
 from entities.item import Item
-from common.dto import ItemDTO, PedidoDTO
+from common.dto import ItemDTO
 
 class ItemGatewayInterface(Protocol):
     def novo(self, item_dto: ItemDTO) -> bool:

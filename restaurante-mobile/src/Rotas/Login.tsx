@@ -1,13 +1,13 @@
-import { VStack, Image, Text, Box, FormControl, Input, Button, Link, useToast } from 'native-base'
-import Logo from './assets/Logo.png'
+import { VStack, Image, Text, Box, Link, useToast } from 'native-base'
+import Logo from './../assets/Logo.png'
 import { TouchableOpacity } from 'react-native';
-import { Titulo } from './components/Titulo';
-import { EntradaTexto } from './components/EntradaTexto';
 import { useEffect, useState } from 'react';
 import { fazerLogin } from '@/servicos/autenticacaoServico';
-import { jwtDecode } from 'jwt-decode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Botao from './components/Botao';
+import { EntradaTexto } from '../components/Form/Entradas/EntradaTexto';
+import { Titulo } from '../components/TItulo/Titulo';
+import Botao from '../components/Botao/Botao';
+
 // import { useParams }  from 'react-router-dom'
 
 export default function Login({ route, navigation }:any) {

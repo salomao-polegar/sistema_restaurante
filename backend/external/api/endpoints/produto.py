@@ -71,7 +71,8 @@ async def cadastrar_produto(produto: ProdutoModel) -> ProdutoModel:
             produto.categoria,
             produto.valor,
             produto.descricao,
-            produto.ativo) 
+            produto.ativo,
+            produto.foto_principal) 
         produto = produto_controller.novo(produto_dto, MySQLConnection())
         
         return  produto
@@ -93,7 +94,8 @@ async def editar_produto(produto: ProdutoModel) -> ProdutoModel:
             categoria=produto.categoria,
             valor=produto.valor,
             descricao=produto.descricao,
-            ativo=produto.ativo
+            ativo=produto.ativo,
+            foto_principal=produto.foto_principal
         ))
     except ProdutoNotFoundException as e:
         raise HTTPException(status_code=404, detail = e.message)

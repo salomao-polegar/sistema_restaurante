@@ -1,4 +1,4 @@
-from adapters.gateways import PedidoGateway, ProdutoGateway, ItemGateway, ClienteGateway, MercadoPagoGateway
+from adapters.gateways import PedidoGateway, ProdutoGateway, ItemGateway, ClienteGateway, PagamentoGateway
 from common.interfaces import DbConnection, PagamentoInterface
 from common.dto import PedidoDTO, PedidoCheckoutDTO, WebhookResponseDTO
 from useCases import PedidoUseCases
@@ -133,7 +133,7 @@ class PedidoController:
             ProdutoGateway(db_connection), 
             ItemGateway(db_connection),
             ClienteGateway(db_connection),
-            MercadoPagoGateway(pagamento_connection))
+            PagamentoGateway(pagamento_connection))
         
         return PedidoAdapter.pedidos_to_json([pedido])[0]
         

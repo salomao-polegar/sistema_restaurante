@@ -1,12 +1,12 @@
 import { VStack, Text, ScrollView, Avatar, Divider } from "native-base";
-import { Titulo } from "../components/Titulo";
+import { Titulo } from "../components/TItulo/Titulo";
 import { useEffect, useState } from "react";
 import { pegarDadosClienteLogado as pegarDadosCliente, retornarHistoricoCliente } from "@/servicos/clienteServico";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Cliente } from "../interfaces/Cliente";
 import { Pedido } from "../interfaces/Pedido";
-import { CardPedido } from "../components/CardPedido";
-import Botao from "../components/Botao";
+import { CardPedido } from "../components/Cards/Pedidos/CardPedido";
+import Botao from "../components/Botao/Botao";
 
 export default function Perfil({ navigation }: any) {
 

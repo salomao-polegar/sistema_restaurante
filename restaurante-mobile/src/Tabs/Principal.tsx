@@ -1,10 +1,11 @@
 import { VStack, ScrollView } from "native-base";
-import { CardInicialProduto } from "../components/CardInicial";
-import Produtos from "./Produtos";
+import { CardInicialProduto } from "../components/Cards/Pedidos/CardInicial";
+
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { pegarDadosClienteLogado as pegarDadosCliente } from "@/servicos/clienteServico";
 import { Cliente } from "../interfaces/Cliente";
+import Produtos from "../Rotas/Produtos/Produtos";
 
 export default function Principal({ navigation }: any) {
 
@@ -28,9 +29,8 @@ export default function Principal({ navigation }: any) {
     return (
 
         <ScrollView flex={1}>
-            <VStack p={10}
+            <VStack p={6}
                 flex={1}
-
                 alignSelf="center"
                 w="100%"
                 maxW={800}>

@@ -1,4 +1,4 @@
-import { EntradaTexto } from "../components/EntradaTexto"
+import { EntradaTexto } from "../components/Form/Entradas/EntradaTexto"
 
 
 

@@ -6,20 +6,26 @@ interface InputProps {
   secureTextEntry?: boolean;
   value?: string;
   required?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
   w?: string | number;
+  
   
   onChangeText?: (text: string) => void;
 }
 
-export function EntradaTexto ({ 
+export function EntradaTextArea ({ 
   label, 
   placeholder, 
   secureTextEntry = false,
   value,
   required = false,
+  readonly = false,
+  disabled = false,
   w = "100%",
   
-  onChangeText
+  onChangeText,
+  
 
 } : InputProps) : JSX.Element {
   return (
@@ -36,6 +42,14 @@ export function EntradaTexto ({
         value={value}
         onChangeText={onChangeText}
         isRequired={required}
+        readOnly={readonly}
+        isDisabled={disabled}
+        multiline
+        numberOfLines={5}
+        verticalAlign={"top"}
+        textAlignVertical="top"
+
+        
       />
     </FormControl>
   );

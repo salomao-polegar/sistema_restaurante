@@ -1,7 +1,7 @@
 from entities import Pedido, Item
-from common.exceptions import PedidoNotFoundException, ProdutoNotFoundException, ClienteNotFoundException, PedidoEditadoComItensException, QuantidadeInvalidaException
+from common.exceptions import PedidoNotFoundException, ProdutoNotFoundException, ClienteNotFoundException, PedidoEditadoComItensException, QuantidadeInvalidaException, MysqlError
 from common.interfaces.gateways import PedidoGatewayInterface, ProdutoGatewayInterface, ItemGatewayInterface, ClienteGatewayInterface, PagamentoInterface   
-from common.dto import PedidoCheckoutDTO, WebhookResponseDTO, PedidoDTO
+from common.dto import PedidoCheckoutDTO, WebhookResponseDTO, PedidoDTO, PagamentoDTO
 from typing import List
 import uuid
 import pandas as pd
@@ -201,12 +201,10 @@ class PedidoUseCases ():
         
         pedido_gateway.novo(Pedido(
             cliente=pedido_checkout.id_cliente, 
-            id_pagamento=str(uuid.uuid4()), status_pagamento=1 # mock
-                                   ))
+            status_pagamento=1))
+            
         pedido = pedido_gateway.retornar_pelo_id(pedido_gateway.retorna_ultimo_id())
-
         
-
         for item in pedido_checkout.itens:
             
             produto = produto_gateway.retornar_pelo_id(item.produto)
@@ -220,6 +218,10 @@ class PedidoUseCases ():
             #     produto=novo_item.produto.id, 
             #     quantidade=novo_item.quantidade))
         
+        # Pagamento
+        retorno_pagamento = pagamento_gateway.enviar_pagamento(PagamentoDTO())
+        pedido.id_pagamento = retorno_pagamento['id_pagamento']
+        pedido_gateway.editar(pedido)
         
         return self.ajustar_pedidos_retorno(
             [pedido], 

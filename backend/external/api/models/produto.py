@@ -7,3 +7,4 @@ class ProdutoModel(BaseModel):
     valor: float
     descricao: str | None
     ativo: bool | None = None
+    foto_principal: int | None = None

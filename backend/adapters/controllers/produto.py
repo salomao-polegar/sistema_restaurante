@@ -9,6 +9,7 @@ class ProdutoController:
     def listar_todos(self, dbconnection: DbConnection) -> List[Dict]:
         produtosGateway = ProdutoGateway(dbconnection)
         todosOsProdutos = ProdutoUseCases().listar_produtos(produtosGateway)
+        
         return ProdutoAdapter.produtos_to_json(todosOsProdutos)
     
     def listar_lanches(self, dbconnection: DbConnection) -> List[Dict]:

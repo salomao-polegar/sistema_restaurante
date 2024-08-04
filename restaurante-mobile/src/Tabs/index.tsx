@@ -1,11 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Principal from "./Principal"
-import Consultas from "./Consultas";
-import Explorar from "./Explorar";
 import Perfil from "./Perfil";
-
 import { Ionicons } from "@expo/vector-icons";
-import Produtos from "./Produtos";
 import Carrinho from "./Carrinho";
 
 const Tab = createBottomTabNavigator()
@@ -19,11 +15,7 @@ const screenOptions = {
 }
 
 const tabs = [
-    // {
-    //     name: 'Produtos',
-    //     component: Produtos,
-    //     icon: 'ice-cream'
-    // },
+  
     {
         name: 'Início',
         component: Principal,
@@ -35,11 +27,6 @@ const tabs = [
         icon: 'list'
     },
 
-    // {
-    //     name: 'Explorar',
-    //     component: Explorar,
-    //     icon: 'search'
-    // },
     {
         name: 'Perfil',
         component: Perfil,

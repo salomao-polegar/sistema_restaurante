@@ -1,16 +1,12 @@
 import { VStack, Text, ScrollView, useToast, View, Select, Checkbox, HStack } from "native-base";
 
 import lanche1 from "../assets/lanche3.jpg"
-
-import { CardDescricaoProduto } from "../components/CardDescricaoProduto";
 import { useEffect, useState } from "react";
-import Botao from "../components/Botao";
-import { EntradaTexto } from "../components/EntradaTexto";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Item } from "../interfaces/Item";
-import SelectDropdown from 'react-native-select-dropdown'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { CardDescricaoProduto } from "../components/Cards/Produto/CardDescricaoProduto";
+import { EntradaTexto } from "../components/Form/Entradas/EntradaTexto";
+import Botao from "../components/Botao/Botao";
 
 export interface ColourOption {
   readonly value: string;
@@ -74,15 +70,20 @@ export default function ProdutoDescricao({ route, navigation }: any) {
       //   atualizar_carrinho()
 
       //   console.log(novoCarrinho)
+      console.log(item)
+      console.log(carrinho)
       setCarrinho([...carrinho, item]);
-      AsyncStorage.setItem('carrinho', JSON.stringify(carrinho)).then(() => console.log(carrinho));
+      await AsyncStorage.setItem('carrinho', JSON.stringify(carrinho))
+      console.log( AsyncStorage.getItem('carrinho').then((response) => console.log(response)));
+      
+      
       setItem({ produto: produto, quantidade: 0 })
       toast.show({
         title: "Adicionado",
         description: "Produto adicionado ao carrinho",
         backgroundColor: "green.800"
       })
-      navigation.navigate("Tabs")
+      // navigation.navigate("Tabs")
     } catch (error) {
       console.error('Erro adicionando ao carrinho: ', error);
     }

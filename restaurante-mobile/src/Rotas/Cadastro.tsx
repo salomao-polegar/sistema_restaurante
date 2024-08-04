@@ -1,12 +1,12 @@
-import { Image, Text, Box, Checkbox, ScrollView, useToast, VStack } from 'native-base'
-import Logo from './assets/Logo.png'
-import { secoes } from './utils/CadastroEntradaTexto';
-import { Titulo } from './components/Titulo';
-import { EntradaTexto } from './components/EntradaTexto';
+import { Image, Box, ScrollView, useToast, VStack } from 'native-base'
+import Logo from './../assets/Logo.png'
 import { useState } from 'react';
-import Botao from './components/Botao';
 import { cadastrarCliente } from '@/servicos/clienteServico';
 import { sha256 } from 'js-sha256';
+import { secoes } from '@/src/utils/CadastroEntradaTexto';
+import { Titulo } from '../components/TItulo/Titulo';
+import { EntradaTexto } from '../components/Form/Entradas/EntradaTexto';
+import Botao from '../components/Botao/Botao';
 
 export default function Cadastro({ navigation }: any) {
   const [numSecao, setNumSecao] = useState(0);
@@ -50,8 +50,8 @@ export default function Cadastro({ navigation }: any) {
       nome: dados.nome,
       hashed_password: sha256(dados.senha),
       telefone: dados.telefone,
-      endereco: dados.rua + dados.numero + dados.complemento + dados.bairro + dados.cidade + dados.estado
-
+      endereco: dados.rua + dados.numero + dados.complemento + dados.bairro + dados.cidade + dados.estado,
+      administrador: false
 
     })
     console.log(resultado)

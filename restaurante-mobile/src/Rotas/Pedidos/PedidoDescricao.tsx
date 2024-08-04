@@ -1,11 +1,10 @@
-import { Avatar, Button, Divider, HStack, Link, ScrollView, Text, VStack } from "native-base";
-
-import { Titulo } from "../components/Titulo";
+import { Avatar, Divider, HStack, ScrollView, Text, VStack } from "native-base";
 import moment from "moment";
-import { Item } from "../interfaces/Item";
 import { useEffect, useState } from "react";
-import Botao from "../components/Botao";
 import { Pressable } from "react-native";
+import { Item } from "@/src/interfaces/Item";
+import { Titulo } from "@/src/components/TItulo/Titulo";
+import Botao from "@/src/components/Botao/Botao";
 
 export function PedidoDescricao({ route, navigation }: any) {
 

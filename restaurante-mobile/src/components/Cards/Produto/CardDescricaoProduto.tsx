@@ -1,7 +1,6 @@
-import { Avatar, Divider, Image, Text, VStack } from "native-base";
-import Logo from '../assets/Logo.png'
-import { Alert, Pressable } from "react-native";
-import { Produto } from "../interfaces/Produto";
+import { Avatar, Image, Text, VStack } from "native-base";
+import api from "@/servicos/api";
+import { Produto } from "../../../interfaces/Produto";
 
 
 interface CardDescricaoProdutoProps {
@@ -17,6 +16,9 @@ export function CardDescricaoProduto({
     size,
     imagem
 }: CardDescricaoProdutoProps) {
+    const source = String(api.getUri() + "foto/" + String(produto.foto_principal) + "/")
+    console.log("FOtoPrincipal:")
+    console.log(source)
     return (
         <VStack
             w="100%"
@@ -36,21 +38,17 @@ export function CardDescricaoProduto({
                     alignSelf="center"
                     mb={5}
                 >{produto.nome}</Text>
-                <VStack><Image
-
-                    source={imagem}
+                <VStack>
+                <Image source={{ uri: source }} 
+                    alt="Produto" size="2xl"
                     my={5}
                     alignSelf="center"
-                    borderRadius={10}
-                    height="250"
-                    
-
                 /></VStack>
 
                 <Text fontFamily="Montserrat"
-fontSize="lg"
-textAlign="justify"
-style={{"text-indent": "8%"}}
+                    fontSize="lg"
+                    textAlign="justify"
+                    style={{"text-indent": "8%"}}
                     mb={5}
                     alignSelf="justify">{produto.descricao}</Text>
                 <Text fontFamily="Montserrat"

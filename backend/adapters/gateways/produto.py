@@ -26,7 +26,8 @@ class ProdutoGateway (ProdutoGatewayInterface):
                     categoria = p['categoria'],
                     valor = p['valor'],
                     descricao = p['descricao'],
-                    ativo = p['ativo']))
+                    ativo = p['ativo'],
+                    foto_principal = p['foto_principal']))
                 
             return returnData
         
@@ -44,7 +45,8 @@ class ProdutoGateway (ProdutoGatewayInterface):
                     categoria = p['categoria'],
                     valor = p['valor'],
                     descricao = p['descricao'],
-                    ativo = p['ativo']))
+                    ativo = p['ativo'],
+                    foto_principal = p['foto_principal']))
                 
             return returnData
     
@@ -62,7 +64,8 @@ class ProdutoGateway (ProdutoGatewayInterface):
                     categoria = p['categoria'],
                     valor = p['valor'],
                     descricao = p['descricao'],
-                    ativo = p['ativo']))
+                    ativo = p['ativo'],
+                    foto_principal = p['foto_principal']))
                 
             return returnData
     
@@ -80,7 +83,8 @@ class ProdutoGateway (ProdutoGatewayInterface):
                     categoria = p['categoria'],
                     valor = p['valor'],
                     descricao = p['descricao'],
-                    ativo = p['ativo']))
+                    ativo = p['ativo'],
+                    foto_principal = p['foto_principal']))
                 
             return returnData
     
@@ -98,7 +102,8 @@ class ProdutoGateway (ProdutoGatewayInterface):
                     categoria = p['categoria'],
                     valor = p['valor'],
                     descricao = p['descricao'],
-                    ativo = p['ativo']))
+                    ativo = p['ativo'],
+                    foto_principal = p['foto_principal']))
                 
             return returnData
 
@@ -111,6 +116,7 @@ class ProdutoGateway (ProdutoGatewayInterface):
         parametros.append(ParametroBd(campo = "valor", valor = produto_dto.valor))
         parametros.append(ParametroBd(campo = "descricao", valor = produto_dto.descricao))
         parametros.append(ParametroBd(campo = "ativo", valor = produto_dto.ativo))
+        parametros.append(ParametroBd(campo = "foto_principal", valor = produto_dto.foto_principal))
         self.repositorio.inserir(self.nomeTabela, parametros)
 
         id_inserido = self.repositorio.retorna_ultimo_id(self.nomeTabela)
@@ -139,7 +145,8 @@ class ProdutoGateway (ProdutoGatewayInterface):
                     categoria = p['categoria'],
                     valor = p['valor'],
                     descricao = p['descricao'],
-                    ativo = p['ativo'])
+                    ativo = p['ativo'],
+                    foto_principal = p['foto_principal'])
         
     def editar(self, produto_dto: ProdutoDTO) -> Produto:
         parametros: List[ParametroBd] = []
@@ -148,6 +155,7 @@ class ProdutoGateway (ProdutoGatewayInterface):
         parametros.append(ParametroBd(campo = "valor", valor = produto_dto.valor))
         parametros.append(ParametroBd(campo = "descricao", valor = produto_dto.descricao))
         parametros.append(ParametroBd(campo = "ativo", valor = produto_dto.ativo))
+        parametros.append(ParametroBd(campo = "foto_principal", valor = produto_dto.foto_principal))
         
         retornoBd = self.repositorio.editar(
             self.nomeTabela,
@@ -171,7 +179,8 @@ class ProdutoGateway (ProdutoGatewayInterface):
                     categoria = p['categoria'],
                     valor = p['valor'],
                     descricao = p['descricao'],
-                    ativo = p['ativo'])
+                    ativo = p['ativo'],
+                    foto_principal = p['foto_principal'])
         
 
     def deletar(self, produto_id: int) -> bool:

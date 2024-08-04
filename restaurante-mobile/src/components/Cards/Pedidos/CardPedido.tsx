@@ -1,9 +1,9 @@
 import { Avatar, Button, Divider, HStack, Text, VStack } from "native-base";
 import Logo from '../assets/Logo.png'
 import { Alert, Pressable } from "react-native";
-import { Pedido } from "../interfaces/Pedido";
+import { Pedido } from "../../../interfaces/Pedido";
 import { Ionicons } from "@expo/vector-icons";
-import Botao from "./Botao";
+import Botao from "../../Botao/Botao";
 import moment from "moment";
 
 interface CardProps {

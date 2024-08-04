@@ -1,32 +1,11 @@
 import { VStack, ScrollView, Text, Button } from "native-base";
-import { Titulo } from "../components/Titulo";
-import { CardConsulta } from "../components/CardConsulta";
-import { CardBusca } from "../components/CardBusca";
-import { CardCarrinho } from "../components/CardCarrinho";
-import Botao from "../components/Botao";
+import { CardCarrinho } from "../components/Cards/Pedidos/CardCarrinho";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { Item } from "../interfaces/Item";
 
 export default function Carrinho(){
 
-    // const resultadoBusca = [
-    //     {
-    //         nome:"Dra. Ana Paula",
-    //         especialidade: "Cardiologista",
-    //         foto: "https://github.com/salomao-polegar.png"
-    //     },
-    //     {
-    //         nome:"Dra. Júlia Maria",
-    //         especialidade: "Endócrinologista",
-    //         foto: "https://github.com/salomao-polegar.png"
-    //     },
-    //     {
-    //         nome:"Dra. Mara Maravilha",
-    //         especialidade: "Cardiologista",
-    //         foto: "https://github.com/salomao-polegar.png"
-    //     }
-    // ]
     const [carrinho, setCarrinho] = useState<Item[]>([])
     const carregar_carrinho = async () => {
         try {
@@ -34,6 +13,7 @@ export default function Carrinho(){
           if (carrinhoStorage !== null) {
             setCarrinho(JSON.parse(carrinhoStorage));
           }
+          console.log(carrinho)
         } catch (error) {
           console.error('Erro carregando carrinho', error);
         }

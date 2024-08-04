@@ -1,7 +1,8 @@
 import { NativeBaseProvider, StatusBar } from 'native-base'
 
 import { TEMAS } from '@/src/estilos/temas';
-import Rotas from '@/src/Rotas';
+import Rotas from '@/src/Rotas/Rotas';
+
 
 // import Cadastro from '@/src/Cadastro';
 

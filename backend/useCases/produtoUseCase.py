@@ -20,7 +20,8 @@ class ProdutoUseCases ():
             categoria=produto_dto.categoria,
             valor=produto_dto.valor,
             descricao=produto_dto.descricao,
-            ativo=produto_dto.ativo) 
+            ativo=produto_dto.ativo,
+            foto_principal=produto_dto.foto_principal) 
 
         return produto_gateway.novo(novo_produto)
     
@@ -49,7 +50,7 @@ class ProdutoUseCases ():
             produto_gateway: ProdutoGatewayInterface) -> Produto:
         
         if not produto_dto.id: raise ProdutoNotFoundException
-        if produto_dto.categoria not in [0, 1, 2, 3]: raise CategoriaNotFoundException()
+        if produto_dto.categoria not in [1, 2, 3, 4]: raise CategoriaNotFoundException()
         if not produto_dto.valor > 0 or not produto_dto.valor: raise ValorDoProdutoInvalidoException()
         
         produto = produto_gateway.retornar_pelo_id(produto_dto.id)
@@ -61,7 +62,8 @@ class ProdutoUseCases ():
             categoria=produto_dto.categoria,
             valor=produto_dto.valor,
             descricao=produto_dto.descricao,
-            ativo=produto_dto.ativo)
+            ativo=produto_dto.ativo,
+            foto_principal=produto_dto.foto_principal)
          
         
         return produto_gateway.editar(produto_editar)

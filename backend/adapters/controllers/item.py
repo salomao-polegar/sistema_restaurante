@@ -1,6 +1,6 @@
 from adapters.gateways import ItemGateway, ProdutoGateway, PedidoGateway
 from common.interfaces import DbConnection
-from common.dto import ItemDTO, PedidoDTO
+from common.dto import ItemDTO
 from useCases import ItemUseCases
 from adapters.presenters import ItemAdapter
 from typing import Dict, List

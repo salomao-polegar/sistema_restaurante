@@ -16,8 +16,8 @@ class ProdutoAdapter:
                 'categoria' : i.categoria,
                 'valor' : i.valor,
                 'descricao' : i.descricao,
-                'ativo' : i.ativo
-                
+                'ativo' : i.ativo,
+                'foto_principal' : i.foto_principal,
                 })
-            
+        
         return alldata

@@ -6,7 +6,7 @@ import mysql.connector
 from typing import List
 import sys, os, time
 from datetime import datetime
-from common.exceptions import MysqlConnectionException
+from common.exceptions import MysqlConnectionException, MysqlError
 
 class MySQLConnection (DbConnection):
     
@@ -97,7 +97,7 @@ class MySQLConnection (DbConnection):
             sql = f"""INSERT INTO {nomeTabela} 
                 ({", ".join(nomesCampos)}) 
                 VALUES ({self.ajustar_campos_string(nomesValores)});"""
-            
+            print(sql)
             self.open_database()
             self._cursor.execute(sql)
             self._conexao.commit()
@@ -107,7 +107,7 @@ class MySQLConnection (DbConnection):
             print("Erro ao realizar inserção no banco de dados: ")
             print(sql)
             print(e)
-            raise MysqlConnectionException()
+            raise MysqlError()
     
     def editar(self, nomeTabela: str, condicoes: list[ParametroBd], parametros: list[ParametroBd]):
         try:

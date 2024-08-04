@@ -1,10 +1,10 @@
 import { Avatar, Button, HStack, Text, VStack, useToast } from "native-base";
 
-import Botao from "./Botao";
-import { Titulo } from "./Titulo";
+import Botao from "../../Botao/Botao";
+import { Titulo } from "../../TItulo/Titulo";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Item } from "../interfaces/Item";
+import { Item } from "../../../interfaces/Item";
 import { Ionicons } from "@expo/vector-icons";
 
 
@@ -16,7 +16,15 @@ export function CardCarrinho({ carregar_carrinho }: any) {
 
 
   const remover = async (id: number) => {
-
+    
+    useEffect(() => {
+      // Fetch data from AsyncStorage
+      carregar_carrinho();
+      AsyncStorage.getItem("carrinho").then((carrinhoStoraged) => {if (carrinhoStoraged != null) {
+        setCarrinho(JSON.parse(carrinhoStoraged));
+      }});
+      
+    }, []);
 
     setCarrinho(carrinho => carrinho.filter(item => item.produto.id != id))
 
